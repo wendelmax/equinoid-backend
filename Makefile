@@ -109,6 +109,29 @@ docker-push: docker-build ## Faz push da imagem para registry
 	@echo "$(GREEN)Docker image pushed!$(NC)"
 
 # Docker Compose
+docker-compose-up: ## Inicia todos os serviços com docker-compose
+	@echo "$(YELLOW)Starting services with docker-compose...$(NC)"
+	@docker-compose up -d
+	@echo "$(GREEN)Services started! Check http://localhost:8080/health$(NC)"
+
+docker-compose-down: ## Para todos os serviços
+	@echo "$(YELLOW)Stopping services...$(NC)"
+	@docker-compose down
+	@echo "$(GREEN)Services stopped!$(NC)"
+
+docker-compose-logs: ## Mostra logs dos serviços
+	@docker-compose logs -f
+
+docker-compose-ps: ## Lista status dos serviços
+	@docker-compose ps
+
+docker-compose-rebuild: ## Rebuild completo dos serviços
+	@echo "$(YELLOW)Rebuilding services...$(NC)"
+	@docker-compose down
+	@docker-compose build --no-cache
+	@docker-compose up -d
+	@echo "$(GREEN)Services rebuilt and started!$(NC)"
+
 dev-up: ## Inicia ambiente de desenvolvimento
 	@echo "$(YELLOW)Starting development environment...$(NC)"
 	@docker-compose -f ../docker-compose.dev.yml up -d

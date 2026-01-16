@@ -1,61 +1,24 @@
-# Git
 .git
 .gitignore
-README.md
-LICENSE
-
-# Documentação
-docs/
+.env
+.env.*
 *.md
-
-# Arquivos temporários
-.tmp
-.temp
-tmp/
-temp/
-
-# Logs
+!README.md
+.vscode
+.idea
 *.log
 logs/
-
-# Arquivos de configuração locais
-.env
-.env.local
-.env.development
-.env.test
-
-# Dependências e cache
+tmp/
+bin/
 vendor/
-.cache/
-
-# Arquivos de IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Arquivos de OS
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Arquivos de build e test
-*.test
-*.prof
 coverage.out
 coverage.html
-
-# Arquivos binários
-equinoid-api
-*.exe
-
-# Diretórios de uploads e dados
-uploads/
-data/
-certs/
-backup/
+*.test
+.DS_Store
+Thumbs.db
+docker-compose*.yml
+Dockerfile
+.dockerignore
+test_output.txt
+migrations/*.sql
+!migrations/

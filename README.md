@@ -11,16 +11,36 @@
 
 ## 🚀 Quick Start
 
+### Com Docker Compose (Recomendado)
+
+```bash
+# 1. Configurar ambiente
+cp env.template .env
+
+# 2. Iniciar todos os serviços (API + Redis)
+docker-compose up -d
+
+# 3. Verificar status
+docker-compose ps
+
+# ✅ Server running on http://localhost:8080
+```
+
+### Desenvolvimento Local
+
 ```bash
 # Instalar dependências
 go mod download
 
 # Configurar ambiente
-cp .env.example .env
+cp env.template .env
 
 # Executar migrations
 psql $DATABASE_URL < migrations/004_sprint1_core.sql
 psql $DATABASE_URL < migrations/005_tokenizacao_rwa.sql
+
+# Iniciar Redis localmente
+docker run -d -p 6379:6379 redis:7-alpine
 
 # Iniciar servidor
 go run cmd/server/main.go
@@ -140,6 +160,19 @@ GO_ENV=development
 - ✅ Production ready
 
 ---
+
+## 🐳 Docker
+
+Ver [DOCKER_GUIDE.md](DOCKER_GUIDE.md) para guia completo de execução com Docker.
+
+### Comandos Rápidos
+
+```bash
+make docker-compose-up       # Iniciar serviços
+make docker-compose-down     # Parar serviços
+make docker-compose-logs     # Ver logs
+make docker-compose-rebuild  # Rebuild completo
+```
 
 ## 🚀 Deploy
 
