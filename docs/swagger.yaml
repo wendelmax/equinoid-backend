@@ -1,0 +1,2511 @@
+basePath: /api/v1
+definitions:
+  handlers.HealthStatus:
+    properties:
+      services:
+        additionalProperties: true
+        type: object
+      status:
+        type: string
+      system:
+        $ref: '#/definitions/handlers.SystemInfo'
+      timestamp:
+        type: string
+      uptime:
+        type: string
+      version:
+        type: string
+    type: object
+  handlers.SystemInfo:
+    properties:
+      cpu_count:
+        type: integer
+      go_version:
+        type: string
+      memory_usage:
+        type: string
+      num_goroutine:
+        type: integer
+    type: object
+  models.APIResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+      timestamp:
+        type: string
+    type: object
+  models.CategoriaValorizacao:
+    enum:
+    - competicao
+    - reproducao
+    - saude
+    - treinamento
+    - comercial
+    - midia
+    - educacao
+    - viagens
+    - reconhecimentos
+    - parcerias
+    - analise
+    type: string
+    x-enum-varnames:
+    - CategoriaCompeticao
+    - CategoriaReproducao
+    - CategoriaSaude
+    - CategoriaTreinamento
+    - CategoriaComercial
+    - CategoriaMidia
+    - CategoriaEducacao
+    - CategoriaViagens
+    - CategoriaReconhecimentos
+    - CategoriaParcerias
+    - CategoriaAnalise
+  models.CertificateResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      is_revoked:
+        type: boolean
+      is_valid:
+        type: boolean
+      revoked_at:
+        type: string
+      serial_number:
+        type: string
+      valid_from:
+        type: string
+      valid_to:
+        type: string
+    type: object
+  models.CreateAvaliacaoSemenRequest:
+    properties:
+      cobertura_id:
+        type: integer
+      concentracao_espermatozoides:
+        type: number
+      data_analise:
+        type: string
+      data_coleta:
+        type: string
+      data_validade:
+        type: string
+      morfologia_normal:
+        type: number
+      motilidade_progressiva:
+        type: number
+      motilidade_total:
+        type: number
+      observacoes:
+        type: string
+      tecnico_responsavel:
+        type: string
+      temperatura_armazenamento:
+        type: number
+      viabilidade:
+        type: number
+      volume_semen:
+        type: number
+    required:
+    - data_analise
+    - data_coleta
+    type: object
+  models.CreateCoberturaRequest:
+    properties:
+      data_cobertura:
+        type: string
+      laboratorio_id:
+        type: integer
+      metodo_cobertura:
+        type: string
+      observacoes:
+        type: string
+      probabilidade_concepcao:
+        type: number
+      tipo_cobertura:
+        $ref: '#/definitions/models.TipoCobertura'
+    required:
+    - data_cobertura
+    - tipo_cobertura
+    type: object
+  models.CreateEquinoRequest:
+    properties:
+      data_nascimento:
+        type: string
+      external_ids:
+        items:
+          $ref: '#/definitions/models.ExternalID'
+        type: array
+      genitor_equinoid:
+        type: string
+      genitora_equinoid:
+        type: string
+      marca_dagua:
+        type: string
+      microchip_id:
+        type: string
+      nome:
+        type: string
+      pais_origem:
+        type: string
+      pelagem:
+        type: string
+      proprietario_id:
+        type: integer
+      raca:
+        type: string
+      sexo:
+        $ref: '#/definitions/models.SexoEquino'
+    required:
+    - data_nascimento
+    - microchip_id
+    - nome
+    - pais_origem
+    - pelagem
+    - proprietario_id
+    - raca
+    - sexo
+    type: object
+  models.CreateInteracaoRequest:
+    properties:
+      tipo_interacao:
+        $ref: '#/definitions/models.TipoInteracao'
+    required:
+    - tipo_interacao
+    type: object
+  models.CreateOfertaRequest:
+    properties:
+      condicoes_oferta:
+        type: string
+      moeda:
+        type: string
+      prazo_oferta:
+        type: string
+      tipo_oferta:
+        $ref: '#/definitions/models.TipoOferta'
+      valor_oferta:
+        type: number
+    required:
+    - tipo_oferta
+    - valor_oferta
+    type: object
+  models.CreatePostRequest:
+    properties:
+      arquivos_midia:
+        items:
+          $ref: '#/definitions/models.DocumentoEvento'
+        type: array
+      data_expiracao:
+        type: string
+      legenda:
+        type: string
+      localizacao_post:
+        type: string
+      permitir_comentarios:
+        type: boolean
+      permitir_compartilhamento:
+        type: boolean
+      tipo_conteudo:
+        $ref: '#/definitions/models.TipoConteudo'
+    required:
+    - tipo_conteudo
+    type: object
+  models.CreateValorizacaoRequest:
+    properties:
+      categoria:
+        $ref: '#/definitions/models.CategoriaValorizacao'
+      cidade:
+        type: string
+      dados_leilao:
+        allOf:
+        - $ref: '#/definitions/models.DadosLeilaoRequest'
+        description: Dados específicos para leilões
+      data_registro:
+        type: string
+      data_validade:
+        type: string
+      descricao:
+        type: string
+      documentos:
+        items:
+          $ref: '#/definitions/models.DocumentoEvento'
+        type: array
+      estado:
+        type: string
+      evidencia_fotografica:
+        items:
+          $ref: '#/definitions/models.DocumentoEvento'
+        type: array
+      evidencia_video:
+        items:
+          $ref: '#/definitions/models.DocumentoEvento'
+        type: array
+      instituicao_certificadora:
+        type: string
+      local_evento:
+        type: string
+      nivel_importancia:
+        $ref: '#/definitions/models.NivelImportancia'
+      numero_certificado:
+        type: string
+      organizacao:
+        type: string
+      pais:
+        type: string
+      tipo_registro:
+        type: string
+      titulo:
+        type: string
+      valor_monetario:
+        type: number
+    required:
+    - categoria
+    - data_registro
+    - nivel_importancia
+    - tipo_registro
+    - titulo
+    type: object
+  models.DadosLeilaoRequest:
+    properties:
+      casa_leiloeira:
+        type: string
+      data_leilao:
+        type: string
+      especializacao:
+        type: string
+      nome_leilao:
+        type: string
+      posicao_leilao:
+        type: integer
+      preco_lance:
+        type: number
+      preco_venda:
+        type: number
+      resultado:
+        $ref: '#/definitions/models.ResultadoLeilao'
+      status_leilao:
+        $ref: '#/definitions/models.StatusLeilao'
+      tipo_leilao:
+        $ref: '#/definitions/models.TipoLeilao'
+      valorizacao_percentual:
+        type: number
+    required:
+    - data_leilao
+    - nome_leilao
+    - tipo_leilao
+    type: object
+  models.DocumentoEvento:
+    properties:
+      conteudo:
+        description: Base64 encoded content
+        type: string
+      nome:
+        type: string
+      tamanho:
+        type: integer
+      tipo:
+        type: string
+      url:
+        type: string
+    required:
+    - nome
+    - tipo
+    type: object
+  models.EquinoResponse:
+    properties:
+      created_at:
+        type: string
+      data_nascimento:
+        type: string
+      equinoid:
+        type: string
+      eventos:
+        items:
+          $ref: '#/definitions/models.EventoResponse'
+        type: array
+      external_ids:
+        items:
+          $ref: '#/definitions/models.ExternalID'
+        type: array
+      genitor:
+        $ref: '#/definitions/models.EquinoSimpleResponse'
+      genitora:
+        $ref: '#/definitions/models.EquinoSimpleResponse'
+      id:
+        type: integer
+      marca_dagua:
+        type: string
+      microchip_id:
+        type: string
+      nome:
+        type: string
+      pais_origem:
+        type: string
+      pelagem:
+        type: string
+      proprietario:
+        $ref: '#/definitions/models.UserResponse'
+      raca:
+        type: string
+      sexo:
+        $ref: '#/definitions/models.SexoEquino'
+      status:
+        $ref: '#/definitions/models.StatusEquino'
+      updated_at:
+        type: string
+    type: object
+  models.EquinoSimpleResponse:
+    properties:
+      equinoid:
+        type: string
+      nome:
+        type: string
+    type: object
+  models.ErrorResponse:
+    properties:
+      details: {}
+      error:
+        type: string
+      success:
+        type: boolean
+      timestamp:
+        type: string
+    type: object
+  models.EventoResponse:
+    properties:
+      assinatura_digital:
+        type: string
+      created_at:
+        type: string
+      data_evento:
+        type: string
+      descricao:
+        type: string
+      documentos:
+        items:
+          $ref: '#/definitions/models.DocumentoEvento'
+        type: array
+      id:
+        type: integer
+      tipo_evento:
+        $ref: '#/definitions/models.TipoEvento'
+      veterinario:
+        $ref: '#/definitions/models.VeterinarioSimpleResponse'
+    type: object
+  models.ExternalID:
+    properties:
+      id:
+        type: string
+      sistema:
+        type: string
+    required:
+    - id
+    - sistema
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.NivelImportancia:
+    enum:
+    - baixo
+    - medio
+    - alto
+    - muito_alto
+    - critico
+    - excepcional
+    type: string
+    x-enum-varnames:
+    - NivelBaixo
+    - NivelMedio
+    - NivelAlto
+    - NivelMuitoAlto
+    - NivelCritico
+    - NivelExcepcional
+  models.PaginatedResponse:
+    properties:
+      data: {}
+      pagination:
+        $ref: '#/definitions/models.Pagination'
+    type: object
+  models.Pagination:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      pages:
+        type: integer
+      total:
+        type: integer
+    type: object
+  models.RegisterRequest:
+    properties:
+      cpf_cnpj:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      user_type:
+        $ref: '#/definitions/models.UserType'
+    required:
+    - cpf_cnpj
+    - email
+    - name
+    - password
+    - user_type
+    type: object
+  models.RegistrarPartoRequest:
+    properties:
+      data_parto:
+        type: string
+      observacoes_parto:
+        type: string
+      resultado_parto:
+        type: string
+      tipo_parto:
+        $ref: '#/definitions/models.TipoParto'
+    required:
+    - data_parto
+    - resultado_parto
+    type: object
+  models.ResultadoLeilao:
+    enum:
+    - vendido
+    - nao_vendido
+    - retirado
+    type: string
+    x-enum-varnames:
+    - ResultadoVendido
+    - ResultadoNaoVendido
+    - ResultadoRetirado
+  models.SearchCriteria:
+    properties:
+      idade_max:
+        type: integer
+      idade_min:
+        type: integer
+      limit:
+        type: integer
+      nome:
+        type: string
+      page:
+        type: integer
+      raca:
+        type: string
+      sexo:
+        type: string
+    type: object
+  models.SexoEquino:
+    enum:
+    - macho
+    - femea
+    type: string
+    x-enum-varnames:
+    - SexoMacho
+    - SexoFemea
+  models.StatusEquino:
+    enum:
+    - ativo
+    - inativo
+    - vendido
+    - falecido
+    - transferir
+    type: string
+    x-enum-varnames:
+    - StatusAtivo
+    - StatusInativo
+    - StatusVendido
+    - StatusFalecido
+    - StatusTransferir
+  models.StatusLeilao:
+    enum:
+    - agendado
+    - em_andamento
+    - concluido
+    - cancelado
+    type: string
+    x-enum-varnames:
+    - StatusLeilaoAgendado
+    - StatusLeilaoEmAndamento
+    - StatusLeilaoConcluido
+    - StatusLeilaoCancelado
+  models.TipoCobertura:
+    enum:
+    - natural
+    - inseminacao
+    - embriao
+    type: string
+    x-enum-varnames:
+    - TipoCoberturanatural
+    - TipoCoberturanInseminacao
+    - TipoCoberturaEmbriao
+  models.TipoConteudo:
+    enum:
+    - foto
+    - video
+    - carrossel
+    - story
+    - reel
+    type: string
+    x-enum-varnames:
+    - TipoConteudoFoto
+    - TipoConteudoVideo
+    - TipoConteudoCarrossel
+    - TipoConteudoStory
+    - TipoConteudoReel
+  models.TipoEvento:
+    enum:
+    - nascimento
+    - vacina
+    - exame
+    - cirurgia
+    - transferencia
+    - obito
+    - competicao
+    - reproducao
+    - treinamento
+    - viagem
+    - certificacao
+    type: string
+    x-enum-varnames:
+    - TipoEventoNascimento
+    - TipoEventoVacina
+    - TipoEventoExame
+    - TipoEventoCirurgia
+    - TipoEventoTransferencia
+    - TipoEventoObito
+    - TipoEventoCompeticao
+    - TipoEventoReproducao
+    - TipoEventoTreinamento
+    - TipoEventoViagem
+    - TipoEventoCertificacao
+  models.TipoInteracao:
+    enum:
+    - curtida
+    - compartilhamento
+    - salvar
+    - interesse
+    - amor
+    - risada
+    - surpresa
+    type: string
+    x-enum-varnames:
+    - TipoInteracaoCurtida
+    - TipoInteracaoCompartilhamento
+    - TipoInteracaoSalvar
+    - TipoInteracaoInteresse
+    - TipoInteracaoAmor
+    - TipoInteracaoRisada
+    - TipoInteracaoSurpresa
+  models.TipoLeilao:
+    enum:
+    - publico
+    - privado
+    - online
+    - hibrido
+    type: string
+    x-enum-varnames:
+    - TipoLeilaoPublico
+    - TipoLeilaoPrivado
+    - TipoLeilaoOnline
+    - TipoLeilaoHibrido
+  models.TipoOferta:
+    enum:
+    - compra
+    - cobertura
+    - participacao
+    - sociedade
+    - aluguel
+    type: string
+    x-enum-varnames:
+    - TipoOfertaCompra
+    - TipoOfertaCobertura
+    - TipoOfertaParticipacao
+    - TipoOfertaSociedade
+    - TipoOfertaAluguel
+  models.TipoParto:
+    enum:
+    - normal
+    - cesariana
+    - assistido
+    type: string
+    x-enum-varnames:
+    - TipoPartoNormal
+    - TipoPartoCesariana
+    - TipoPartoAssistido
+  models.TokenResponse:
+    properties:
+      expires_in:
+        type: integer
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/models.UserResponse'
+    type: object
+  models.UpdateProfileRequest:
+    properties:
+      cpf_cnpj:
+        type: string
+      name:
+        type: string
+    required:
+    - cpf_cnpj
+    - name
+    type: object
+  models.UserResponse:
+    properties:
+      certificate:
+        $ref: '#/definitions/models.CertificateResponse'
+      cpf_cnpj:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      name:
+        type: string
+      user_type:
+        $ref: '#/definitions/models.UserType'
+    type: object
+  models.UserType:
+    enum:
+    - criador
+    - veterinario
+    - admin
+    - laboratorio
+    type: string
+    x-enum-varnames:
+    - UserTypeCriador
+    - UserTypeVeterinario
+    - UserTypeAdmin
+    - UserTypeLaboratorio
+  models.VeterinarioSimpleResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@equinoid.org
+    name: EquinoId Support
+    url: https://equinoid.org/support
+  description: Sistema internacional de identificação e gestão de equinos
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://equinoid.org/terms
+  title: EquinoId API
+  version: "1.0"
+paths:
+  /auth/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Envia email para recuperação de senha
+      parameters:
+      - description: Email do usuário
+        in: body
+        name: forgot
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Esqueci minha senha
+      tags:
+      - auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Autentica usuário e retorna JWT token
+      parameters:
+      - description: Dados de login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.TokenResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Login do usuário
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      description: Revoga o token JWT atual
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Logout
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Renova JWT token usando refresh token
+      parameters:
+      - description: Refresh token
+        in: body
+        name: refresh
+        required: true
+        schema:
+          properties:
+            refresh_token:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.TokenResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Renovar token
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Registra novo usuário no sistema
+      parameters:
+      - description: Dados de registro
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.UserResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Registro de usuário
+      tags:
+      - auth
+  /auth/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Redefine senha usando token de recuperação
+      parameters:
+      - description: Token e nova senha
+        in: body
+        name: reset
+        required: true
+        schema:
+          properties:
+            new_password:
+              type: string
+            token:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Resetar senha
+      tags:
+      - auth
+  /certificates/generate:
+    post:
+      consumes:
+      - application/json
+      description: Gera certificado digital para o equino
+      parameters:
+      - description: Dados do certificado
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            equinoid:
+              type: string
+            tipo_certificado:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Gerar certificado
+      tags:
+      - certificados
+  /certificates/revoke:
+    post:
+      consumes:
+      - application/json
+      description: Revoga certificado digital
+      parameters:
+      - description: Dados de revogação
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            motivo:
+              type: string
+            serial_number:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Revogar certificado
+      tags:
+      - certificados
+  /certificates/validate/{serial}:
+    get:
+      description: Valida certificado digital pelo número de série
+      parameters:
+      - description: Número de série do certificado
+        in: path
+        name: serial
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Validar certificado
+      tags:
+      - certificados
+  /chatbot/query:
+    post:
+      consumes:
+      - application/json
+      description: Consulta chatbot com IA sobre equinos
+      parameters:
+      - description: Query para o chatbot
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            equinoid:
+              type: string
+            query:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Chatbot query
+      tags:
+      - chatbot
+  /equinos:
+    get:
+      description: Retorna lista paginada de equinos
+      parameters:
+      - default: 1
+        description: Número da página
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: Itens por página
+        in: query
+        name: limit
+        type: integer
+      - description: Busca por nome ou EquinoId
+        in: query
+        name: search
+        type: string
+      - description: Filtro por status
+        in: query
+        name: status
+        type: string
+      - description: Filtro por raça
+        in: query
+        name: raca
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.PaginatedResponse'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar equinos
+      tags:
+      - equinos
+    post:
+      consumes:
+      - application/json
+      description: Registra um novo equino no sistema
+      parameters:
+      - description: Dados do equino
+        in: body
+        name: equino
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateEquinoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.EquinoResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar novo equino
+      tags:
+      - equinos
+  /equinos/{equinoid}:
+    get:
+      description: Retorna detalhes de um equino específico
+      parameters:
+      - description: EquinoId do equino
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.EquinoResponse'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter equino por ID
+      tags:
+      - equinos
+  /equinos/{equinoid}/arvore-genealogica:
+    get:
+      description: Retorna árvore genealógica completa até N gerações
+      parameters:
+      - description: EquinoID
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - default: 3
+        description: Número de gerações
+        in: query
+        name: geracoes
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter árvore genealógica
+      tags:
+      - linhagem
+  /equinos/{equinoid}/avaliacoes-semen:
+    get:
+      description: Lista todas as avaliações de sêmen do reprodutor
+      parameters:
+      - description: EquinoId do reprodutor
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar avaliações de sêmen
+      tags:
+      - reprodução
+    post:
+      consumes:
+      - application/json
+      description: Cria avaliação de qualidade de sêmen do reprodutor
+      parameters:
+      - description: EquinoID do reprodutor
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Dados da avaliação
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateAvaliacaoSemenRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar avaliação de sêmen
+      tags:
+      - reprodução
+  /equinos/{equinoid}/coberturas:
+    get:
+      description: Lista coberturas do equino (como reprodutor ou matriz)
+      parameters:
+      - description: EquinoID
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar coberturas
+      tags:
+      - reprodução
+    post:
+      consumes:
+      - application/json
+      description: Registra uma cobertura entre reprodutor e matriz
+      parameters:
+      - description: EquinoID do reprodutor
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Dados da cobertura
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCoberturaRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Registrar cobertura
+      tags:
+      - reprodução
+  /equinos/{equinoid}/eventos:
+    get:
+      description: Lista todos os eventos do equino
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar eventos do equino
+      tags:
+      - equinos
+    post:
+      consumes:
+      - application/json
+      description: Registra novo evento para o equino
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Dados do evento
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            data_evento:
+              type: string
+            descricao:
+              type: string
+            tipo_evento:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar evento
+      tags:
+      - equinos
+  /equinos/{equinoid}/gestacoes:
+    get:
+      description: Lista gestações da matriz
+      parameters:
+      - description: EquinoID da matriz
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar gestações
+      tags:
+      - reprodução
+  /equinos/{equinoid}/historico-leiloes:
+    get:
+      description: Retorna histórico de leilões do equino
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Histórico de leilões
+      tags:
+      - leilões
+  /equinos/{equinoid}/interacoes:
+    post:
+      consumes:
+      - application/json
+      description: Registra interação (like, share, comment) em post
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Tipo de interação
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateInteracaoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar interação social
+      tags:
+      - social
+  /equinos/{equinoid}/leiloes:
+    post:
+      consumes:
+      - application/json
+      description: Registra equino em leilão
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Dados do leilão
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.DadosLeilaoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar leilão
+      tags:
+      - leilões
+  /equinos/{equinoid}/linhagem:
+    get:
+      description: Retorna descendentes diretos do equino
+      parameters:
+      - description: EquinoID
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter linhagem do equino
+      tags:
+      - linhagem
+  /equinos/{equinoid}/ofertas:
+    post:
+      consumes:
+      - application/json
+      description: Registra oferta de compra/venda para o equino
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Dados da oferta
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateOfertaRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar oferta comercial
+      tags:
+      - social
+  /equinos/{equinoid}/perfil-social:
+    get:
+      description: Retorna perfil social público do equino
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Obter perfil social
+      tags:
+      - social
+    post:
+      consumes:
+      - multipart/form-data
+      description: Cria perfil social para o equino (vitrine pública)
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Biografia do equino
+        in: formData
+        name: biografia
+        type: string
+      - description: URL do vídeo destaque
+        in: formData
+        name: video_destaque
+        type: string
+      - description: Website oficial
+        in: formData
+        name: site
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar perfil social
+      tags:
+      - social
+  /equinos/{equinoid}/performance-materna:
+    post:
+      consumes:
+      - application/json
+      - application/json
+      description: |-
+        Registra performance materna após parto
+        Registra performance materna após parto (em desenvolvimento)
+      parameters:
+      - description: EquinoId da matriz
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Dados de performance
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            comportamento_maternal:
+              type: string
+            gestacao_id:
+              type: integer
+            producao_leite:
+              type: string
+            saude_pos_parto:
+              type: string
+          type: object
+      - description: EquinoId da matriz
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Dados de performance
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            gestacao_id:
+              type: integer
+            observacoes:
+              type: string
+          type: object
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Criar performance materna
+      tags:
+      - reprodução
+      - reprodução
+  /equinos/{equinoid}/posts:
+    get:
+      description: Lista posts da vitrine social do equino
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - default: 1
+        description: Página
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: Itens por página
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Listar posts sociais
+      tags:
+      - social
+    post:
+      consumes:
+      - application/json
+      description: Cria post na vitrine social do equino
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Dados do post
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar post social
+      tags:
+      - social
+  /equinos/{equinoid}/rankings:
+    get:
+      description: Retorna rankings de valorização do equino
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Tipo de ranking
+        in: query
+        name: tipo
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter rankings de valorização
+      tags:
+      - valorização
+  /equinos/{equinoid}/rankings-reprodutivos:
+    get:
+      description: |-
+        Retorna rankings reprodutivos do equino
+        Retorna rankings reprodutivos do equino (em desenvolvimento)
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: Obter rankings reprodutivos
+      tags:
+      - reprodução
+      - reprodução
+  /equinos/{equinoid}/validar-parentesco:
+    post:
+      consumes:
+      - application/json
+      description: Valida parentesco e retorna coeficiente de consanguinidade
+      parameters:
+      - description: EquinoID 1
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: EquinoID 2
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            equinoid_2:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Validar parentesco entre equinos
+      tags:
+      - linhagem
+  /equinos/{equinoid}/valorizacao:
+    get:
+      description: Retorna registros de valorização do equino com paginação
+      parameters:
+      - description: EquinoID
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - default: 1
+        description: Página
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: Itens por página
+        in: query
+        name: limit
+        type: integer
+      - description: Filtrar por categoria
+        in: query
+        name: categoria
+        type: string
+      - description: Filtrar por status de validação
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar registros de valorização
+      tags:
+      - valorização
+    post:
+      consumes:
+      - application/json
+      description: Cria novo registro de valorização para o equino
+      parameters:
+      - description: EquinoID
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Dados do registro
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateValorizacaoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar registro de valorização
+      tags:
+      - valorização
+  /gestacoes/{gestacao_id}/parto:
+    post:
+      consumes:
+      - application/json
+      description: Registra parto de uma gestação
+      parameters:
+      - description: ID da gestação
+        in: path
+        name: gestacao_id
+        required: true
+        type: string
+      - description: Dados do parto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegistrarPartoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Registrar parto
+      tags:
+      - reprodução
+  /gestacoes/{gestacao_id}/ultrassonografias:
+    post:
+      consumes:
+      - application/json
+      description: Registra ultrassonografia de gestação
+      parameters:
+      - description: ID da gestação
+        in: path
+        name: gestacao_id
+        required: true
+        type: string
+      - description: Dados da ultrassonografia
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            data_exame:
+              type: string
+            observacoes:
+              type: string
+            resultado:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar ultrassonografia
+      tags:
+      - reprodução
+  /health:
+    get:
+      description: Verifica o status de saúde da aplicação e serviços
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.HealthStatus'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Health Check
+      tags:
+      - health
+  /health/live:
+    get:
+      description: Verifica se a aplicação está viva
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  properties:
+                    alive:
+                      type: boolean
+                  type: object
+              type: object
+      summary: Liveness Check
+      tags:
+      - health
+  /health/ready:
+    get:
+      description: Verifica se a aplicação está pronta para receber tráfego
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  properties:
+                    ready:
+                      type: boolean
+                  type: object
+              type: object
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Readiness Check
+      tags:
+      - health
+  /integrations/gedave/{equinoid}:
+    get:
+      description: Obtém dados do equino no sistema GEDAVE
+      parameters:
+      - description: EquinoId
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter dados GEDAVE
+      tags:
+      - integrações
+  /integrations/gedave/sync:
+    post:
+      consumes:
+      - application/json
+      description: Sincroniza dados do equino com sistema GEDAVE
+      parameters:
+      - description: EquinoId para sincronizar
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            equinoid:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Sincronizar com GEDAVE
+      tags:
+      - integrações
+  /rankings/{tipo}:
+    get:
+      description: Retorna ranking geral por tipo (valorização, reprodução, etc)
+      parameters:
+      - description: Tipo de ranking
+        in: path
+        name: tipo
+        required: true
+        type: string
+      - default: 10
+        description: Limite de resultados
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Ranking geral
+      tags:
+      - rankings
+  /reports/dashboard:
+    get:
+      description: Retorna estatísticas para o dashboard
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Dashboard stats
+      tags:
+      - relatórios
+  /reports/equinos:
+    get:
+      description: Gera relatório customizado de equinos
+      parameters:
+      - default: json
+        description: Formato do relatório
+        enum:
+        - json
+        - csv
+        - pdf
+        in: query
+        name: formato
+        type: string
+      - description: Filtros JSON
+        in: query
+        name: filtros
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Gerar relatório de equinos
+      tags:
+      - relatórios
+  /search/equinos:
+    post:
+      consumes:
+      - application/json
+      description: Busca avançada de equinos com múltiplos filtros
+      parameters:
+      - description: Critérios de busca
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.SearchCriteria'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Buscar equinos
+      tags:
+      - busca
+  /users/change-password:
+    post:
+      consumes:
+      - application/json
+      description: Altera a senha do usuário autenticado
+      parameters:
+      - description: Senhas atual e nova
+        in: body
+        name: password
+        required: true
+        schema:
+          properties:
+            current_password:
+              type: string
+            new_password:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Alterar senha
+      tags:
+      - users
+  /users/check-email:
+    post:
+      consumes:
+      - application/json
+      description: Verifica se um email está disponível para registro
+      parameters:
+      - description: Email para verificar
+        in: body
+        name: check
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  properties:
+                    available:
+                      type: boolean
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Verificar disponibilidade de email
+      tags:
+      - users
+  /users/profile:
+    delete:
+      description: Deleta (soft delete) a conta do usuário autenticado
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Deletar conta do usuário
+      tags:
+      - users
+    get:
+      description: Retorna o perfil do usuário autenticado
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.UserResponse'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter perfil do usuário
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Atualiza dados do perfil do usuário autenticado
+      parameters:
+      - description: Dados para atualização
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.UserResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Atualizar perfil do usuário
+      tags:
+      - users
+  /webhooks/register:
+    post:
+      consumes:
+      - application/json
+      description: Registra webhook para receber notificações
+      parameters:
+      - description: URL e eventos do webhook
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            eventos:
+              type: array
+            url:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Registrar webhook
+      tags:
+      - webhooks
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

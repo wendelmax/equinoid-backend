@@ -1,0 +1,35 @@
+# github.com/equinoid/backend/internal/services [github.com/equinoid/backend/internal/services.test]
+internal\services\equino_service_test.go:211:40: not enough arguments in call to service.List
+	have (number, number, map[string]interface{})
+	want (context.Context, int, int, map[string]interface{})
+internal\services\user_service_test.go:38:37: not enough arguments in call to service.GetByID
+	have (uint)
+	want (context.Context, uint)
+internal\services\user_service_test.go:47:29: not enough arguments in call to service.GetByID
+	have (number)
+	want (context.Context, uint)
+internal\services\user_service_test.go:63:29: not enough arguments in call to service.GetByID
+	have (uint)
+	want (context.Context, uint)
+internal\services\user_service_test.go:92:54: not enough arguments in call to service.UpdateProfile
+	have (uint, *models.UpdateProfileRequest)
+	want (context.Context, uint, *models.UpdateProfileRequest)
+internal\services\user_service_test.go:105:54: not enough arguments in call to service.UpdateProfile
+	have (uint, *models.UpdateProfileRequest)
+	want (context.Context, uint, *models.UpdateProfileRequest)
+internal\services\user_service_test.go:116:42: not enough arguments in call to service.UpdateProfile
+	have (number, *models.UpdateProfileRequest)
+	want (context.Context, uint, *models.UpdateProfileRequest)
+internal\services\user_service_test.go:140:57: not enough arguments in call to service.ChangePassword
+	have (uint, string, string)
+	want (context.Context, uint, string, string)
+internal\services\user_service_test.go:151:57: not enough arguments in call to service.ChangePassword
+	have (uint, string, string)
+	want (context.Context, uint, string, string)
+internal\services\user_service_test.go:158:49: not enough arguments in call to service.ChangePassword
+	have (number, string, string)
+	want (context.Context, uint, string, string)
+internal\services\user_service_test.go:158:49: too many errors
+FAIL	github.com/equinoid/backend/internal/services [build failed]
+?   	github.com/equinoid/backend/internal/models	[no test files]
+FAIL
