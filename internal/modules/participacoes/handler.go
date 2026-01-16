@@ -54,7 +54,7 @@ func (h *Handler) ListByEvento(c *gin.Context) {
 }
 
 func (h *Handler) ListByEquino(c *gin.Context) {
-	equinoID, err := strconv.ParseUint(c.Param("equino_id"), 10, 32)
+	equinoID, err := strconv.ParseUint(c.Param("equinoid"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Success:   false,

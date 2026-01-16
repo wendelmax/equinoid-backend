@@ -17,7 +17,8 @@ type Config struct {
 	DatabaseURL string
 
 	// Redis
-	RedisURL string
+	RedisURL     string
+	RedisEnabled bool
 
 	// JWT
 	JWTSecret      string
@@ -79,8 +80,9 @@ func Load() *Config {
 		Environment: getEnv("ENVIRONMENT", "development"),
 		GinMode:     getEnv("GIN_MODE", "debug"),
 
-		DatabaseURL: buildDatabaseURL(),
-		RedisURL:    buildRedisURL(),
+		DatabaseURL:  buildDatabaseURL(),
+		RedisURL:     buildRedisURL(),
+		RedisEnabled: getEnvAsBool("REDIS_ENABLED", true),
 
 		JWTSecret:      getEnv("JWT_SECRET", "super-secret-jwt-key-change-in-production"),
 		JWTExpireHours: time.Duration(getEnvAsInt("JWT_EXPIRE_HOURS", 24)) * time.Hour,

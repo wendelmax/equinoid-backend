@@ -1,0 +1,108 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+coverage.html
+coverage.txt
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.iml
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# Build artifacts
+*.o
+*.a
+*.so
+
+# Air (hot reload)
+tmp/
+.air.toml
+
+# Output files
+test_output.txt
+output.txt
+debug.log
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.p12
+certs/
+*.pfx
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Documentation build
+docs/swagger.json
+docs/swagger.yaml
+docs/docs.go
+
+# uploads
+uploads/
+*.upload
+
+# Redis dumps
+dump.rdb
+
+# Keep important files
+!env.template
+!env-template.txt
+!.env.example
+!README.md
+!*.md

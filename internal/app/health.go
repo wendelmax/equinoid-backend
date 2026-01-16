@@ -67,7 +67,7 @@ func (h *HealthHandler) HealthCheck(c *gin.Context) {
 
 	redisStatus := h.checkRedis(ctx)
 	services["redis"] = redisStatus
-	if redisStatus != "healthy" {
+	if redisStatus == "unhealthy" {
 		overallStatus = "degraded"
 	}
 
@@ -125,6 +125,9 @@ func (h *HealthHandler) checkDatabase(ctx context.Context) string {
 }
 
 func (h *HealthHandler) checkRedis(ctx context.Context) string {
+	if h.cache == nil {
+		return "disabled"
+	}
 	if err := h.cache.Ping(ctx).Err(); err != nil {
 		return "unhealthy"
 	}

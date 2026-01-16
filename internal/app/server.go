@@ -35,9 +35,17 @@ func Start(deps Dependencies) error {
 		return fmt.Errorf("database connection failed: %w", err)
 	}
 
-	redisClient := cache.NewRedisClient(cfg.RedisURL)
-	if err := redisClient.Ping(context.Background()).Err(); err != nil {
-		return fmt.Errorf("redis connection failed: %w", err)
+	var redisClient *cache.RedisClient
+	if cfg.RedisEnabled {
+		redisClient = cache.NewRedisClient(cfg.RedisURL)
+		if err := redisClient.Ping(context.Background()).Err(); err != nil {
+			logger.Warnf("Redis connection failed: %v. Continuing without cache...", err)
+			redisClient = nil
+		} else {
+			logger.Info("Redis connected successfully")
+		}
+	} else {
+		logger.Info("Redis is disabled. Running without cache.")
 	}
 
 	var keycloakAuth *middleware.KeycloakAuth

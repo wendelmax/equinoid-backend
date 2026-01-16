@@ -9,7 +9,7 @@ func RegisterRoutes(rg *gin.RouterGroup, handler *Handler, authMiddleware gin.Ha
 	eventos.Use(authMiddleware)
 	{
 		eventos.GET("/:evento_id/participacoes", handler.ListByEvento)
-		
+
 		participacoes := eventos.Group("/participacoes")
 		{
 			participacoes.POST("", handler.Create)
@@ -23,6 +23,6 @@ func RegisterRoutes(rg *gin.RouterGroup, handler *Handler, authMiddleware gin.Ha
 	equinos := rg.Group("/equinos")
 	equinos.Use(authMiddleware)
 	{
-		equinos.GET("/:equino_id/participacoes-eventos", handler.ListByEquino)
+		equinos.GET("/:equinoid/participacoes-eventos", handler.ListByEquino)
 	}
 }
