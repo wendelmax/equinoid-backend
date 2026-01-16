@@ -10,9 +10,9 @@ func RegisterRoutes(rg *gin.RouterGroup, handler *Handler, authMiddleware gin.Ha
 	{
 		eventos.GET("", handler.ListAll)
 		eventos.POST("", handler.Create)
-		eventos.GET("/:id", handler.GetByID)
-		eventos.PUT("/:id", handler.Update)
-		eventos.DELETE("/:id", handler.Delete)
+		eventos.GET("/:evento_id", handler.GetByID)
+		eventos.PUT("/:evento_id", handler.Update)
+		eventos.DELETE("/:evento_id", handler.Delete)
 	}
 
 	equinos := rg.Group("/equinos")
