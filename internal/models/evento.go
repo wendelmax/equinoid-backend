@@ -33,7 +33,7 @@ type Evento struct {
 	AssinaturaDigital     string         `json:"assinatura_digital,omitempty" gorm:"type:text"`
 	CreatedAt             time.Time      `json:"created_at"`
 	UpdatedAt             time.Time      `json:"updated_at"`
-	DeletedAt             gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt             gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Equino      *Equino `json:"equino,omitempty" gorm:"foreignKey:EquinoID"`

@@ -9,24 +9,78 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "https://equinoid.org/terms",
+        "termsOfService": "https://equinoid.com/terms",
         "contact": {
-            "name": "EquinoId Support",
-            "url": "https://equinoid.org/support",
-            "email": "support@equinoid.org"
+            "name": "Equinoid Support",
+            "url": "https://equinoid.com/support",
+            "email": "suporte@equinoid.com"
         },
         "license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
+            "name": "Proprietária",
+            "url": "https://equinoid.com/license"
         },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/forgot-password": {
+        "/exames": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna lista de exames, opcionalmente filtrada por laboratório ou solicitante",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exames"
+                ],
+                "summary": "Lista exames laboratoriais",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do laboratório",
+                        "name": "laboratorio_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID do solicitante",
+                        "name": "solicitante_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ExameLaboratorial"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
-                "description": "Envia email para recuperação de senha",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cria uma solicitação de exame laboratorial",
                 "consumes": [
                     "application/json"
                 ],
@@ -34,50 +88,97 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "exames"
                 ],
-                "summary": "Esqueci minha senha",
+                "summary": "Solicita novo exame",
                 "parameters": [
                     {
-                        "description": "Email do usuário",
-                        "name": "forgot",
+                        "description": "Dados do exame",
+                        "name": "exame",
                         "in": "body",
                         "required": true,
                         "schema": {
+                            "$ref": "#/definitions/models.ExameLaboratorial"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.ExameLaboratorial"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
                             "type": "object",
-                            "properties": {
-                                "email": {
-                                    "type": "string"
-                                }
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/exames/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna detalhes de um exame específico",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exames"
+                ],
+                "summary": "Busca exame por ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do exame",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/models.ExameLaboratorial"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
-            }
-        },
-        "/auth/login": {
-            "post": {
-                "description": "Autentica usuário e retorna JWT token",
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Atualiza informações de um exame",
                 "consumes": [
                     "application/json"
                 ],
@@ -85,17 +186,24 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "exames"
                 ],
-                "summary": "Login do usuário",
+                "summary": "Atualiza exame",
                 "parameters": [
                     {
-                        "description": "Dados de login",
-                        "name": "login",
+                        "type": "integer",
+                        "description": "ID do exame",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados para atualizar",
+                        "name": "exame",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.LoginRequest"
+                            "type": "object"
                         }
                     }
                 ],
@@ -103,76 +211,41 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/models.APIResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/models.TokenResponse"
-                                        }
-                                    }
-                                }
-                            ]
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
             }
         },
-        "/auth/logout": {
+        "/exames/{id}/atribuir-laboratorio": {
             "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Revoga o token JWT atual",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Logout",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/auth/refresh": {
-            "post": {
-                "description": "Renova JWT token usando refresh token",
+                "description": "Atribui um laboratório para realizar o exame",
                 "consumes": [
                     "application/json"
                 ],
@@ -180,20 +253,27 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "exames"
                 ],
-                "summary": "Renovar token",
+                "summary": "Atribui laboratório ao exame",
                 "parameters": [
                     {
-                        "description": "Refresh token",
-                        "name": "refresh",
+                        "type": "integer",
+                        "description": "ID do exame",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ID do laboratório",
+                        "name": "laboratorio",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "refresh_token": {
-                                    "type": "string"
+                                "laboratorio_id": {
+                                    "type": "number"
                                 }
                             }
                         }
@@ -203,162 +283,41 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/models.APIResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/models.TokenResponse"
-                                        }
-                                    }
-                                }
-                            ]
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/auth/register": {
-            "post": {
-                "description": "Registra novo usuário no sistema",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Registro de usuário",
-                "parameters": [
-                    {
-                        "description": "Dados de registro",
-                        "name": "register",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.RegisterRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/models.APIResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/models.UserResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "409": {
-                        "description": "Conflict",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/auth/reset-password": {
-            "post": {
-                "description": "Redefine senha usando token de recuperação",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Resetar senha",
-                "parameters": [
-                    {
-                        "description": "Token e nova senha",
-                        "name": "reset",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
                             "type": "object",
-                            "properties": {
-                                "new_password": {
-                                    "type": "string"
-                                },
-                                "token": {
-                                    "type": "string"
-                                }
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
                 }
             }
         },
-        "/certificates/generate": {
+        "/exames/{id}/cancelar": {
             "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Gera certificado digital para o equino",
+                "description": "Cancela um exame laboratorial",
                 "consumes": [
                     "application/json"
                 ],
@@ -366,72 +325,20 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "certificados"
+                    "exames"
                 ],
-                "summary": "Gerar certificado",
+                "summary": "Cancela exame",
                 "parameters": [
                     {
-                        "description": "Dados do certificado",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "equinoid": {
-                                    "type": "string"
-                                },
-                                "tipo_certificado": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
+                        "type": "integer",
+                        "description": "ID do exame",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/certificates/revoke": {
-            "post": {
-                "security": [
                     {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Revoga certificado digital",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "certificados"
-                ],
-                "summary": "Revogar certificado",
-                "parameters": [
-                    {
-                        "description": "Dados de revogação",
-                        "name": "request",
+                        "description": "Motivo do cancelamento",
+                        "name": "cancelamento",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -439,9 +346,6 @@ const docTemplate = `{
                             "properties": {
                                 "motivo": {
                                     "type": "string"
-                                },
-                                "serial_number": {
-                                    "type": "string"
                                 }
                             }
                         }
@@ -451,1588 +355,87 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/certificates/validate/{serial}": {
-            "get": {
-                "description": "Valida certificado digital pelo número de série",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "certificados"
-                ],
-                "summary": "Validar certificado",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Número de série do certificado",
-                        "name": "serial",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/chatbot/query": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Consulta chatbot com IA sobre equinos",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "chatbot"
-                ],
-                "summary": "Chatbot query",
-                "parameters": [
-                    {
-                        "description": "Query para o chatbot",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
                             "type": "object",
-                            "properties": {
-                                "equinoid": {
-                                    "type": "string"
-                                },
-                                "query": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna lista paginada de equinos",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "equinos"
-                ],
-                "summary": "Listar equinos",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "Número da página",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 20,
-                        "description": "Itens por página",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Busca por nome ou EquinoId",
-                        "name": "search",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filtro por status",
-                        "name": "status",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filtro por raça",
-                        "name": "raca",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/models.APIResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/models.PaginatedResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Registra um novo equino no sistema",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "equinos"
-                ],
-                "summary": "Criar novo equino",
-                "parameters": [
-                    {
-                        "description": "Dados do equino",
-                        "name": "equino",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateEquinoRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/models.APIResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/models.EquinoResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "409": {
-                        "description": "Conflict",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna detalhes de um equino específico",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "equinos"
-                ],
-                "summary": "Obter equino por ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId do equino",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/models.APIResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/models.EquinoResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/arvore-genealogica": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna árvore genealógica completa até N gerações",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "linhagem"
-                ],
-                "summary": "Obter árvore genealógica",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoID",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "default": 3,
-                        "description": "Número de gerações",
-                        "name": "geracoes",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/avaliacoes-semen": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Lista todas as avaliações de sêmen do reprodutor",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "reprodução"
-                ],
-                "summary": "Listar avaliações de sêmen",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId do reprodutor",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Cria avaliação de qualidade de sêmen do reprodutor",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "reprodução"
-                ],
-                "summary": "Criar avaliação de sêmen",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoID do reprodutor",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dados da avaliação",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateAvaliacaoSemenRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/coberturas": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Lista coberturas do equino (como reprodutor ou matriz)",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "reprodução"
-                ],
-                "summary": "Listar coberturas",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoID",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Registra uma cobertura entre reprodutor e matriz",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "reprodução"
-                ],
-                "summary": "Registrar cobertura",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoID do reprodutor",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dados da cobertura",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateCoberturaRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/eventos": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Lista todos os eventos do equino",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "equinos"
-                ],
-                "summary": "Listar eventos do equino",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Registra novo evento para o equino",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "equinos"
-                ],
-                "summary": "Criar evento",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dados do evento",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "data_evento": {
-                                    "type": "string"
-                                },
-                                "descricao": {
-                                    "type": "string"
-                                },
-                                "tipo_evento": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/gestacoes": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Lista gestações da matriz",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "reprodução"
-                ],
-                "summary": "Listar gestações",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoID da matriz",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/historico-leiloes": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna histórico de leilões do equino",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "leilões"
-                ],
-                "summary": "Histórico de leilões",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/interacoes": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Registra interação (like, share, comment) em post",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "social"
-                ],
-                "summary": "Criar interação social",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Tipo de interação",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateInteracaoRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/leiloes": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Registra equino em leilão",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "leilões"
-                ],
-                "summary": "Criar leilão",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dados do leilão",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.DadosLeilaoRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/linhagem": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna descendentes diretos do equino",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "linhagem"
-                ],
-                "summary": "Obter linhagem do equino",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoID",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/ofertas": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Registra oferta de compra/venda para o equino",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "social"
-                ],
-                "summary": "Criar oferta comercial",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dados da oferta",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateOfertaRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/perfil-social": {
-            "get": {
-                "description": "Retorna perfil social público do equino",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "social"
-                ],
-                "summary": "Obter perfil social",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Cria perfil social para o equino (vitrine pública)",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "social"
-                ],
-                "summary": "Criar perfil social",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Biografia do equino",
-                        "name": "biografia",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "URL do vídeo destaque",
-                        "name": "video_destaque",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Website oficial",
-                        "name": "site",
-                        "in": "formData"
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/performance-materna": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Registra performance materna após parto\nRegistra performance materna após parto (em desenvolvimento)",
-                "consumes": [
-                    "application/json",
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json",
-                    "application/json"
-                ],
-                "tags": [
-                    "reprodução",
-                    "reprodução"
-                ],
-                "summary": "Criar performance materna",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId da matriz",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dados de performance",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "comportamento_maternal": {
-                                    "type": "string"
-                                },
-                                "gestacao_id": {
-                                    "type": "integer"
-                                },
-                                "producao_leite": {
-                                    "type": "string"
-                                },
-                                "saude_pos_parto": {
-                                    "type": "string"
-                                }
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     },
-                    {
-                        "type": "string",
-                        "description": "EquinoId da matriz",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dados de performance",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "gestacao_id": {
-                                    "type": "integer"
-                                },
-                                "observacoes": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/posts": {
-            "get": {
-                "description": "Lista posts da vitrine social do equino",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "social"
-                ],
-                "summary": "Listar posts sociais",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "Página",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 20,
-                        "description": "Itens por página",
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Cria post na vitrine social do equino",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "social"
-                ],
-                "summary": "Criar post social",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dados do post",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreatePostRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/rankings": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna rankings de valorização do equino",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "valorização"
-                ],
-                "summary": "Obter rankings de valorização",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Tipo de ranking",
-                        "name": "tipo",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/rankings-reprodutivos": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna rankings reprodutivos do equino\nRetorna rankings reprodutivos do equino (em desenvolvimento)",
-                "produces": [
-                    "application/json",
-                    "application/json"
-                ],
-                "tags": [
-                    "reprodução",
-                    "reprodução"
-                ],
-                "summary": "Obter rankings reprodutivos",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/equinos/{equinoid}/validar-parentesco": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Valida parentesco e retorna coeficiente de consanguinidade",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "linhagem"
-                ],
-                "summary": "Validar parentesco entre equinos",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoID 1",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "EquinoID 2",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
                             "type": "object",
-                            "properties": {
-                                "equinoid_2": {
-                                    "type": "string"
-                                }
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
                 }
             }
         },
-        "/equinos/{equinoid}/valorizacao": {
-            "get": {
+        "/exames/{id}/registrar-coleta": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Retorna registros de valorização do equino com paginação",
+                "description": "Registra que a coleta de material foi realizada",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "valorização"
+                    "exames"
                 ],
-                "summary": "Listar registros de valorização",
+                "summary": "Registra coleta de material",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "EquinoID",
-                        "name": "equinoid",
+                        "type": "integer",
+                        "description": "ID do exame",
+                        "name": "id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "Página",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 20,
-                        "description": "Itens por página",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filtrar por categoria",
-                        "name": "categoria",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filtrar por status de validação",
-                        "name": "status",
-                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Cria novo registro de valorização para o equino",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "valorização"
-                ],
-                "summary": "Criar registro de valorização",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoID",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dados do registro",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateValorizacaoRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
             }
         },
-        "/gestacoes/{gestacao_id}/parto": {
+        "/exames/{id}/resultado": {
             "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Registra parto de uma gestação",
+                "description": "Adiciona resultado e finaliza um exame",
                 "consumes": [
                     "application/json"
                 ],
@@ -2040,78 +443,26 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "reprodução"
+                    "exames"
                 ],
-                "summary": "Registrar parto",
+                "summary": "Adiciona resultado ao exame",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "ID da gestação",
-                        "name": "gestacao_id",
+                        "type": "integer",
+                        "description": "ID do exame",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Dados do parto",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.RegistrarPartoRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/gestacoes/{gestacao_id}/ultrassonografias": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Registra ultrassonografia de gestação",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "reprodução"
-                ],
-                "summary": "Criar ultrassonografia",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID da gestação",
-                        "name": "gestacao_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dados da ultrassonografia",
-                        "name": "request",
+                        "description": "Resultado do exame",
+                        "name": "resultado",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "data_exame": {
+                                "documento_url": {
                                     "type": "string"
                                 },
                                 "observacoes": {
@@ -2125,245 +476,56 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/health": {
-            "get": {
-                "description": "Verifica o status de saúde da aplicação e serviços",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "health"
-                ],
-                "summary": "Health Check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.HealthStatus"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
-                    "503": {
-                        "description": "Service Unavailable",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/health/live": {
-            "get": {
-                "description": "Verifica se a aplicação está viva",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "health"
-                ],
-                "summary": "Liveness Check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/models.APIResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "alive": {
-                                                    "type": "boolean"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/health/ready": {
-            "get": {
-                "description": "Verifica se a aplicação está pronta para receber tráfego",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "health"
-                ],
-                "summary": "Readiness Check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/models.APIResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "ready": {
-                                                    "type": "boolean"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "503": {
-                        "description": "Service Unavailable",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/integrations/gedave/sync": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Sincroniza dados do equino com sistema GEDAVE",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "integrações"
-                ],
-                "summary": "Sincronizar com GEDAVE",
-                "parameters": [
-                    {
-                        "description": "EquinoId para sincronizar",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
-                            "properties": {
-                                "equinoid": {
-                                    "type": "string"
-                                }
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
                 }
             }
         },
-        "/integrations/gedave/{equinoid}": {
+        "/leiloes": {
             "get": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Obtém dados do equino no sistema GEDAVE",
+                "description": "Retorna lista de leilões, opcionalmente filtrada por leiloeiro",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "integrações"
+                    "leiloes"
                 ],
-                "summary": "Obter dados GEDAVE",
+                "summary": "Lista leilões",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "EquinoId",
-                        "name": "equinoid",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/rankings/{tipo}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna ranking geral por tipo (valorização, reprodução, etc)",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "rankings"
-                ],
-                "summary": "Ranking geral",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Tipo de ranking",
-                        "name": "tipo",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "type": "integer",
-                        "default": 10,
-                        "description": "Limite de resultados",
-                        "name": "limit",
+                        "description": "ID do leiloeiro",
+                        "name": "leiloeiro_id",
                         "in": "query"
                     }
                 ],
@@ -2371,449 +533,30 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/reports/dashboard": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna estatísticas para o dashboard",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "relatórios"
-                ],
-                "summary": "Dashboard stats",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/reports/equinos": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Gera relatório customizado de equinos",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "relatórios"
-                ],
-                "summary": "Gerar relatório de equinos",
-                "parameters": [
-                    {
-                        "enum": [
-                            "json",
-                            "csv",
-                            "pdf"
-                        ],
-                        "type": "string",
-                        "default": "json",
-                        "description": "Formato do relatório",
-                        "name": "formato",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filtros JSON",
-                        "name": "filtros",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/search/equinos": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Busca avançada de equinos com múltiplos filtros",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "busca"
-                ],
-                "summary": "Buscar equinos",
-                "parameters": [
-                    {
-                        "description": "Critérios de busca",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.SearchCriteria"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/change-password": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Altera a senha do usuário autenticado",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Alterar senha",
-                "parameters": [
-                    {
-                        "description": "Senhas atual e nova",
-                        "name": "password",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "current_password": {
-                                    "type": "string"
-                                },
-                                "new_password": {
-                                    "type": "string"
-                                }
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Leilao"
                             }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/check-email": {
-            "post": {
-                "description": "Verifica se um email está disponível para registro",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Verificar disponibilidade de email",
-                "parameters": [
-                    {
-                        "description": "Email para verificar",
-                        "name": "check",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
                             "type": "object",
-                            "properties": {
-                                "email": {
-                                    "type": "string"
-                                }
+                            "additionalProperties": {
+                                "type": "string"
                             }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/models.APIResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "available": {
-                                                    "type": "boolean"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/profile": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna o perfil do usuário autenticado",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Obter perfil do usuário",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/models.APIResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/models.UserResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
             },
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Atualiza dados do perfil do usuário autenticado",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Atualizar perfil do usuário",
-                "parameters": [
-                    {
-                        "description": "Dados para atualização",
-                        "name": "profile",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UpdateProfileRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/models.APIResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/models.UserResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Deleta (soft delete) a conta do usuário autenticado",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Deletar conta do usuário",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/webhooks/register": {
             "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Registra webhook para receber notificações",
+                "description": "Cria um novo leilão (apenas leiloeiros)",
                 "consumes": [
                     "application/json"
                 ],
@@ -2821,25 +564,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "webhooks"
+                    "leiloes"
                 ],
-                "summary": "Registrar webhook",
+                "summary": "Cria novo leilão",
                 "parameters": [
                     {
-                        "description": "URL e eventos do webhook",
-                        "name": "request",
+                        "description": "Dados do leilão",
+                        "name": "leilao",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "eventos": {
-                                    "type": "array"
-                                },
-                                "url": {
-                                    "type": "string"
-                                }
-                            }
+                            "$ref": "#/definitions/models.Leilao"
                         }
                     }
                 ],
@@ -2847,13 +582,486 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.APIResponse"
+                            "$ref": "#/definitions/models.Leilao"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/leiloes/participacoes/{id}/aprovar": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Aprova a participação de um equino no leilão",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leiloes"
+                ],
+                "summary": "Aprova participação",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da participação",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/leiloes/participacoes/{id}/ausencia": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Marca a ausência de um equino em leilão presencial e aplica penalização",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leiloes"
+                ],
+                "summary": "Marca ausência em leilão presencial",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da participação",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/leiloes/participacoes/{id}/presenca": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Marca a presença de um equino em leilão presencial",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leiloes"
+                ],
+                "summary": "Marca presença em leilão presencial",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da participação",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/leiloes/participacoes/{id}/venda": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Registra a venda de um equino no leilão",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leiloes"
+                ],
+                "summary": "Registra venda em leilão",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da participação",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados da venda",
+                        "name": "venda",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "comprador_id": {
+                                    "type": "number"
+                                },
+                                "valor_vendido": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/leiloes/relatorio-ganhos": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna relatório de ganhos de leilões finalizados",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leiloes"
+                ],
+                "summary": "Relatório de ganhos de leilões",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do leiloeiro",
+                        "name": "leiloeiro_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/leiloes/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna detalhes de um leilão específico",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leiloes"
+                ],
+                "summary": "Busca leilão por ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do leilão",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Leilao"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/leiloes/{id}/finalizar": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Encerra um leilão e calcula totais",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leiloes"
+                ],
+                "summary": "Finaliza leilão",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do leilão",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Leilao"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/leiloes/{id}/participacoes": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna todas as participações de um leilão específico",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leiloes"
+                ],
+                "summary": "Lista participações de um leilão",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do leilão",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ParticipacaoLeilao"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Inscreve um equino em um leilão",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leiloes"
+                ],
+                "summary": "Cria participação em leilão",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do leilão",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados da participação",
+                        "name": "participacao",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ParticipacaoLeilao"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.ParticipacaoLeilao"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -2861,59 +1069,100 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handlers.HealthStatus": {
-            "type": "object",
-            "properties": {
-                "services": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "status": {
-                    "type": "string"
-                },
-                "system": {
-                    "$ref": "#/definitions/handlers.SystemInfo"
-                },
-                "timestamp": {
-                    "type": "string"
-                },
-                "uptime": {
-                    "type": "string"
-                },
-                "version": {
-                    "type": "string"
-                }
-            }
+        "models.AptidaoReprodutiva": {
+            "type": "string",
+            "enum": [
+                "alta",
+                "media",
+                "baixa",
+                "inadequada"
+            ],
+            "x-enum-varnames": [
+                "AptidaoAlta",
+                "AptidaoMedia",
+                "AptidaoBaixa",
+                "AptidaoInadequada"
+            ]
         },
-        "handlers.SystemInfo": {
+        "models.AvaliacaoSemen": {
             "type": "object",
             "properties": {
-                "cpu_count": {
+                "aptidao_reprodutiva": {
+                    "$ref": "#/definitions/models.AptidaoReprodutiva"
+                },
+                "cobertura": {
+                    "$ref": "#/definitions/models.Cobertura"
+                },
+                "cobertura_id": {
                     "type": "integer"
                 },
-                "go_version": {
+                "concentracao_espermatozoides": {
+                    "type": "number"
+                },
+                "created_at": {
                     "type": "string"
                 },
-                "memory_usage": {
+                "data_analise": {
                     "type": "string"
                 },
-                "num_goroutine": {
+                "data_coleta": {
+                    "type": "string"
+                },
+                "data_validade": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "documentos": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "id": {
                     "type": "integer"
-                }
-            }
-        },
-        "models.APIResponse": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "message": {
+                },
+                "laboratorio": {
+                    "$ref": "#/definitions/models.LaboratorioDNA"
+                },
+                "laboratorio_id": {
+                    "type": "integer"
+                },
+                "morfologia_normal": {
+                    "type": "number"
+                },
+                "motilidade_progressiva": {
+                    "type": "number"
+                },
+                "motilidade_total": {
+                    "type": "number"
+                },
+                "observacoes": {
                     "type": "string"
                 },
-                "success": {
-                    "type": "boolean"
+                "qualidade_geral": {
+                    "$ref": "#/definitions/models.QualidadeSemen"
                 },
-                "timestamp": {
+                "reprodutor": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Equino"
+                        }
+                    ]
+                },
+                "reprodutor_equinoid": {
                     "type": "string"
+                },
+                "tecnico_responsavel": {
+                    "type": "string"
+                },
+                "temperatura_armazenamento": {
+                    "type": "number"
+                },
+                "viabilidade": {
+                    "type": "number"
+                },
+                "volume_semen": {
+                    "type": "number"
                 }
             }
         },
@@ -2946,10 +1195,22 @@ const docTemplate = `{
                 "CategoriaAnalise"
             ]
         },
-        "models.CertificateResponse": {
+        "models.Certificate": {
             "type": "object",
             "properties": {
+                "certificate_pem": {
+                    "type": "string"
+                },
+                "common_name": {
+                    "type": "string"
+                },
                 "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "expires_at": {
                     "type": "string"
                 },
                 "id": {
@@ -2958,14 +1219,37 @@ const docTemplate = `{
                 "is_revoked": {
                     "type": "boolean"
                 },
-                "is_valid": {
-                    "type": "boolean"
+                "issued_at": {
+                    "type": "string"
+                },
+                "private_key_pem": {
+                    "type": "string"
+                },
+                "public_key_pem": {
+                    "type": "string"
+                },
+                "revocation_reason": {
+                    "type": "string"
                 },
                 "revoked_at": {
                     "type": "string"
                 },
                 "serial_number": {
                     "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    ]
+                },
+                "user_id": {
+                    "type": "integer"
                 },
                 "valid_from": {
                     "type": "string"
@@ -2975,66 +1259,41 @@ const docTemplate = `{
                 }
             }
         },
-        "models.CreateAvaliacaoSemenRequest": {
+        "models.Cobertura": {
             "type": "object",
-            "required": [
-                "data_analise",
-                "data_coleta"
-            ],
             "properties": {
-                "cobertura_id": {
-                    "type": "integer"
-                },
-                "concentracao_espermatozoides": {
-                    "type": "number"
-                },
-                "data_analise": {
+                "created_at": {
                     "type": "string"
                 },
-                "data_coleta": {
-                    "type": "string"
-                },
-                "data_validade": {
-                    "type": "string"
-                },
-                "morfologia_normal": {
-                    "type": "number"
-                },
-                "motilidade_progressiva": {
-                    "type": "number"
-                },
-                "motilidade_total": {
-                    "type": "number"
-                },
-                "observacoes": {
-                    "type": "string"
-                },
-                "tecnico_responsavel": {
-                    "type": "string"
-                },
-                "temperatura_armazenamento": {
-                    "type": "number"
-                },
-                "viabilidade": {
-                    "type": "number"
-                },
-                "volume_semen": {
-                    "type": "number"
-                }
-            }
-        },
-        "models.CreateCoberturaRequest": {
-            "type": "object",
-            "required": [
-                "data_cobertura",
-                "tipo_cobertura"
-            ],
-            "properties": {
                 "data_cobertura": {
                     "type": "string"
                 },
+                "data_confirmacao": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "documentos": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "gestacao": {
+                    "$ref": "#/definitions/models.Gestacao"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "laboratorio": {
+                    "$ref": "#/definitions/models.LaboratorioDNA"
+                },
                 "laboratorio_id": {
                     "type": "integer"
+                },
+                "matriz": {
+                    "$ref": "#/definitions/models.Equino"
+                },
+                "matriz_equinoid": {
+                    "type": "string"
                 },
                 "metodo_cobertura": {
                     "type": "string"
@@ -3045,32 +1304,227 @@ const docTemplate = `{
                 "probabilidade_concepcao": {
                     "type": "number"
                 },
+                "reprodutor": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Equino"
+                        }
+                    ]
+                },
+                "reprodutor_equinoid": {
+                    "type": "string"
+                },
+                "status_cobertura": {
+                    "$ref": "#/definitions/models.StatusCobertura"
+                },
                 "tipo_cobertura": {
                     "$ref": "#/definitions/models.TipoCobertura"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "veterinario": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "veterinario_responsavel": {
+                    "type": "integer"
                 }
             }
         },
-        "models.CreateEquinoRequest": {
+        "models.ComentarioSocial": {
             "type": "object",
-            "required": [
-                "data_nascimento",
-                "microchip_id",
-                "nome",
-                "pais_origem",
-                "pelagem",
-                "proprietario_id",
-                "raca",
-                "sexo"
-            ],
             "properties": {
+                "conteudo": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "parent": {
+                    "$ref": "#/definitions/models.ComentarioSocial"
+                },
+                "parent_id": {
+                    "type": "integer"
+                },
+                "post": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.PostSocial"
+                        }
+                    ]
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "respostas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ComentarioSocial"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Competicao": {
+            "type": "object",
+            "properties": {
+                "categoria_competicao": {
+                    "type": "string"
+                },
+                "certificado": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "juiz_principal": {
+                    "type": "string"
+                },
+                "juizes_auxiliares": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "medalha": {
+                    "$ref": "#/definitions/models.TipoMedalha"
+                },
+                "modalidade": {
+                    "type": "string"
+                },
+                "nivel_competicao": {
+                    "$ref": "#/definitions/models.NivelCompeticao"
+                },
+                "nome_competicao": {
+                    "type": "string"
+                },
+                "pontuacao": {
+                    "type": "number"
+                },
+                "posicao": {
+                    "type": "integer"
+                },
+                "premio_monetario": {
+                    "type": "number"
+                },
+                "registro_valorizacao": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.RegistroValorizacao"
+                        }
+                    ]
+                },
+                "registro_valorizacao_id": {
+                    "type": "integer"
+                },
+                "tempo_prova": {
+                    "type": "integer"
+                },
+                "total_participantes": {
+                    "type": "integer"
+                },
+                "trofeu": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CondicaoFisica": {
+            "type": "string",
+            "enum": [
+                "excelente",
+                "boa",
+                "regular",
+                "ruim"
+            ],
+            "x-enum-varnames": [
+                "CondicaoFisicaExcelente",
+                "CondicaoFisicaBoa",
+                "CondicaoFisicaRegular",
+                "CondicaoFisicaRuim"
+            ]
+        },
+        "models.CuidadoMaterno": {
+            "type": "string",
+            "enum": [
+                "excelente",
+                "bom",
+                "regular",
+                "ruim"
+            ],
+            "x-enum-varnames": [
+                "CuidadoMaternoExcelente",
+                "CuidadoMaternoBom",
+                "CuidadoMaternoRegular",
+                "CuidadoMaternoRuim"
+            ]
+        },
+        "models.Equino": {
+            "type": "object",
+            "properties": {
+                "avaliacoes_semen": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.AvaliacaoSemen"
+                    }
+                },
+                "coberturas_como_matriz": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Cobertura"
+                    }
+                },
+                "coberturas_como_reprodutor": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Cobertura"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
                 "data_nascimento": {
                     "type": "string"
                 },
-                "external_ids": {
+                "deleted_at": {
+                    "type": "string"
+                },
+                "equinoid": {
+                    "type": "string"
+                },
+                "eventos": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.ExternalID"
+                        "$ref": "#/definitions/models.Evento"
                     }
+                },
+                "external_ids": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "foto_perfil": {
+                    "type": "string"
+                },
+                "fotos_galeria": {
+                    "$ref": "#/definitions/models.JSONB"
                 },
                 "genitor_equinoid": {
                     "type": "string"
@@ -3078,8 +1532,14 @@ const docTemplate = `{
                 "genitora_equinoid": {
                     "type": "string"
                 },
-                "marca_dagua": {
-                    "type": "string"
+                "gestacoes_como_matriz": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Gestacao"
+                    }
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "microchip_id": {
                     "type": "string"
@@ -3093,185 +1553,755 @@ const docTemplate = `{
                 "pelagem": {
                     "type": "string"
                 },
+                "perfil_social": {
+                    "$ref": "#/definitions/models.PerfilSocial"
+                },
+                "performances_maternas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PerformanceMaterna"
+                    }
+                },
+                "posts_sociais": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PostSocial"
+                    }
+                },
+                "propriedade": {
+                    "$ref": "#/definitions/models.Propriedade"
+                },
+                "propriedade_id": {
+                    "type": "integer"
+                },
+                "proprietario": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    ]
+                },
                 "proprietario_id": {
                     "type": "integer"
                 },
                 "raca": {
                     "type": "string"
                 },
-                "sexo": {
-                    "$ref": "#/definitions/models.SexoEquino"
-                }
-            }
-        },
-        "models.CreateInteracaoRequest": {
-            "type": "object",
-            "required": [
-                "tipo_interacao"
-            ],
-            "properties": {
-                "tipo_interacao": {
-                    "$ref": "#/definitions/models.TipoInteracao"
-                }
-            }
-        },
-        "models.CreateOfertaRequest": {
-            "type": "object",
-            "required": [
-                "tipo_oferta",
-                "valor_oferta"
-            ],
-            "properties": {
-                "condicoes_oferta": {
-                    "type": "string"
-                },
-                "moeda": {
-                    "type": "string"
-                },
-                "prazo_oferta": {
-                    "type": "string"
-                },
-                "tipo_oferta": {
-                    "$ref": "#/definitions/models.TipoOferta"
-                },
-                "valor_oferta": {
-                    "type": "number"
-                }
-            }
-        },
-        "models.CreatePostRequest": {
-            "type": "object",
-            "required": [
-                "tipo_conteudo"
-            ],
-            "properties": {
-                "arquivos_midia": {
+                "rankings_reprodutivos": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.DocumentoEvento"
+                        "$ref": "#/definitions/models.RankingReprodutivo"
                     }
                 },
-                "data_expiracao": {
+                "rankings_valorizacao": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RankingValorizacao"
+                    }
+                },
+                "registros_valorizacao": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegistroValorizacao"
+                    }
+                },
+                "sexo": {
+                    "$ref": "#/definitions/models.SexoEquino"
+                },
+                "status": {
+                    "$ref": "#/definitions/models.StatusEquino"
+                },
+                "updated_at": {
                     "type": "string"
                 },
-                "legenda": {
-                    "type": "string"
-                },
-                "localizacao_post": {
-                    "type": "string"
-                },
-                "permitir_comentarios": {
-                    "type": "boolean"
-                },
-                "permitir_compartilhamento": {
-                    "type": "boolean"
-                },
-                "tipo_conteudo": {
-                    "$ref": "#/definitions/models.TipoConteudo"
+                "veterinarios": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.EquinoVeterinario"
+                    }
                 }
             }
         },
-        "models.CreateValorizacaoRequest": {
+        "models.EquinoVeterinario": {
             "type": "object",
-            "required": [
-                "categoria",
-                "data_registro",
-                "nivel_importancia",
-                "tipo_registro",
-                "titulo"
-            ],
             "properties": {
-                "categoria": {
-                    "$ref": "#/definitions/models.CategoriaValorizacao"
-                },
-                "cidade": {
+                "created_at": {
                     "type": "string"
                 },
-                "dados_leilao": {
-                    "description": "Dados específicos para leilões",
+                "data_nomeacao": {
+                    "type": "string"
+                },
+                "equino": {
+                    "description": "Relacionamentos",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/models.DadosLeilaoRequest"
+                            "$ref": "#/definitions/models.Equino"
                         }
                     ]
                 },
-                "data_registro": {
+                "equino_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_principal": {
+                    "type": "boolean"
+                },
+                "nomeado_por": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "nomeado_por_id": {
+                    "type": "integer"
+                },
+                "veterinario": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "veterinario_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Evento": {
+            "type": "object",
+            "properties": {
+                "aceita_patrocinio": {
+                    "type": "boolean"
+                },
+                "assinatura_digital": {
                     "type": "string"
                 },
-                "data_validade": {
+                "categoria": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "data_evento": {
+                    "type": "string"
+                },
+                "deleted_at": {
                     "type": "string"
                 },
                 "descricao": {
                     "type": "string"
                 },
                 "documentos": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "equino": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Equino"
+                        }
+                    ]
+                },
+                "equino_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "informacoes_patrocinio": {
+                    "type": "string"
+                },
+                "local": {
+                    "type": "string"
+                },
+                "nome_evento": {
+                    "type": "string"
+                },
+                "organizador": {
+                    "type": "string"
+                },
+                "participante": {
+                    "type": "boolean"
+                },
+                "particularidades": {
+                    "type": "string"
+                },
+                "resultados": {
+                    "type": "string"
+                },
+                "tipo_evento": {
+                    "$ref": "#/definitions/models.TipoEvento"
+                },
+                "tipo_evento_competitivo": {
+                    "type": "string"
+                },
+                "tipo_evento_publico": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "valor_inscricao": {
+                    "type": "number"
+                },
+                "veterinario": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "veterinario_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.ExameLaboratorial": {
+            "type": "object",
+            "properties": {
+                "certificado": {
+                    "$ref": "#/definitions/models.Certificate"
+                },
+                "certificado_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "data_coleta": {
+                    "type": "string"
+                },
+                "data_conclusao": {
+                    "type": "string"
+                },
+                "data_inicio_analise": {
+                    "type": "string"
+                },
+                "data_recebimento_amostra": {
+                    "type": "string"
+                },
+                "data_solicitacao": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "descricao": {
+                    "type": "string"
+                },
+                "equino": {
+                    "$ref": "#/definitions/models.Equino"
+                },
+                "equinoid": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "laboratorio": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "laboratorio_id": {
+                    "type": "integer"
+                },
+                "laudo": {
+                    "type": "string"
+                },
+                "nome_exame": {
+                    "type": "string"
+                },
+                "observacoes": {
+                    "type": "string"
+                },
+                "resultado": {
+                    "$ref": "#/definitions/models.ResultadoExame"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tipo_exame": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "valores": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "veterinario_solicitante": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "veterinario_solicitante_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Gestacao": {
+            "type": "object",
+            "properties": {
+                "cobertura": {
+                    "$ref": "#/definitions/models.Cobertura"
+                },
+                "cobertura_id": {
+                    "type": "integer"
+                },
+                "complicacoes": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "data_cobertura": {
+                    "type": "string"
+                },
+                "data_prevista_parto": {
+                    "type": "string"
+                },
+                "data_real_parto": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "documentos": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "intervencoes_veterinarias": {
+                    "type": "string"
+                },
+                "matriz": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Equino"
+                        }
+                    ]
+                },
+                "matriz_equinoid": {
+                    "type": "string"
+                },
+                "numero_ultrassonografias": {
+                    "type": "integer"
+                },
+                "observacoes": {
+                    "type": "string"
+                },
+                "performance_materna": {
+                    "$ref": "#/definitions/models.PerformanceMaterna"
+                },
+                "peso_nascimento": {
+                    "type": "number"
+                },
+                "potro": {
+                    "$ref": "#/definitions/models.Equino"
+                },
+                "potro_equinoid": {
+                    "type": "string"
+                },
+                "sexo_potro": {
+                    "$ref": "#/definitions/models.SexoEquino"
+                },
+                "status_gestacao": {
+                    "$ref": "#/definitions/models.StatusGestacao"
+                },
+                "tipo_parto": {
+                    "$ref": "#/definitions/models.TipoParto"
+                },
+                "ultima_ultrassonografia": {
+                    "type": "string"
+                },
+                "ultrassonografias": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.DocumentoEvento"
+                        "$ref": "#/definitions/models.Ultrassonografia"
                     }
                 },
-                "estado": {
+                "updated_at": {
                     "type": "string"
                 },
-                "evidencia_fotografica": {
+                "veterinario": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "veterinario_responsavel": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.IdiomaLegenda": {
+            "type": "string",
+            "enum": [
+                "pt",
+                "en",
+                "pt-en"
+            ],
+            "x-enum-varnames": [
+                "IdiomaPortugues",
+                "IdiomaIngles",
+                "IdiomaPortuguesIngles"
+            ]
+        },
+        "models.IntegracaoInstagram": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "auto_post": {
+                    "type": "boolean"
+                },
+                "auto_reels": {
+                    "type": "boolean"
+                },
+                "auto_stories": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "equino": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Equino"
+                        }
+                    ]
+                },
+                "equinoid": {
+                    "type": "string"
+                },
+                "fuso_horario": {
+                    "type": "string"
+                },
+                "horario_postagem": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "idioma_legenda": {
+                    "$ref": "#/definitions/models.IdiomaLegenda"
+                },
+                "incluir_hashtags": {
+                    "type": "boolean"
+                },
+                "incluir_legenda": {
+                    "type": "boolean"
+                },
+                "incluir_localizacao": {
+                    "type": "boolean"
+                },
+                "instagram_user_id": {
+                    "type": "string"
+                },
+                "instagram_username": {
+                    "type": "string"
+                },
+                "perfil_social": {
+                    "$ref": "#/definitions/models.PerfilSocial"
+                },
+                "perfil_social_id": {
+                    "type": "integer"
+                },
+                "proxima_sincronizacao": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                },
+                "status_integracao": {
+                    "$ref": "#/definitions/models.StatusIntegracao"
+                },
+                "token_expires_at": {
+                    "type": "string"
+                },
+                "total_alcance": {
+                    "type": "integer"
+                },
+                "total_engajamento": {
+                    "type": "integer"
+                },
+                "total_posts": {
+                    "type": "integer"
+                },
+                "total_reels": {
+                    "type": "integer"
+                },
+                "total_stories": {
+                    "type": "integer"
+                },
+                "ultima_sincronizacao": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.InteracaoSocial": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "post": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.PostSocial"
+                        }
+                    ]
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "tipo_interacao": {
+                    "$ref": "#/definitions/models.TipoInteracao"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.JSONB": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "models.LaboratorioDNA": {
+            "type": "object",
+            "properties": {
+                "api_endpoint": {
+                    "type": "string"
+                },
+                "api_key_hash": {
+                    "type": "string"
+                },
+                "avaliacoes_semen": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.DocumentoEvento"
+                        "$ref": "#/definitions/models.AvaliacaoSemen"
                     }
                 },
-                "evidencia_video": {
+                "certificacao_status": {
+                    "type": "string"
+                },
+                "coberturas": {
+                    "description": "Relacionamentos",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.DocumentoEvento"
+                        "$ref": "#/definitions/models.Cobertura"
                     }
                 },
-                "instituicao_certificadora": {
+                "codigo": {
                     "type": "string"
                 },
-                "local_evento": {
+                "contato_email": {
                     "type": "string"
                 },
-                "nivel_importancia": {
-                    "$ref": "#/definitions/models.NivelImportancia"
-                },
-                "numero_certificado": {
+                "contato_telefone": {
                     "type": "string"
                 },
-                "organizacao": {
+                "created_at": {
+                    "type": "string"
+                },
+                "data_certificacao": {
+                    "type": "string"
+                },
+                "data_vencimento": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "nome": {
                     "type": "string"
                 },
                 "pais": {
                     "type": "string"
                 },
-                "tipo_registro": {
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.LanceLeilao": {
+            "type": "object",
+            "properties": {
+                "created_at": {
                     "type": "string"
                 },
-                "titulo": {
+                "data_lance": {
                     "type": "string"
                 },
-                "valor_monetario": {
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "leilao": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.LeilaoValorizacao"
+                        }
+                    ]
+                },
+                "leilao_id": {
+                    "type": "integer"
+                },
+                "participante": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "participante_id": {
+                    "type": "integer"
+                },
+                "participante_nome": {
+                    "type": "string"
+                },
+                "participante_tipo": {
+                    "$ref": "#/definitions/models.TipoParticipante"
+                },
+                "status_lance": {
+                    "$ref": "#/definitions/models.StatusLance"
+                },
+                "tipo_lance": {
+                    "$ref": "#/definitions/models.TipoLance"
+                },
+                "valor_lance": {
                     "type": "number"
                 }
             }
         },
-        "models.DadosLeilaoRequest": {
+        "models.Leilao": {
             "type": "object",
-            "required": [
-                "data_leilao",
-                "nome_leilao",
-                "tipo_leilao"
-            ],
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "data_fim": {
+                    "type": "string"
+                },
+                "data_inicio": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "descricao": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "leiloeiro": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "leiloeiro_id": {
+                    "type": "integer"
+                },
+                "local": {
+                    "type": "string"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "participacoes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ParticipacaoLeilao"
+                    }
+                },
+                "status": {
+                    "$ref": "#/definitions/models.StatusLeilao"
+                },
+                "taxa_comissao_percentual": {
+                    "type": "number"
+                },
+                "taxa_fixa": {
+                    "type": "number"
+                },
+                "tipo_leilao": {
+                    "$ref": "#/definitions/models.TipoLeilao"
+                },
+                "total_arrecadado": {
+                    "type": "number"
+                },
+                "total_comissoes": {
+                    "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.LeilaoValorizacao": {
+            "type": "object",
             "properties": {
                 "casa_leiloeira": {
+                    "type": "string"
+                },
+                "catalogo_leilao": {
+                    "type": "string"
+                },
+                "certificado_venda": {
+                    "type": "string"
+                },
+                "cidade": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "data_fim": {
+                    "type": "string"
+                },
+                "data_inicio": {
                     "type": "string"
                 },
                 "data_leilao": {
                     "type": "string"
                 },
+                "deleted_at": {
+                    "type": "string"
+                },
                 "especializacao": {
                     "type": "string"
                 },
+                "estado": {
+                    "type": "string"
+                },
+                "fotos_leilao": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lances_leilao": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.LanceLeilao"
+                    }
+                },
+                "local_leilao": {
+                    "type": "string"
+                },
                 "nome_leilao": {
+                    "type": "string"
+                },
+                "organizador": {
+                    "type": "string"
+                },
+                "pais": {
                     "type": "string"
                 },
                 "posicao_leilao": {
@@ -3283,6 +2313,17 @@ const docTemplate = `{
                 "preco_venda": {
                     "type": "number"
                 },
+                "registro_valorizacao": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.RegistroValorizacao"
+                        }
+                    ]
+                },
+                "registro_valorizacao_id": {
+                    "type": "integer"
+                },
                 "resultado": {
                     "$ref": "#/definitions/models.ResultadoLeilao"
                 },
@@ -3292,188 +2333,64 @@ const docTemplate = `{
                 "tipo_leilao": {
                     "$ref": "#/definitions/models.TipoLeilao"
                 },
-                "valorizacao_percentual": {
-                    "type": "number"
-                }
-            }
-        },
-        "models.DocumentoEvento": {
-            "type": "object",
-            "required": [
-                "nome",
-                "tipo"
-            ],
-            "properties": {
-                "conteudo": {
-                    "description": "Base64 encoded content",
-                    "type": "string"
-                },
-                "nome": {
-                    "type": "string"
-                },
-                "tamanho": {
+                "total_participantes": {
                     "type": "integer"
-                },
-                "tipo": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.EquinoResponse": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "data_nascimento": {
-                    "type": "string"
-                },
-                "equinoid": {
-                    "type": "string"
-                },
-                "eventos": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.EventoResponse"
-                    }
-                },
-                "external_ids": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.ExternalID"
-                    }
-                },
-                "genitor": {
-                    "$ref": "#/definitions/models.EquinoSimpleResponse"
-                },
-                "genitora": {
-                    "$ref": "#/definitions/models.EquinoSimpleResponse"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "marca_dagua": {
-                    "type": "string"
-                },
-                "microchip_id": {
-                    "type": "string"
-                },
-                "nome": {
-                    "type": "string"
-                },
-                "pais_origem": {
-                    "type": "string"
-                },
-                "pelagem": {
-                    "type": "string"
-                },
-                "proprietario": {
-                    "$ref": "#/definitions/models.UserResponse"
-                },
-                "raca": {
-                    "type": "string"
-                },
-                "sexo": {
-                    "$ref": "#/definitions/models.SexoEquino"
-                },
-                "status": {
-                    "$ref": "#/definitions/models.StatusEquino"
                 },
                 "updated_at": {
                     "type": "string"
+                },
+                "valorizacao_percentual": {
+                    "type": "number"
+                },
+                "videos_leilao": {
+                    "$ref": "#/definitions/models.JSONB"
                 }
             }
         },
-        "models.EquinoSimpleResponse": {
-            "type": "object",
-            "properties": {
-                "equinoid": {
-                    "type": "string"
-                },
-                "nome": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "details": {},
-                "error": {
-                    "type": "string"
-                },
-                "success": {
-                    "type": "boolean"
-                },
-                "timestamp": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.EventoResponse": {
-            "type": "object",
-            "properties": {
-                "assinatura_digital": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "data_evento": {
-                    "type": "string"
-                },
-                "descricao": {
-                    "type": "string"
-                },
-                "documentos": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.DocumentoEvento"
-                    }
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "tipo_evento": {
-                    "$ref": "#/definitions/models.TipoEvento"
-                },
-                "veterinario": {
-                    "$ref": "#/definitions/models.VeterinarioSimpleResponse"
-                }
-            }
-        },
-        "models.ExternalID": {
-            "type": "object",
-            "required": [
-                "id",
-                "sistema"
+        "models.MeioTransporte": {
+            "type": "string",
+            "enum": [
+                "aereo",
+                "terrestre",
+                "maritimo"
             ],
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "sistema": {
-                    "type": "string"
-                }
-            }
+            "x-enum-varnames": [
+                "MeioTransporteAereo",
+                "MeioTransporteTerrestre",
+                "MeioTransporteMaritimo"
+            ]
         },
-        "models.LoginRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
+        "models.NivelCompeticao": {
+            "type": "string",
+            "enum": [
+                "local",
+                "regional",
+                "nacional",
+                "internacional"
             ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
+            "x-enum-varnames": [
+                "NivelLocal",
+                "NivelRegional",
+                "NivelNacional",
+                "NivelInternacional"
+            ]
+        },
+        "models.NivelEducacao": {
+            "type": "string",
+            "enum": [
+                "basico",
+                "intermediario",
+                "avancado",
+                "mestre",
+                "instrutor"
+            ],
+            "x-enum-varnames": [
+                "NivelEducacaoBasico",
+                "NivelEducacaoIntermediario",
+                "NivelEducacaoAvancado",
+                "NivelEducacaoMestre",
+                "NivelEducacaoInstrutor"
+            ]
         },
         "models.NivelImportancia": {
             "type": "string",
@@ -3494,80 +2411,1152 @@ const docTemplate = `{
                 "NivelExcepcional"
             ]
         },
-        "models.PaginatedResponse": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "pagination": {
-                    "$ref": "#/definitions/models.Pagination"
-                }
-            }
-        },
-        "models.Pagination": {
-            "type": "object",
-            "properties": {
-                "limit": {
-                    "type": "integer"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "pages": {
-                    "type": "integer"
-                },
-                "total": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.RegisterRequest": {
-            "type": "object",
-            "required": [
-                "cpf_cnpj",
-                "email",
-                "name",
-                "password",
-                "user_type"
+        "models.NivelValorizacao": {
+            "type": "string",
+            "enum": [
+                "estrela",
+                "bronze",
+                "prata",
+                "ouro",
+                "diamante"
             ],
+            "x-enum-varnames": [
+                "NivelEstrela",
+                "NivelBronze",
+                "NivelPrata",
+                "NivelOuro",
+                "NivelDiamante"
+            ]
+        },
+        "models.ParticipacaoLeilao": {
+            "type": "object",
             "properties": {
-                "cpf_cnpj": {
+                "comissao_leiloeiro": {
+                    "type": "number"
+                },
+                "compareceu": {
+                    "type": "boolean"
+                },
+                "comprador": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "comprador_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "criador": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "criador_id": {
+                    "type": "integer"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "equino": {
+                    "$ref": "#/definitions/models.Equino"
+                },
+                "equino_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "leilao": {
+                    "$ref": "#/definitions/models.Leilao"
+                },
+                "leilao_id": {
+                    "type": "integer"
+                },
+                "particularidades": {
+                    "type": "string"
+                },
+                "penalizacao_ausencia": {
+                    "type": "integer"
+                },
+                "status": {
+                    "$ref": "#/definitions/models.StatusParticipacaoLeilao"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "valor_final": {
+                    "type": "number"
+                },
+                "valor_inicial": {
+                    "type": "number"
+                },
+                "valor_reserva": {
+                    "type": "number"
+                },
+                "valor_vendido": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.PerfilSocial": {
+            "type": "object",
+            "properties": {
+                "bio": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "criado_por": {
+                    "type": "integer"
+                },
+                "criador": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "equino": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Equino"
+                        }
+                    ]
+                },
+                "equinoid": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "integracao_instagram": {
+                    "$ref": "#/definitions/models.IntegracaoInstagram"
+                },
+                "localizacao": {
+                    "type": "string"
+                },
+                "mostrar_localizacao": {
+                    "type": "boolean"
+                },
+                "nome_perfil": {
+                    "type": "string"
+                },
+                "permitir_contato": {
+                    "type": "boolean"
+                },
+                "permitir_ofertas": {
+                    "type": "boolean"
+                },
+                "permitir_seguir": {
+                    "type": "boolean"
+                },
+                "posts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PostSocial"
+                    }
+                },
+                "status_disponibilidade": {
+                    "$ref": "#/definitions/models.StatusDisponibilidade"
+                },
+                "tipo_perfil": {
+                    "$ref": "#/definitions/models.TipoPerfil"
+                },
+                "total_comentarios": {
+                    "type": "integer"
+                },
+                "total_compartilhamentos": {
+                    "type": "integer"
+                },
+                "total_curtidas": {
+                    "type": "integer"
+                },
+                "total_posts": {
+                    "type": "integer"
+                },
+                "total_seguidores": {
+                    "type": "integer"
+                },
+                "total_seguindo": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.PerformanceMaterna": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "cuidado_materno": {
+                    "$ref": "#/definitions/models.CuidadoMaterno"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "ganho_peso_gestacao": {
+                    "type": "number"
+                },
+                "gestacao": {
+                    "$ref": "#/definitions/models.Gestacao"
+                },
+                "gestacao_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "intervalo_proximo_parto": {
+                    "type": "integer"
+                },
+                "matriz": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Equino"
+                        }
+                    ]
+                },
+                "matriz_equinoid": {
+                    "type": "string"
+                },
+                "observacoes": {
+                    "type": "string"
+                },
+                "peso_fim_gestacao": {
+                    "type": "number"
+                },
+                "peso_inicio_gestacao": {
+                    "type": "number"
+                },
+                "peso_potro_desmame": {
+                    "type": "number"
+                },
+                "producao_leite_diaria": {
+                    "type": "number"
+                },
+                "qualidade_leite": {
+                    "$ref": "#/definitions/models.QualidadeLeite"
+                },
+                "tempo_desmame": {
+                    "type": "integer"
+                },
+                "tempo_recuperacao_pos_parto": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.PostSocial": {
+            "type": "object",
+            "properties": {
+                "arquivos_midia": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "comentarios": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ComentarioSocial"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "criado_por": {
+                    "type": "integer"
+                },
+                "criador": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "data_expiracao": {
+                    "type": "string"
+                },
+                "data_postagem": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "duracao_video": {
+                    "type": "integer"
+                },
+                "equino": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Equino"
+                        }
+                    ]
+                },
+                "equinoid": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "interacoes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.InteracaoSocial"
+                    }
+                },
+                "legenda": {
+                    "type": "string"
+                },
+                "localizacao_post": {
+                    "type": "string"
+                },
+                "perfil_social": {
+                    "$ref": "#/definitions/models.PerfilSocial"
+                },
+                "perfil_social_id": {
+                    "type": "integer"
+                },
+                "permitir_comentarios": {
+                    "type": "boolean"
+                },
+                "permitir_compartilhamento": {
+                    "type": "boolean"
+                },
+                "status_post": {
+                    "$ref": "#/definitions/models.StatusPost"
+                },
+                "thumbnail_url": {
+                    "type": "string"
+                },
+                "tipo_conteudo": {
+                    "$ref": "#/definitions/models.TipoConteudo"
+                },
+                "total_comentarios": {
+                    "type": "integer"
+                },
+                "total_compartilhamentos": {
+                    "type": "integer"
+                },
+                "total_curtidas": {
+                    "type": "integer"
+                },
+                "total_visualizacoes": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Propriedade": {
+            "type": "object",
+            "properties": {
+                "cep": {
+                    "type": "string"
+                },
+                "cidade": {
+                    "type": "string"
+                },
+                "cnpj": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
                     "type": "string"
                 },
                 "email": {
                     "type": "string"
                 },
-                "name": {
+                "endereco": {
                     "type": "string"
                 },
-                "password": {
-                    "type": "string",
-                    "minLength": 8
+                "equinos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Equino"
+                    }
                 },
-                "user_type": {
-                    "$ref": "#/definitions/models.UserType"
+                "estado": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "pais": {
+                    "type": "string"
+                },
+                "responsavel": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    ]
+                },
+                "responsavel_id": {
+                    "type": "integer"
+                },
+                "telefone": {
+                    "type": "string"
+                },
+                "tipo": {
+                    "$ref": "#/definitions/models.TipoPropriedade"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
-        "models.RegistrarPartoRequest": {
-            "type": "object",
-            "required": [
-                "data_parto",
-                "resultado_parto"
+        "models.QualidadeLeite": {
+            "type": "string",
+            "enum": [
+                "excelente",
+                "boa",
+                "regular",
+                "ruim"
             ],
+            "x-enum-varnames": [
+                "QualidadeLeiteExcelente",
+                "QualidadeLeiteBoa",
+                "QualidadeLeiteRegular",
+                "QualidadeLeiteRuim"
+            ]
+        },
+        "models.QualidadeSemen": {
+            "type": "string",
+            "enum": [
+                "excelente",
+                "boa",
+                "regular",
+                "ruim",
+                "inadequada"
+            ],
+            "x-enum-varnames": [
+                "QualidadeExcelente",
+                "QualidadeBoa",
+                "QualidadeRegular",
+                "QualidadeRuim",
+                "QualidadeInadequada"
+            ]
+        },
+        "models.RankingReprodutivo": {
+            "type": "object",
             "properties": {
-                "data_parto": {
+                "categoria_ranking": {
                     "type": "string"
                 },
-                "observacoes_parto": {
+                "created_at": {
                     "type": "string"
                 },
-                "resultado_parto": {
+                "crias_premiadas": {
+                    "type": "integer"
+                },
+                "data_ranking": {
                     "type": "string"
                 },
-                "tipo_parto": {
-                    "$ref": "#/definitions/models.TipoParto"
+                "deleted_at": {
+                    "type": "string"
+                },
+                "equino": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Equino"
+                        }
+                    ]
+                },
+                "equinoid": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "numero_crias": {
+                    "type": "integer"
+                },
+                "periodo_referencia": {
+                    "type": "string"
+                },
+                "pontuacao_reprodutiva": {
+                    "type": "integer"
+                },
+                "posicao_ranking": {
+                    "type": "integer"
+                },
+                "taxa_sucesso": {
+                    "type": "number"
+                },
+                "tipo_ranking": {
+                    "$ref": "#/definitions/models.TipoRankingReprodutivo"
+                },
+                "valor_medio_cria": {
+                    "type": "number"
+                },
+                "valor_total_crias": {
+                    "type": "number"
                 }
             }
+        },
+        "models.RankingValorizacao": {
+            "type": "object",
+            "properties": {
+                "categoria_ranking": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "data_ranking": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "equino": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Equino"
+                        }
+                    ]
+                },
+                "equinoid": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "nivel_valorizacao": {
+                    "$ref": "#/definitions/models.NivelValorizacao"
+                },
+                "periodo_referencia": {
+                    "type": "string"
+                },
+                "pontuacao_total": {
+                    "type": "integer"
+                },
+                "posicao": {
+                    "type": "integer"
+                },
+                "tipo_ranking": {
+                    "$ref": "#/definitions/models.TipoRanking"
+                }
+            }
+        },
+        "models.RegistroAnalise": {
+            "type": "object",
+            "properties": {
+                "amostra_analisada": {
+                    "type": "integer"
+                },
+                "analista_credencial": {
+                    "type": "string"
+                },
+                "analista_nome": {
+                    "type": "string"
+                },
+                "comparacoes": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "conclusoes": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "data_confirmacao": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "ferramentas_utilizadas": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "instituicao_analista": {
+                    "type": "string"
+                },
+                "metodologia_usada": {
+                    "type": "string"
+                },
+                "nivel_confianca": {
+                    "type": "number"
+                },
+                "pais_analista": {
+                    "type": "string"
+                },
+                "periodo_analise": {
+                    "type": "string"
+                },
+                "precisao_predicao": {
+                    "type": "number"
+                },
+                "predicao_confirmada": {
+                    "type": "boolean"
+                },
+                "predicoes": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "recomendacoes": {
+                    "type": "string"
+                },
+                "registro_valorizacao": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.RegistroValorizacao"
+                        }
+                    ]
+                },
+                "registro_valorizacao_id": {
+                    "type": "integer"
+                },
+                "tipo_analise": {
+                    "$ref": "#/definitions/models.TipoAnalise"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RegistroEducacao": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "data_certificacao": {
+                    "type": "string"
+                },
+                "data_validade": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "duracao_treinamento": {
+                    "type": "string"
+                },
+                "habilidades_desenvolvidas": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "instituicao": {
+                    "type": "string"
+                },
+                "instituicao_certificadora": {
+                    "type": "string"
+                },
+                "instrutor": {
+                    "type": "string"
+                },
+                "modalidade": {
+                    "type": "string"
+                },
+                "nivel": {
+                    "$ref": "#/definitions/models.NivelEducacao"
+                },
+                "nota_final": {
+                    "type": "number"
+                },
+                "numero_certificado": {
+                    "type": "string"
+                },
+                "proximos_niveis": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "registro_valorizacao": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.RegistroValorizacao"
+                        }
+                    ]
+                },
+                "registro_valorizacao_id": {
+                    "type": "integer"
+                },
+                "tipo_certificacao": {
+                    "$ref": "#/definitions/models.TipoCertificacao"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RegistroMidia": {
+            "type": "object",
+            "properties": {
+                "alcance_publicacao": {
+                    "type": "integer"
+                },
+                "bilheteria": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "diretor": {
+                    "type": "string"
+                },
+                "duracao_participacao": {
+                    "type": "string"
+                },
+                "engajamento": {
+                    "type": "number"
+                },
+                "estudio": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "nome_producao": {
+                    "type": "string"
+                },
+                "orcamento": {
+                    "type": "number"
+                },
+                "papel": {
+                    "type": "string"
+                },
+                "premiacoes": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "registro_valorizacao": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.RegistroValorizacao"
+                        }
+                    ]
+                },
+                "registro_valorizacao_id": {
+                    "type": "integer"
+                },
+                "seguidores_redes_sociais": {
+                    "type": "integer"
+                },
+                "tipo_midia": {
+                    "$ref": "#/definitions/models.TipoMidia"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RegistroParceria": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "data_fim": {
+                    "type": "string"
+                },
+                "data_inicio": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "duracao_parceria": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "investimento": {
+                    "type": "number"
+                },
+                "numero_contrato": {
+                    "type": "string"
+                },
+                "objetivo_parceria": {
+                    "type": "string"
+                },
+                "pais_parceiro": {
+                    "type": "string"
+                },
+                "parceiro_nome": {
+                    "type": "string"
+                },
+                "parceiro_tipo": {
+                    "$ref": "#/definitions/models.TipoParceiroEntity"
+                },
+                "registro_valorizacao": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.RegistroValorizacao"
+                        }
+                    ]
+                },
+                "registro_valorizacao_id": {
+                    "type": "integer"
+                },
+                "resultados_esperados": {
+                    "type": "string"
+                },
+                "resultados_obtidos": {
+                    "type": "string"
+                },
+                "status_parceria": {
+                    "$ref": "#/definitions/models.StatusParceria"
+                },
+                "tipo_parceria": {
+                    "$ref": "#/definitions/models.TipoParceria"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RegistroSaude": {
+            "type": "object",
+            "properties": {
+                "altura": {
+                    "type": "number"
+                },
+                "cirurgias_realizadas": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "condicao_fisica": {
+                    "$ref": "#/definitions/models.CondicaoFisica"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "exame_genetico": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "exame_raio_x": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "exame_sangue": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "exame_ultrassom": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "exames_recentes": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "expectativa_vida": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "idade_atual": {
+                    "type": "integer"
+                },
+                "medicamentos_atuais": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "peso": {
+                    "type": "number"
+                },
+                "problemas_saude": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "registro_valorizacao": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.RegistroValorizacao"
+                        }
+                    ]
+                },
+                "registro_valorizacao_id": {
+                    "type": "integer"
+                },
+                "resistencia": {
+                    "$ref": "#/definitions/models.Resistencia"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "vacinas_atualizadas": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.RegistroValorizacao": {
+            "type": "object",
+            "properties": {
+                "blockchain_tx_hash": {
+                    "type": "string"
+                },
+                "categoria": {
+                    "$ref": "#/definitions/models.CategoriaValorizacao"
+                },
+                "cidade": {
+                    "type": "string"
+                },
+                "competicoes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Competicao"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "criado_por": {
+                    "type": "integer"
+                },
+                "criador": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "data_registro": {
+                    "type": "string"
+                },
+                "data_validacao": {
+                    "type": "string"
+                },
+                "data_validade": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "descricao": {
+                    "type": "string"
+                },
+                "documentos": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "equino": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Equino"
+                        }
+                    ]
+                },
+                "equinoid": {
+                    "type": "string"
+                },
+                "estado": {
+                    "type": "string"
+                },
+                "evidencia_fotografica": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "evidencia_video": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "hash_documento": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "instituicao_certificadora": {
+                    "type": "string"
+                },
+                "leiloes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.LeilaoValorizacao"
+                    }
+                },
+                "local_evento": {
+                    "type": "string"
+                },
+                "nivel_importancia": {
+                    "$ref": "#/definitions/models.NivelImportancia"
+                },
+                "numero_certificado": {
+                    "type": "string"
+                },
+                "observacoes_validacao": {
+                    "type": "string"
+                },
+                "organizacao": {
+                    "type": "string"
+                },
+                "pais": {
+                    "type": "string"
+                },
+                "pontos_valorizacao": {
+                    "type": "integer"
+                },
+                "registros_analise": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegistroAnalise"
+                    }
+                },
+                "registros_educacao": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegistroEducacao"
+                    }
+                },
+                "registros_midia": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegistroMidia"
+                    }
+                },
+                "registros_parcerias": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegistroParceria"
+                    }
+                },
+                "registros_saude": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegistroSaude"
+                    }
+                },
+                "registros_viagens": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegistroViagem"
+                    }
+                },
+                "status_validacao": {
+                    "$ref": "#/definitions/models.StatusValidacao"
+                },
+                "tipo_registro": {
+                    "type": "string"
+                },
+                "titulo": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "validado_por": {
+                    "type": "integer"
+                },
+                "validador": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "valor_monetario": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.RegistroViagem": {
+            "type": "object",
+            "properties": {
+                "acomodacoes": {
+                    "type": "string"
+                },
+                "acompanhantes": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "certificados_emitidos": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "custo_viagem": {
+                    "type": "number"
+                },
+                "data_partida": {
+                    "type": "string"
+                },
+                "data_retorno": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "destino": {
+                    "type": "string"
+                },
+                "duracao_dias": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "meio_transporte": {
+                    "$ref": "#/definitions/models.MeioTransporte"
+                },
+                "motivo_viagem": {
+                    "type": "string"
+                },
+                "objetivo_alcancado": {
+                    "type": "boolean"
+                },
+                "pais_destino": {
+                    "type": "string"
+                },
+                "registro_valorizacao": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.RegistroValorizacao"
+                        }
+                    ]
+                },
+                "registro_valorizacao_id": {
+                    "type": "integer"
+                },
+                "resultados_obtidos": {
+                    "type": "string"
+                },
+                "tipo_viagem": {
+                    "$ref": "#/definitions/models.TipoViagem"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Resistencia": {
+            "type": "string",
+            "enum": [
+                "alta",
+                "media",
+                "baixa"
+            ],
+            "x-enum-varnames": [
+                "ResistenciaAlta",
+                "ResistenciaMedia",
+                "ResistenciaBaixa"
+            ]
+        },
+        "models.ResultadoExame": {
+            "type": "string",
+            "enum": [
+                "normal",
+                "alterado",
+                "positivo",
+                "negativo",
+                "inconclusivo"
+            ],
+            "x-enum-varnames": [
+                "ResultadoNormal",
+                "ResultadoAlterado",
+                "ResultadoPositivo",
+                "ResultadoNegativo",
+                "ResultadoInconclusivo"
+            ]
         },
         "models.ResultadoLeilao": {
             "type": "string",
@@ -3582,32 +3571,6 @@ const docTemplate = `{
                 "ResultadoRetirado"
             ]
         },
-        "models.SearchCriteria": {
-            "type": "object",
-            "properties": {
-                "idade_max": {
-                    "type": "integer"
-                },
-                "idade_min": {
-                    "type": "integer"
-                },
-                "limit": {
-                    "type": "integer"
-                },
-                "nome": {
-                    "type": "string"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "raca": {
-                    "type": "string"
-                },
-                "sexo": {
-                    "type": "string"
-                }
-            }
-        },
         "models.SexoEquino": {
             "type": "string",
             "enum": [
@@ -3617,6 +3580,34 @@ const docTemplate = `{
             "x-enum-varnames": [
                 "SexoMacho",
                 "SexoFemea"
+            ]
+        },
+        "models.StatusCobertura": {
+            "type": "string",
+            "enum": [
+                "pendente",
+                "realizada",
+                "confirmada",
+                "falhou"
+            ],
+            "x-enum-varnames": [
+                "StatusCoberturaPendente",
+                "StatusCoberturaRealizada",
+                "StatusCoberturaConfirmada",
+                "StatusCoberturaFalhou"
+            ]
+        },
+        "models.StatusDisponibilidade": {
+            "type": "string",
+            "enum": [
+                "disponivel",
+                "vendido",
+                "indisponivel"
+            ],
+            "x-enum-varnames": [
+                "StatusDisponivel",
+                "StatusDispVendido",
+                "StatusIndisponivel"
             ]
         },
         "models.StatusEquino": {
@@ -3636,19 +3627,160 @@ const docTemplate = `{
                 "StatusTransferir"
             ]
         },
+        "models.StatusGestacao": {
+            "type": "string",
+            "enum": [
+                "ativa",
+                "concluida",
+                "interrompida",
+                "perdida"
+            ],
+            "x-enum-varnames": [
+                "StatusGestacaoAtiva",
+                "StatusGestacaoConcluida",
+                "StatusGestacaoInterrompida",
+                "StatusGestacaoPerdida"
+            ]
+        },
+        "models.StatusIntegracao": {
+            "type": "string",
+            "enum": [
+                "ativa",
+                "pausada",
+                "erro",
+                "expirada"
+            ],
+            "x-enum-varnames": [
+                "StatusIntegracaoAtiva",
+                "StatusIntegracaoPausada",
+                "StatusIntegracaoErro",
+                "StatusIntegracaoExpirada"
+            ]
+        },
+        "models.StatusLance": {
+            "type": "string",
+            "enum": [
+                "ativo",
+                "superado",
+                "vencedor",
+                "cancelado"
+            ],
+            "x-enum-varnames": [
+                "StatusLanceAtivo",
+                "StatusLanceSuperado",
+                "StatusLanceVencedor",
+                "StatusLanceCancelado"
+            ]
+        },
         "models.StatusLeilao": {
             "type": "string",
             "enum": [
                 "agendado",
                 "em_andamento",
-                "concluido",
+                "encerrado",
                 "cancelado"
             ],
             "x-enum-varnames": [
                 "StatusLeilaoAgendado",
                 "StatusLeilaoEmAndamento",
-                "StatusLeilaoConcluido",
+                "StatusLeilaoEncerrado",
                 "StatusLeilaoCancelado"
+            ]
+        },
+        "models.StatusParceria": {
+            "type": "string",
+            "enum": [
+                "ativa",
+                "concluida",
+                "suspensa",
+                "cancelada"
+            ],
+            "x-enum-varnames": [
+                "StatusParceriaAtiva",
+                "StatusParceriaConcluida",
+                "StatusParceriaSuspensa",
+                "StatusParceriaCancelada"
+            ]
+        },
+        "models.StatusParticipacaoLeilao": {
+            "type": "string",
+            "enum": [
+                "inscrito",
+                "aprovado",
+                "vendido",
+                "nao_vendido",
+                "cancelado"
+            ],
+            "x-enum-varnames": [
+                "StatusParticipacaoInscrito",
+                "StatusParticipacaoAprovado",
+                "StatusParticipacaoVendido",
+                "StatusParticipacaoNaoVendido",
+                "StatusParticipacaoCancelado"
+            ]
+        },
+        "models.StatusPost": {
+            "type": "string",
+            "enum": [
+                "ativo",
+                "arquivado",
+                "removido"
+            ],
+            "x-enum-varnames": [
+                "StatusPostAtivo",
+                "StatusPostArquivado",
+                "StatusPostRemovido"
+            ]
+        },
+        "models.StatusValidacao": {
+            "type": "string",
+            "enum": [
+                "pendente",
+                "validado",
+                "aprovado",
+                "rejeitado"
+            ],
+            "x-enum-varnames": [
+                "StatusPendente",
+                "StatusValidado",
+                "StatusAprovado",
+                "StatusRejeitado"
+            ]
+        },
+        "models.TipoAnalise": {
+            "type": "string",
+            "enum": [
+                "performance",
+                "genetica",
+                "comercial",
+                "tendencias",
+                "predicao",
+                "comparativa",
+                "estatistica"
+            ],
+            "x-enum-varnames": [
+                "TipoAnalisePerformance",
+                "TipoAnaliseGenetica",
+                "TipoAnaliseComercial",
+                "TipoAnaliseTendencias",
+                "TipoAnalisePredicao",
+                "TipoAnaliseComparativa",
+                "TipoAnaliseEstatistica"
+            ]
+        },
+        "models.TipoCertificacao": {
+            "type": "string",
+            "enum": [
+                "internacional",
+                "nacional",
+                "regional",
+                "local"
+            ],
+            "x-enum-varnames": [
+                "TipoCertificacaoInternacional",
+                "TipoCertificacaoNacional",
+                "TipoCertificacaoRegional",
+                "TipoCertificacaoLocal"
             ]
         },
         "models.TipoCobertura": {
@@ -3659,8 +3791,8 @@ const docTemplate = `{
                 "embriao"
             ],
             "x-enum-varnames": [
-                "TipoCoberturanatural",
-                "TipoCoberturanInseminacao",
+                "TipoCoberturaNatural",
+                "TipoCoberturaInseminacao",
                 "TipoCoberturaEmbriao"
             ]
         },
@@ -3731,36 +3863,117 @@ const docTemplate = `{
                 "TipoInteracaoSurpresa"
             ]
         },
+        "models.TipoLance": {
+            "type": "string",
+            "enum": [
+                "inicial",
+                "incremento",
+                "final"
+            ],
+            "x-enum-varnames": [
+                "TipoLanceInicial",
+                "TipoLanceIncremento",
+                "TipoLanceFinal"
+            ]
+        },
         "models.TipoLeilao": {
             "type": "string",
             "enum": [
-                "publico",
-                "privado",
+                "presencial",
                 "online",
                 "hibrido"
             ],
             "x-enum-varnames": [
-                "TipoLeilaoPublico",
-                "TipoLeilaoPrivado",
+                "TipoLeilaoPresencial",
                 "TipoLeilaoOnline",
                 "TipoLeilaoHibrido"
             ]
         },
-        "models.TipoOferta": {
+        "models.TipoMedalha": {
             "type": "string",
             "enum": [
-                "compra",
-                "cobertura",
-                "participacao",
-                "sociedade",
-                "aluguel"
+                "ouro",
+                "prata",
+                "bronze"
             ],
             "x-enum-varnames": [
-                "TipoOfertaCompra",
-                "TipoOfertaCobertura",
-                "TipoOfertaParticipacao",
-                "TipoOfertaSociedade",
-                "TipoOfertaAluguel"
+                "MedalhaOuro",
+                "MedalhaPrata",
+                "MedalhaBronze"
+            ]
+        },
+        "models.TipoMidia": {
+            "type": "string",
+            "enum": [
+                "filme_internacional",
+                "filme_nacional",
+                "serie_tv",
+                "publicidade",
+                "documentario",
+                "revista",
+                "redes_sociais",
+                "programa_tv",
+                "livro"
+            ],
+            "x-enum-varnames": [
+                "TipoMidiaFilmeInternacional",
+                "TipoMidiaFilmeNacional",
+                "TipoMidiaSerieTV",
+                "TipoMidiaPublicidade",
+                "TipoMidiaDocumentario",
+                "TipoMidiaRevista",
+                "TipoMidiaRedesSociais",
+                "TipoMidiaProgramaTV",
+                "TipoMidiaLivro"
+            ]
+        },
+        "models.TipoParceiroEntity": {
+            "type": "string",
+            "enum": [
+                "pessoa_fisica",
+                "pessoa_juridica",
+                "instituicao",
+                "governo"
+            ],
+            "x-enum-varnames": [
+                "TipoParceiroEntityPessoaFisica",
+                "TipoParceiroEntityPessoaJuridica",
+                "TipoParceiroEntityInstituicao",
+                "TipoParceiroEntityGoverno"
+            ]
+        },
+        "models.TipoParceria": {
+            "type": "string",
+            "enum": [
+                "haras",
+                "veterinario",
+                "treinador",
+                "comercial",
+                "pesquisa",
+                "academica",
+                "governamental"
+            ],
+            "x-enum-varnames": [
+                "TipoParceriaHaras",
+                "TipoParceriaVeterinario",
+                "TipoParceriaTreinador",
+                "TipoParceriaComercial",
+                "TipoParceriaPesquisa",
+                "TipoParceriaAcademica",
+                "TipoParceriaGovernamental"
+            ]
+        },
+        "models.TipoParticipante": {
+            "type": "string",
+            "enum": [
+                "pessoa_fisica",
+                "pessoa_juridica",
+                "representante"
+            ],
+            "x-enum-varnames": [
+                "TipoParticipantePessoaFisica",
+                "TipoParticipantePessoaJuridica",
+                "TipoParticipanteRepresentante"
             ]
         },
         "models.TipoParto": {
@@ -3776,40 +3989,160 @@ const docTemplate = `{
                 "TipoPartoAssistido"
             ]
         },
-        "models.TokenResponse": {
+        "models.TipoPerfil": {
+            "type": "string",
+            "enum": [
+                "publico",
+                "privado",
+                "comercial"
+            ],
+            "x-enum-varnames": [
+                "TipoPerfilPublico",
+                "TipoPerfilPrivado",
+                "TipoPerfilComercial"
+            ]
+        },
+        "models.TipoPropriedade": {
+            "type": "string",
+            "enum": [
+                "haras",
+                "hipica"
+            ],
+            "x-enum-varnames": [
+                "TipoPropriedadeHaras",
+                "TipoPropriedadeHipica"
+            ]
+        },
+        "models.TipoRanking": {
+            "type": "string",
+            "enum": [
+                "nacional",
+                "internacional",
+                "raca",
+                "categoria"
+            ],
+            "x-enum-varnames": [
+                "TipoRankingNacional",
+                "TipoRankingInternacional",
+                "TipoRankingRaca",
+                "TipoRankingCategoria"
+            ]
+        },
+        "models.TipoRankingReprodutivo": {
+            "type": "string",
+            "enum": [
+                "reprodutor",
+                "matriz"
+            ],
+            "x-enum-varnames": [
+                "TipoRankingReprodutor",
+                "TipoRankingMatriz"
+            ]
+        },
+        "models.TipoViagem": {
+            "type": "string",
+            "enum": [
+                "competicao_internacional",
+                "exportacao",
+                "importacao",
+                "tour_mundial",
+                "intercambio",
+                "missao_comercial",
+                "evento_internacional"
+            ],
+            "x-enum-varnames": [
+                "TipoViagemCompeticaoInternacional",
+                "TipoViagemExportacao",
+                "TipoViagemImportacao",
+                "TipoViagemTourMundial",
+                "TipoViagemIntercambio",
+                "TipoViagemMissaoComercial",
+                "TipoViagemEventoInternacional"
+            ]
+        },
+        "models.Ultrassonografia": {
             "type": "object",
             "properties": {
-                "expires_in": {
-                    "type": "integer"
+                "batimento_cardiaco": {
+                    "type": "boolean"
                 },
-                "token": {
+                "created_at": {
                     "type": "string"
                 },
-                "user": {
-                    "$ref": "#/definitions/models.UserResponse"
+                "data_exame": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "desenvolvimento_normal": {
+                    "type": "boolean"
+                },
+                "diagnostico": {
+                    "type": "string"
+                },
+                "documentos": {
+                    "$ref": "#/definitions/models.JSONB"
+                },
+                "frequencia_cardiaca": {
+                    "type": "integer"
+                },
+                "gestacao": {
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Gestacao"
+                        }
+                    ]
+                },
+                "gestacao_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "idade_gestacional": {
+                    "type": "integer"
+                },
+                "numero_embrioes": {
+                    "type": "integer"
+                },
+                "observacoes": {
+                    "type": "string"
+                },
+                "presenca_embriao": {
+                    "type": "boolean"
+                },
+                "proximo_exame": {
+                    "type": "string"
+                },
+                "tamanho_embriao": {
+                    "type": "number"
+                },
+                "veterinario": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "veterinario_responsavel": {
+                    "type": "integer"
                 }
             }
         },
-        "models.UpdateProfileRequest": {
+        "models.User": {
             "type": "object",
             "required": [
                 "cpf_cnpj",
-                "name"
+                "email",
+                "name",
+                "user_type"
             ],
             "properties": {
-                "cpf_cnpj": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.UserResponse": {
-            "type": "object",
-            "properties": {
                 "certificate": {
-                    "$ref": "#/definitions/models.CertificateResponse"
+                    "description": "Relacionamentos",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Certificate"
+                        }
+                    ]
                 },
                 "cpf_cnpj": {
                     "type": "string"
@@ -3817,8 +4150,23 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "deleted_at": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
+                },
+                "equinos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Equino"
+                    }
+                },
+                "eventos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Evento"
+                    }
                 },
                 "id": {
                     "type": "integer"
@@ -3826,7 +4174,22 @@ const docTemplate = `{
                 "is_active": {
                     "type": "boolean"
                 },
+                "is_email_verified": {
+                    "type": "boolean"
+                },
+                "keycloak_sub": {
+                    "type": "string"
+                },
                 "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "supabase_id": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 },
                 "user_type": {
@@ -3840,44 +4203,76 @@ const docTemplate = `{
                 "criador",
                 "veterinario",
                 "admin",
-                "laboratorio"
+                "laboratorio",
+                "parceiro",
+                "leiloeiro"
             ],
             "x-enum-varnames": [
                 "UserTypeCriador",
                 "UserTypeVeterinario",
                 "UserTypeAdmin",
-                "UserTypeLaboratorio"
+                "UserTypeLaboratorio",
+                "UserTypeParceiro",
+                "UserTypeLeiloeiro"
             ]
-        },
-        "models.VeterinarioSimpleResponse": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
         }
     },
     "securityDefinitions": {
         "BearerAuth": {
+            "description": "JWT Bearer token. Formato: \"Bearer {token}\"",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"
         }
-    }
+    },
+    "tags": [
+        {
+            "description": "Endpoints de autenticação e autorização (JWT)",
+            "name": "Auth"
+        },
+        {
+            "description": "Gerenciamento de usuários (perfil + admin)",
+            "name": "Users"
+        },
+        {
+            "description": "CRUD completo de equinos",
+            "name": "Equinos"
+        },
+        {
+            "description": "Sistema RWA - Tokenização de equinos (CORE BUSINESS)",
+            "name": "Tokenização"
+        },
+        {
+            "description": "Participações em leilões e vendas",
+            "name": "Leilões"
+        },
+        {
+            "description": "Workflow de exames laboratoriais",
+            "name": "Exames"
+        },
+        {
+            "description": "Gestão financeira e dashboard",
+            "name": "Financeiro"
+        },
+        {
+            "description": "Planos alimentares com IA",
+            "name": "Nutrição"
+        },
+        {
+            "description": "Programas e sessões de treinamento",
+            "name": "Treinamento"
+        }
+    ]
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
-	Host:             "localhost:8080",
+	Version:          "2.0",
+	Host:             "seahorse-app-28du8.ondigitalocean.app",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "EquinoId API",
-	Description:      "Sistema internacional de identificação e gestão de equinos",
+	Title:            "Equinoid API - Sistema Perfeito",
+	Description:      "API completa para gestão de equinos com Tokenização RWA (Real World Assets). Inclui: autenticação, gestão de equinos, tokenização, leilões, exames laboratoriais, nutrição com IA, treinamento, rankings, financeiro e muito mais.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

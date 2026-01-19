@@ -18,7 +18,7 @@ type AnuncioMarketplace struct {
 	Status    string         `json:"status" gorm:"size:20;default:'ativo'"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	Usuario *User   `json:"vendedor,omitempty" gorm:"foreignKey:UsuarioID"`
 	Equino  *Equino `json:"equino,omitempty" gorm:"foreignKey:Equinoid;references:Equinoid"`

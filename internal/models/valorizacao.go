@@ -38,7 +38,7 @@ type RegistroValorizacao struct {
 	CriadoPor                uint                 `json:"criado_por" gorm:"not null"`
 	CreatedAt                time.Time            `json:"created_at"`
 	UpdatedAt                time.Time            `json:"updated_at"`
-	DeletedAt                gorm.DeletedAt       `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt                gorm.DeletedAt       `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Equino             *Equino            `json:"equino,omitempty" gorm:"foreignKey:Equinoid;references:Equinoid"`
@@ -105,7 +105,7 @@ type RankingValorizacao struct {
 	DataRanking       time.Time        `json:"data_ranking" gorm:"not null"`
 	PeriodoReferencia string           `json:"periodo_referencia" gorm:"size:20"`
 	CreatedAt         time.Time        `json:"created_at"`
-	DeletedAt         gorm.DeletedAt   `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt         gorm.DeletedAt   `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Equino *Equino `json:"equino,omitempty" gorm:"foreignKey:Equinoid;references:Equinoid"`
@@ -143,7 +143,7 @@ type Competicao struct {
 	Posicao               *int            `json:"posicao"`
 	TotalParticipantes    *int            `json:"total_participantes"`
 	Pontuacao             *float64        `json:"pontuacao" gorm:"type:decimal(8,2)"`
-	TempoProva            *time.Duration  `json:"tempo_prova"`
+	TempoProva            *time.Duration  `json:"tempo_prova" swaggertype:"integer"`
 	PremioMonetario       *float64        `json:"premio_monetario" gorm:"type:decimal(15,2)"`
 	Trofeu                string          `json:"trofeu" gorm:"size:200"`
 	Medalha               *TipoMedalha    `json:"medalha"`
@@ -151,7 +151,7 @@ type Competicao struct {
 	JuizPrincipal         string          `json:"juiz_principal" gorm:"size:200"`
 	JuizesAuxiliares      JSONB           `json:"juizes_auxiliares" gorm:"type:jsonb"`
 	CreatedAt             time.Time       `json:"created_at"`
-	DeletedAt             gorm.DeletedAt  `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt             gorm.DeletedAt  `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	RegistroValorizacao *RegistroValorizacao `json:"registro_valorizacao,omitempty" gorm:"foreignKey:RegistroValorizacaoID"`
@@ -204,7 +204,7 @@ type LeilaoValorizacao struct {
 	CertificadoVenda      string          `json:"certificado_venda" gorm:"size:255"`
 	CreatedAt             time.Time       `json:"created_at"`
 	UpdatedAt             time.Time       `json:"updated_at"`
-	DeletedAt             gorm.DeletedAt  `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt             gorm.DeletedAt  `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	RegistroValorizacao *RegistroValorizacao `json:"registro_valorizacao,omitempty" gorm:"foreignKey:RegistroValorizacaoID"`
@@ -238,7 +238,7 @@ type LanceLeilao struct {
 	ParticipanteTipo TipoParticipante `json:"participante_tipo"`
 	StatusLance      StatusLance      `json:"status_lance" gorm:"default:'ativo'"`
 	CreatedAt        time.Time        `json:"created_at"`
-	DeletedAt        gorm.DeletedAt   `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt        gorm.DeletedAt   `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Leilao       *LeilaoValorizacao `json:"leilao,omitempty" gorm:"foreignKey:LeilaoID"`

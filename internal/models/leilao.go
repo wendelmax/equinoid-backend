@@ -23,7 +23,7 @@ type Leilao struct {
 	TotalComissoes         *float64       `json:"total_comissoes" gorm:"type:decimal(15,2)"`
 	CreatedAt              time.Time      `json:"created_at"`
 	UpdatedAt              time.Time      `json:"updated_at"`
-	DeletedAt              gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt              gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	Leiloeiro     *User                  `json:"leiloeiro,omitempty" gorm:"foreignKey:LeiloeiroID"`
 	Participacoes []ParticipacaoLeilao   `json:"participacoes,omitempty" gorm:"foreignKey:LeilaoID"`
@@ -66,7 +66,7 @@ type ParticipacaoLeilao struct {
 	PenalizacaoAusencia *int           `json:"penalizacao_ausencia"`
 	CreatedAt           time.Time      `json:"created_at"`
 	UpdatedAt           time.Time      `json:"updated_at"`
-	DeletedAt           gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt           gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	Leilao    *Leilao `json:"leilao,omitempty" gorm:"foreignKey:LeilaoID"`
 	Equino    *Equino `json:"equino,omitempty" gorm:"foreignKey:EquinoID"`

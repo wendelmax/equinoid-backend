@@ -18,7 +18,7 @@ type TransacaoFinanceira struct {
 	Status      StatusPagamento `json:"status" gorm:"size:20;default:'pendente'"`
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"updated_at"`
-	DeletedAt   gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt   gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	Equino *Equino `json:"equino,omitempty" gorm:"foreignKey:EquinoID"`
 }

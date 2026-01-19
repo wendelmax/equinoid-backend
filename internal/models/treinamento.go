@@ -25,7 +25,7 @@ type ProgramaTreinamento struct {
 	Status             StatusPrograma    `json:"status" gorm:"size:20;default:'ativo'"`
 	CreatedAt          time.Time         `json:"created_at"`
 	UpdatedAt          time.Time         `json:"updated_at"`
-	DeletedAt          gorm.DeletedAt    `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt          gorm.DeletedAt    `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	Equino   *Equino             `json:"equino,omitempty" gorm:"foreignKey:EquinoID"`
 	Treinador *User              `json:"treinador,omitempty" gorm:"foreignKey:TreinadorID"`
@@ -83,7 +83,7 @@ type SessaoTreinamento struct {
 	TemperaturaC           *float64       `json:"temperatura_c" gorm:"type:decimal(5,2)"`
 	CreatedAt              time.Time      `json:"created_at"`
 	UpdatedAt              time.Time      `json:"updated_at"`
-	DeletedAt              gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt              gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	ProgramaTreinamento *ProgramaTreinamento `json:"programa_treinamento,omitempty" gorm:"foreignKey:ProgramaTreinamentoID"`
 	Equino              *Equino              `json:"equino,omitempty" gorm:"foreignKey:EquinoID"`

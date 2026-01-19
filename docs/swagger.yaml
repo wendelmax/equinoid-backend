@@ -1,41 +1,69 @@
 basePath: /api/v1
 definitions:
-  handlers.HealthStatus:
+  models.AptidaoReprodutiva:
+    enum:
+    - alta
+    - media
+    - baixa
+    - inadequada
+    type: string
+    x-enum-varnames:
+    - AptidaoAlta
+    - AptidaoMedia
+    - AptidaoBaixa
+    - AptidaoInadequada
+  models.AvaliacaoSemen:
     properties:
-      services:
-        additionalProperties: true
-        type: object
-      status:
-        type: string
-      system:
-        $ref: '#/definitions/handlers.SystemInfo'
-      timestamp:
-        type: string
-      uptime:
-        type: string
-      version:
-        type: string
-    type: object
-  handlers.SystemInfo:
-    properties:
-      cpu_count:
+      aptidao_reprodutiva:
+        $ref: '#/definitions/models.AptidaoReprodutiva'
+      cobertura:
+        $ref: '#/definitions/models.Cobertura'
+      cobertura_id:
         type: integer
-      go_version:
+      concentracao_espermatozoides:
+        type: number
+      created_at:
         type: string
-      memory_usage:
+      data_analise:
         type: string
-      num_goroutine:
+      data_coleta:
+        type: string
+      data_validade:
+        type: string
+      deleted_at:
+        type: string
+      documentos:
+        $ref: '#/definitions/models.JSONB'
+      id:
         type: integer
-    type: object
-  models.APIResponse:
-    properties:
-      data: {}
-      message:
+      laboratorio:
+        $ref: '#/definitions/models.LaboratorioDNA'
+      laboratorio_id:
+        type: integer
+      morfologia_normal:
+        type: number
+      motilidade_progressiva:
+        type: number
+      motilidade_total:
+        type: number
+      observacoes:
         type: string
-      success:
-        type: boolean
-      timestamp:
+      qualidade_geral:
+        $ref: '#/definitions/models.QualidadeSemen'
+      reprodutor:
+        allOf:
+        - $ref: '#/definitions/models.Equino'
+        description: Relacionamentos
+      reprodutor_equinoid:
         type: string
+      tecnico_responsavel:
+        type: string
+      temperatura_armazenamento:
+        type: number
+      viabilidade:
+        type: number
+      volume_semen:
+        type: number
     type: object
   models.CategoriaValorizacao:
     enum:
@@ -63,89 +91,234 @@ definitions:
     - CategoriaReconhecimentos
     - CategoriaParcerias
     - CategoriaAnalise
-  models.CertificateResponse:
+  models.Certificate:
     properties:
+      certificate_pem:
+        type: string
+      common_name:
+        type: string
       created_at:
+        type: string
+      deleted_at:
+        type: string
+      expires_at:
         type: string
       id:
         type: integer
       is_revoked:
         type: boolean
-      is_valid:
-        type: boolean
+      issued_at:
+        type: string
+      private_key_pem:
+        type: string
+      public_key_pem:
+        type: string
+      revocation_reason:
+        type: string
       revoked_at:
         type: string
       serial_number:
         type: string
+      updated_at:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: Relacionamentos
+      user_id:
+        type: integer
       valid_from:
         type: string
       valid_to:
         type: string
     type: object
-  models.CreateAvaliacaoSemenRequest:
+  models.Cobertura:
     properties:
-      cobertura_id:
-        type: integer
-      concentracao_espermatozoides:
-        type: number
-      data_analise:
+      created_at:
         type: string
-      data_coleta:
-        type: string
-      data_validade:
-        type: string
-      morfologia_normal:
-        type: number
-      motilidade_progressiva:
-        type: number
-      motilidade_total:
-        type: number
-      observacoes:
-        type: string
-      tecnico_responsavel:
-        type: string
-      temperatura_armazenamento:
-        type: number
-      viabilidade:
-        type: number
-      volume_semen:
-        type: number
-    required:
-    - data_analise
-    - data_coleta
-    type: object
-  models.CreateCoberturaRequest:
-    properties:
       data_cobertura:
         type: string
+      data_confirmacao:
+        type: string
+      deleted_at:
+        type: string
+      documentos:
+        $ref: '#/definitions/models.JSONB'
+      gestacao:
+        $ref: '#/definitions/models.Gestacao'
+      id:
+        type: integer
+      laboratorio:
+        $ref: '#/definitions/models.LaboratorioDNA'
       laboratorio_id:
         type: integer
+      matriz:
+        $ref: '#/definitions/models.Equino'
+      matriz_equinoid:
+        type: string
       metodo_cobertura:
         type: string
       observacoes:
         type: string
       probabilidade_concepcao:
         type: number
+      reprodutor:
+        allOf:
+        - $ref: '#/definitions/models.Equino'
+        description: Relacionamentos
+      reprodutor_equinoid:
+        type: string
+      status_cobertura:
+        $ref: '#/definitions/models.StatusCobertura'
       tipo_cobertura:
         $ref: '#/definitions/models.TipoCobertura'
-    required:
-    - data_cobertura
-    - tipo_cobertura
+      updated_at:
+        type: string
+      veterinario:
+        $ref: '#/definitions/models.User'
+      veterinario_responsavel:
+        type: integer
     type: object
-  models.CreateEquinoRequest:
+  models.ComentarioSocial:
     properties:
+      conteudo:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: integer
+      parent:
+        $ref: '#/definitions/models.ComentarioSocial'
+      parent_id:
+        type: integer
+      post:
+        allOf:
+        - $ref: '#/definitions/models.PostSocial'
+        description: Relacionamentos
+      post_id:
+        type: integer
+      respostas:
+        items:
+          $ref: '#/definitions/models.ComentarioSocial'
+        type: array
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: integer
+    type: object
+  models.Competicao:
+    properties:
+      categoria_competicao:
+        type: string
+      certificado:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: integer
+      juiz_principal:
+        type: string
+      juizes_auxiliares:
+        $ref: '#/definitions/models.JSONB'
+      medalha:
+        $ref: '#/definitions/models.TipoMedalha'
+      modalidade:
+        type: string
+      nivel_competicao:
+        $ref: '#/definitions/models.NivelCompeticao'
+      nome_competicao:
+        type: string
+      pontuacao:
+        type: number
+      posicao:
+        type: integer
+      premio_monetario:
+        type: number
+      registro_valorizacao:
+        allOf:
+        - $ref: '#/definitions/models.RegistroValorizacao'
+        description: Relacionamentos
+      registro_valorizacao_id:
+        type: integer
+      tempo_prova:
+        type: integer
+      total_participantes:
+        type: integer
+      trofeu:
+        type: string
+    type: object
+  models.CondicaoFisica:
+    enum:
+    - excelente
+    - boa
+    - regular
+    - ruim
+    type: string
+    x-enum-varnames:
+    - CondicaoFisicaExcelente
+    - CondicaoFisicaBoa
+    - CondicaoFisicaRegular
+    - CondicaoFisicaRuim
+  models.CuidadoMaterno:
+    enum:
+    - excelente
+    - bom
+    - regular
+    - ruim
+    type: string
+    x-enum-varnames:
+    - CuidadoMaternoExcelente
+    - CuidadoMaternoBom
+    - CuidadoMaternoRegular
+    - CuidadoMaternoRuim
+  models.Equino:
+    properties:
+      avaliacoes_semen:
+        items:
+          $ref: '#/definitions/models.AvaliacaoSemen'
+        type: array
+      coberturas_como_matriz:
+        items:
+          $ref: '#/definitions/models.Cobertura'
+        type: array
+      coberturas_como_reprodutor:
+        items:
+          $ref: '#/definitions/models.Cobertura'
+        type: array
+      created_at:
+        type: string
       data_nascimento:
         type: string
-      external_ids:
+      deleted_at:
+        type: string
+      equinoid:
+        type: string
+      eventos:
         items:
-          $ref: '#/definitions/models.ExternalID'
+          $ref: '#/definitions/models.Evento'
         type: array
+      external_ids:
+        $ref: '#/definitions/models.JSONB'
+      foto_perfil:
+        type: string
+      fotos_galeria:
+        $ref: '#/definitions/models.JSONB'
       genitor_equinoid:
         type: string
       genitora_equinoid:
         type: string
-      marca_dagua:
-        type: string
+      gestacoes_como_matriz:
+        items:
+          $ref: '#/definitions/models.Gestacao'
+        type: array
+      id:
+        type: integer
       microchip_id:
         type: string
       nome:
@@ -154,130 +327,495 @@ definitions:
         type: string
       pelagem:
         type: string
+      perfil_social:
+        $ref: '#/definitions/models.PerfilSocial'
+      performances_maternas:
+        items:
+          $ref: '#/definitions/models.PerformanceMaterna'
+        type: array
+      posts_sociais:
+        items:
+          $ref: '#/definitions/models.PostSocial'
+        type: array
+      propriedade:
+        $ref: '#/definitions/models.Propriedade'
+      propriedade_id:
+        type: integer
+      proprietario:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: Relacionamentos
       proprietario_id:
         type: integer
       raca:
         type: string
+      rankings_reprodutivos:
+        items:
+          $ref: '#/definitions/models.RankingReprodutivo'
+        type: array
+      rankings_valorizacao:
+        items:
+          $ref: '#/definitions/models.RankingValorizacao'
+        type: array
+      registros_valorizacao:
+        items:
+          $ref: '#/definitions/models.RegistroValorizacao'
+        type: array
       sexo:
         $ref: '#/definitions/models.SexoEquino'
-    required:
-    - data_nascimento
-    - microchip_id
-    - nome
-    - pais_origem
-    - pelagem
-    - proprietario_id
-    - raca
-    - sexo
-    type: object
-  models.CreateInteracaoRequest:
-    properties:
-      tipo_interacao:
-        $ref: '#/definitions/models.TipoInteracao'
-    required:
-    - tipo_interacao
-    type: object
-  models.CreateOfertaRequest:
-    properties:
-      condicoes_oferta:
+      status:
+        $ref: '#/definitions/models.StatusEquino'
+      updated_at:
         type: string
-      moeda:
-        type: string
-      prazo_oferta:
-        type: string
-      tipo_oferta:
-        $ref: '#/definitions/models.TipoOferta'
-      valor_oferta:
-        type: number
-    required:
-    - tipo_oferta
-    - valor_oferta
-    type: object
-  models.CreatePostRequest:
-    properties:
-      arquivos_midia:
+      veterinarios:
         items:
-          $ref: '#/definitions/models.DocumentoEvento'
+          $ref: '#/definitions/models.EquinoVeterinario'
         type: array
-      data_expiracao:
-        type: string
-      legenda:
-        type: string
-      localizacao_post:
-        type: string
-      permitir_comentarios:
-        type: boolean
-      permitir_compartilhamento:
-        type: boolean
-      tipo_conteudo:
-        $ref: '#/definitions/models.TipoConteudo'
-    required:
-    - tipo_conteudo
     type: object
-  models.CreateValorizacaoRequest:
+  models.EquinoVeterinario:
     properties:
-      categoria:
-        $ref: '#/definitions/models.CategoriaValorizacao'
-      cidade:
+      created_at:
         type: string
-      dados_leilao:
+      data_nomeacao:
+        type: string
+      equino:
         allOf:
-        - $ref: '#/definitions/models.DadosLeilaoRequest'
-        description: Dados específicos para leilões
-      data_registro:
+        - $ref: '#/definitions/models.Equino'
+        description: Relacionamentos
+      equino_id:
+        type: integer
+      id:
+        type: integer
+      is_principal:
+        type: boolean
+      nomeado_por:
+        $ref: '#/definitions/models.User'
+      nomeado_por_id:
+        type: integer
+      veterinario:
+        $ref: '#/definitions/models.User'
+      veterinario_id:
+        type: integer
+    type: object
+  models.Evento:
+    properties:
+      aceita_patrocinio:
+        type: boolean
+      assinatura_digital:
         type: string
-      data_validade:
+      categoria:
+        type: string
+      created_at:
+        type: string
+      data_evento:
+        type: string
+      deleted_at:
         type: string
       descricao:
         type: string
       documentos:
+        $ref: '#/definitions/models.JSONB'
+      equino:
+        allOf:
+        - $ref: '#/definitions/models.Equino'
+        description: Relacionamentos
+      equino_id:
+        type: integer
+      id:
+        type: integer
+      informacoes_patrocinio:
+        type: string
+      local:
+        type: string
+      nome_evento:
+        type: string
+      organizador:
+        type: string
+      participante:
+        type: boolean
+      particularidades:
+        type: string
+      resultados:
+        type: string
+      tipo_evento:
+        $ref: '#/definitions/models.TipoEvento'
+      tipo_evento_competitivo:
+        type: string
+      tipo_evento_publico:
+        type: string
+      updated_at:
+        type: string
+      valor_inscricao:
+        type: number
+      veterinario:
+        $ref: '#/definitions/models.User'
+      veterinario_id:
+        type: integer
+    type: object
+  models.ExameLaboratorial:
+    properties:
+      certificado:
+        $ref: '#/definitions/models.Certificate'
+      certificado_id:
+        type: integer
+      created_at:
+        type: string
+      data_coleta:
+        type: string
+      data_conclusao:
+        type: string
+      data_inicio_analise:
+        type: string
+      data_recebimento_amostra:
+        type: string
+      data_solicitacao:
+        type: string
+      deleted_at:
+        type: string
+      descricao:
+        type: string
+      equino:
+        $ref: '#/definitions/models.Equino'
+      equinoid:
+        type: string
+      id:
+        type: integer
+      laboratorio:
+        $ref: '#/definitions/models.User'
+      laboratorio_id:
+        type: integer
+      laudo:
+        type: string
+      nome_exame:
+        type: string
+      observacoes:
+        type: string
+      resultado:
+        $ref: '#/definitions/models.ResultadoExame'
+      status:
+        type: string
+      tipo_exame:
+        type: string
+      updated_at:
+        type: string
+      valores:
+        $ref: '#/definitions/models.JSONB'
+      veterinario_solicitante:
+        $ref: '#/definitions/models.User'
+      veterinario_solicitante_id:
+        type: integer
+    type: object
+  models.Gestacao:
+    properties:
+      cobertura:
+        $ref: '#/definitions/models.Cobertura'
+      cobertura_id:
+        type: integer
+      complicacoes:
+        type: string
+      created_at:
+        type: string
+      data_cobertura:
+        type: string
+      data_prevista_parto:
+        type: string
+      data_real_parto:
+        type: string
+      deleted_at:
+        type: string
+      documentos:
+        $ref: '#/definitions/models.JSONB'
+      id:
+        type: integer
+      intervencoes_veterinarias:
+        type: string
+      matriz:
+        allOf:
+        - $ref: '#/definitions/models.Equino'
+        description: Relacionamentos
+      matriz_equinoid:
+        type: string
+      numero_ultrassonografias:
+        type: integer
+      observacoes:
+        type: string
+      performance_materna:
+        $ref: '#/definitions/models.PerformanceMaterna'
+      peso_nascimento:
+        type: number
+      potro:
+        $ref: '#/definitions/models.Equino'
+      potro_equinoid:
+        type: string
+      sexo_potro:
+        $ref: '#/definitions/models.SexoEquino'
+      status_gestacao:
+        $ref: '#/definitions/models.StatusGestacao'
+      tipo_parto:
+        $ref: '#/definitions/models.TipoParto'
+      ultima_ultrassonografia:
+        type: string
+      ultrassonografias:
         items:
-          $ref: '#/definitions/models.DocumentoEvento'
+          $ref: '#/definitions/models.Ultrassonografia'
         type: array
-      estado:
+      updated_at:
         type: string
-      evidencia_fotografica:
+      veterinario:
+        $ref: '#/definitions/models.User'
+      veterinario_responsavel:
+        type: integer
+    type: object
+  models.IdiomaLegenda:
+    enum:
+    - pt
+    - en
+    - pt-en
+    type: string
+    x-enum-varnames:
+    - IdiomaPortugues
+    - IdiomaIngles
+    - IdiomaPortuguesIngles
+  models.IntegracaoInstagram:
+    properties:
+      access_token:
+        type: string
+      auto_post:
+        type: boolean
+      auto_reels:
+        type: boolean
+      auto_stories:
+        type: boolean
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      equino:
+        allOf:
+        - $ref: '#/definitions/models.Equino'
+        description: Relacionamentos
+      equinoid:
+        type: string
+      fuso_horario:
+        type: string
+      horario_postagem:
+        type: string
+      id:
+        type: integer
+      idioma_legenda:
+        $ref: '#/definitions/models.IdiomaLegenda'
+      incluir_hashtags:
+        type: boolean
+      incluir_legenda:
+        type: boolean
+      incluir_localizacao:
+        type: boolean
+      instagram_user_id:
+        type: string
+      instagram_username:
+        type: string
+      perfil_social:
+        $ref: '#/definitions/models.PerfilSocial'
+      perfil_social_id:
+        type: integer
+      proxima_sincronizacao:
+        type: string
+      refresh_token:
+        type: string
+      status_integracao:
+        $ref: '#/definitions/models.StatusIntegracao'
+      token_expires_at:
+        type: string
+      total_alcance:
+        type: integer
+      total_engajamento:
+        type: integer
+      total_posts:
+        type: integer
+      total_reels:
+        type: integer
+      total_stories:
+        type: integer
+      ultima_sincronizacao:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.InteracaoSocial:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: integer
+      post:
+        allOf:
+        - $ref: '#/definitions/models.PostSocial'
+        description: Relacionamentos
+      post_id:
+        type: integer
+      tipo_interacao:
+        $ref: '#/definitions/models.TipoInteracao'
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: integer
+    type: object
+  models.JSONB:
+    additionalProperties: true
+    type: object
+  models.LaboratorioDNA:
+    properties:
+      api_endpoint:
+        type: string
+      api_key_hash:
+        type: string
+      avaliacoes_semen:
         items:
-          $ref: '#/definitions/models.DocumentoEvento'
+          $ref: '#/definitions/models.AvaliacaoSemen'
         type: array
-      evidencia_video:
+      certificacao_status:
+        type: string
+      coberturas:
+        description: Relacionamentos
         items:
-          $ref: '#/definitions/models.DocumentoEvento'
+          $ref: '#/definitions/models.Cobertura'
         type: array
-      instituicao_certificadora:
+      codigo:
         type: string
-      local_evento:
+      contato_email:
         type: string
-      nivel_importancia:
-        $ref: '#/definitions/models.NivelImportancia'
-      numero_certificado:
+      contato_telefone:
         type: string
-      organizacao:
+      created_at:
+        type: string
+      data_certificacao:
+        type: string
+      data_vencimento:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: integer
+      nome:
         type: string
       pais:
         type: string
-      tipo_registro:
+      updated_at:
         type: string
-      titulo:
-        type: string
-      valor_monetario:
-        type: number
-    required:
-    - categoria
-    - data_registro
-    - nivel_importancia
-    - tipo_registro
-    - titulo
     type: object
-  models.DadosLeilaoRequest:
+  models.LanceLeilao:
+    properties:
+      created_at:
+        type: string
+      data_lance:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: integer
+      leilao:
+        allOf:
+        - $ref: '#/definitions/models.LeilaoValorizacao'
+        description: Relacionamentos
+      leilao_id:
+        type: integer
+      participante:
+        $ref: '#/definitions/models.User'
+      participante_id:
+        type: integer
+      participante_nome:
+        type: string
+      participante_tipo:
+        $ref: '#/definitions/models.TipoParticipante'
+      status_lance:
+        $ref: '#/definitions/models.StatusLance'
+      tipo_lance:
+        $ref: '#/definitions/models.TipoLance'
+      valor_lance:
+        type: number
+    type: object
+  models.Leilao:
+    properties:
+      created_at:
+        type: string
+      data_fim:
+        type: string
+      data_inicio:
+        type: string
+      deleted_at:
+        type: string
+      descricao:
+        type: string
+      id:
+        type: integer
+      leiloeiro:
+        $ref: '#/definitions/models.User'
+      leiloeiro_id:
+        type: integer
+      local:
+        type: string
+      nome:
+        type: string
+      participacoes:
+        items:
+          $ref: '#/definitions/models.ParticipacaoLeilao'
+        type: array
+      status:
+        $ref: '#/definitions/models.StatusLeilao'
+      taxa_comissao_percentual:
+        type: number
+      taxa_fixa:
+        type: number
+      tipo_leilao:
+        $ref: '#/definitions/models.TipoLeilao'
+      total_arrecadado:
+        type: number
+      total_comissoes:
+        type: number
+      updated_at:
+        type: string
+    type: object
+  models.LeilaoValorizacao:
     properties:
       casa_leiloeira:
         type: string
+      catalogo_leilao:
+        type: string
+      certificado_venda:
+        type: string
+      cidade:
+        type: string
+      created_at:
+        type: string
+      data_fim:
+        type: string
+      data_inicio:
+        type: string
       data_leilao:
+        type: string
+      deleted_at:
         type: string
       especializacao:
         type: string
+      estado:
+        type: string
+      fotos_leilao:
+        $ref: '#/definitions/models.JSONB'
+      id:
+        type: integer
+      lances_leilao:
+        items:
+          $ref: '#/definitions/models.LanceLeilao'
+        type: array
+      local_leilao:
+        type: string
       nome_leilao:
+        type: string
+      organizador:
+        type: string
+      pais:
         type: string
       posicao_leilao:
         type: integer
@@ -285,137 +823,63 @@ definitions:
         type: number
       preco_venda:
         type: number
+      registro_valorizacao:
+        allOf:
+        - $ref: '#/definitions/models.RegistroValorizacao'
+        description: Relacionamentos
+      registro_valorizacao_id:
+        type: integer
       resultado:
         $ref: '#/definitions/models.ResultadoLeilao'
       status_leilao:
         $ref: '#/definitions/models.StatusLeilao'
       tipo_leilao:
         $ref: '#/definitions/models.TipoLeilao'
-      valorizacao_percentual:
-        type: number
-    required:
-    - data_leilao
-    - nome_leilao
-    - tipo_leilao
-    type: object
-  models.DocumentoEvento:
-    properties:
-      conteudo:
-        description: Base64 encoded content
-        type: string
-      nome:
-        type: string
-      tamanho:
+      total_participantes:
         type: integer
-      tipo:
-        type: string
-      url:
-        type: string
-    required:
-    - nome
-    - tipo
-    type: object
-  models.EquinoResponse:
-    properties:
-      created_at:
-        type: string
-      data_nascimento:
-        type: string
-      equinoid:
-        type: string
-      eventos:
-        items:
-          $ref: '#/definitions/models.EventoResponse'
-        type: array
-      external_ids:
-        items:
-          $ref: '#/definitions/models.ExternalID'
-        type: array
-      genitor:
-        $ref: '#/definitions/models.EquinoSimpleResponse'
-      genitora:
-        $ref: '#/definitions/models.EquinoSimpleResponse'
-      id:
-        type: integer
-      marca_dagua:
-        type: string
-      microchip_id:
-        type: string
-      nome:
-        type: string
-      pais_origem:
-        type: string
-      pelagem:
-        type: string
-      proprietario:
-        $ref: '#/definitions/models.UserResponse'
-      raca:
-        type: string
-      sexo:
-        $ref: '#/definitions/models.SexoEquino'
-      status:
-        $ref: '#/definitions/models.StatusEquino'
       updated_at:
         type: string
+      valorizacao_percentual:
+        type: number
+      videos_leilao:
+        $ref: '#/definitions/models.JSONB'
     type: object
-  models.EquinoSimpleResponse:
-    properties:
-      equinoid:
-        type: string
-      nome:
-        type: string
-    type: object
-  models.ErrorResponse:
-    properties:
-      details: {}
-      error:
-        type: string
-      success:
-        type: boolean
-      timestamp:
-        type: string
-    type: object
-  models.EventoResponse:
-    properties:
-      assinatura_digital:
-        type: string
-      created_at:
-        type: string
-      data_evento:
-        type: string
-      descricao:
-        type: string
-      documentos:
-        items:
-          $ref: '#/definitions/models.DocumentoEvento'
-        type: array
-      id:
-        type: integer
-      tipo_evento:
-        $ref: '#/definitions/models.TipoEvento'
-      veterinario:
-        $ref: '#/definitions/models.VeterinarioSimpleResponse'
-    type: object
-  models.ExternalID:
-    properties:
-      id:
-        type: string
-      sistema:
-        type: string
-    required:
-    - id
-    - sistema
-    type: object
-  models.LoginRequest:
-    properties:
-      email:
-        type: string
-      password:
-        type: string
-    required:
-    - email
-    - password
-    type: object
+  models.MeioTransporte:
+    enum:
+    - aereo
+    - terrestre
+    - maritimo
+    type: string
+    x-enum-varnames:
+    - MeioTransporteAereo
+    - MeioTransporteTerrestre
+    - MeioTransporteMaritimo
+  models.NivelCompeticao:
+    enum:
+    - local
+    - regional
+    - nacional
+    - internacional
+    type: string
+    x-enum-varnames:
+    - NivelLocal
+    - NivelRegional
+    - NivelNacional
+    - NivelInternacional
+  models.NivelEducacao:
+    enum:
+    - basico
+    - intermediario
+    - avancado
+    - mestre
+    - instrutor
+    type: string
+    x-enum-varnames:
+    - NivelEducacaoBasico
+    - NivelEducacaoIntermediario
+    - NivelEducacaoAvancado
+    - NivelEducacaoMestre
+    - NivelEducacaoInstrutor
   models.NivelImportancia:
     enum:
     - baixo
@@ -432,57 +896,760 @@ definitions:
     - NivelMuitoAlto
     - NivelCritico
     - NivelExcepcional
-  models.PaginatedResponse:
+  models.NivelValorizacao:
+    enum:
+    - estrela
+    - bronze
+    - prata
+    - ouro
+    - diamante
+    type: string
+    x-enum-varnames:
+    - NivelEstrela
+    - NivelBronze
+    - NivelPrata
+    - NivelOuro
+    - NivelDiamante
+  models.ParticipacaoLeilao:
     properties:
-      data: {}
-      pagination:
-        $ref: '#/definitions/models.Pagination'
+      comissao_leiloeiro:
+        type: number
+      compareceu:
+        type: boolean
+      comprador:
+        $ref: '#/definitions/models.User'
+      comprador_id:
+        type: integer
+      created_at:
+        type: string
+      criador:
+        $ref: '#/definitions/models.User'
+      criador_id:
+        type: integer
+      deleted_at:
+        type: string
+      equino:
+        $ref: '#/definitions/models.Equino'
+      equino_id:
+        type: integer
+      id:
+        type: integer
+      leilao:
+        $ref: '#/definitions/models.Leilao'
+      leilao_id:
+        type: integer
+      particularidades:
+        type: string
+      penalizacao_ausencia:
+        type: integer
+      status:
+        $ref: '#/definitions/models.StatusParticipacaoLeilao'
+      updated_at:
+        type: string
+      valor_final:
+        type: number
+      valor_inicial:
+        type: number
+      valor_reserva:
+        type: number
+      valor_vendido:
+        type: number
     type: object
-  models.Pagination:
+  models.PerfilSocial:
     properties:
-      limit:
+      bio:
+        type: string
+      created_at:
+        type: string
+      criado_por:
         type: integer
-      page:
+      criador:
+        $ref: '#/definitions/models.User'
+      deleted_at:
+        type: string
+      equino:
+        allOf:
+        - $ref: '#/definitions/models.Equino'
+        description: Relacionamentos
+      equinoid:
+        type: string
+      id:
         type: integer
-      pages:
+      integracao_instagram:
+        $ref: '#/definitions/models.IntegracaoInstagram'
+      localizacao:
+        type: string
+      mostrar_localizacao:
+        type: boolean
+      nome_perfil:
+        type: string
+      permitir_contato:
+        type: boolean
+      permitir_ofertas:
+        type: boolean
+      permitir_seguir:
+        type: boolean
+      posts:
+        items:
+          $ref: '#/definitions/models.PostSocial'
+        type: array
+      status_disponibilidade:
+        $ref: '#/definitions/models.StatusDisponibilidade'
+      tipo_perfil:
+        $ref: '#/definitions/models.TipoPerfil'
+      total_comentarios:
         type: integer
-      total:
+      total_compartilhamentos:
+        type: integer
+      total_curtidas:
+        type: integer
+      total_posts:
+        type: integer
+      total_seguidores:
+        type: integer
+      total_seguindo:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  models.PerformanceMaterna:
+    properties:
+      created_at:
+        type: string
+      cuidado_materno:
+        $ref: '#/definitions/models.CuidadoMaterno'
+      deleted_at:
+        type: string
+      ganho_peso_gestacao:
+        type: number
+      gestacao:
+        $ref: '#/definitions/models.Gestacao'
+      gestacao_id:
+        type: integer
+      id:
+        type: integer
+      intervalo_proximo_parto:
+        type: integer
+      matriz:
+        allOf:
+        - $ref: '#/definitions/models.Equino'
+        description: Relacionamentos
+      matriz_equinoid:
+        type: string
+      observacoes:
+        type: string
+      peso_fim_gestacao:
+        type: number
+      peso_inicio_gestacao:
+        type: number
+      peso_potro_desmame:
+        type: number
+      producao_leite_diaria:
+        type: number
+      qualidade_leite:
+        $ref: '#/definitions/models.QualidadeLeite'
+      tempo_desmame:
+        type: integer
+      tempo_recuperacao_pos_parto:
         type: integer
     type: object
-  models.RegisterRequest:
+  models.PostSocial:
     properties:
-      cpf_cnpj:
+      arquivos_midia:
+        $ref: '#/definitions/models.JSONB'
+      comentarios:
+        items:
+          $ref: '#/definitions/models.ComentarioSocial'
+        type: array
+      created_at:
+        type: string
+      criado_por:
+        type: integer
+      criador:
+        $ref: '#/definitions/models.User'
+      data_expiracao:
+        type: string
+      data_postagem:
+        type: string
+      deleted_at:
+        type: string
+      duracao_video:
+        type: integer
+      equino:
+        allOf:
+        - $ref: '#/definitions/models.Equino'
+        description: Relacionamentos
+      equinoid:
+        type: string
+      id:
+        type: integer
+      interacoes:
+        items:
+          $ref: '#/definitions/models.InteracaoSocial'
+        type: array
+      legenda:
+        type: string
+      localizacao_post:
+        type: string
+      perfil_social:
+        $ref: '#/definitions/models.PerfilSocial'
+      perfil_social_id:
+        type: integer
+      permitir_comentarios:
+        type: boolean
+      permitir_compartilhamento:
+        type: boolean
+      status_post:
+        $ref: '#/definitions/models.StatusPost'
+      thumbnail_url:
+        type: string
+      tipo_conteudo:
+        $ref: '#/definitions/models.TipoConteudo'
+      total_comentarios:
+        type: integer
+      total_compartilhamentos:
+        type: integer
+      total_curtidas:
+        type: integer
+      total_visualizacoes:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  models.Propriedade:
+    properties:
+      cep:
+        type: string
+      cidade:
+        type: string
+      cnpj:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
         type: string
       email:
         type: string
-      name:
+      endereco:
         type: string
-      password:
-        minLength: 8
+      equinos:
+        items:
+          $ref: '#/definitions/models.Equino'
+        type: array
+      estado:
         type: string
-      user_type:
-        $ref: '#/definitions/models.UserType'
-    required:
-    - cpf_cnpj
-    - email
-    - name
-    - password
-    - user_type
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      nome:
+        type: string
+      pais:
+        type: string
+      responsavel:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: Relacionamentos
+      responsavel_id:
+        type: integer
+      telefone:
+        type: string
+      tipo:
+        $ref: '#/definitions/models.TipoPropriedade'
+      updated_at:
+        type: string
     type: object
-  models.RegistrarPartoRequest:
+  models.QualidadeLeite:
+    enum:
+    - excelente
+    - boa
+    - regular
+    - ruim
+    type: string
+    x-enum-varnames:
+    - QualidadeLeiteExcelente
+    - QualidadeLeiteBoa
+    - QualidadeLeiteRegular
+    - QualidadeLeiteRuim
+  models.QualidadeSemen:
+    enum:
+    - excelente
+    - boa
+    - regular
+    - ruim
+    - inadequada
+    type: string
+    x-enum-varnames:
+    - QualidadeExcelente
+    - QualidadeBoa
+    - QualidadeRegular
+    - QualidadeRuim
+    - QualidadeInadequada
+  models.RankingReprodutivo:
     properties:
-      data_parto:
+      categoria_ranking:
         type: string
-      observacoes_parto:
+      created_at:
         type: string
-      resultado_parto:
+      crias_premiadas:
+        type: integer
+      data_ranking:
         type: string
-      tipo_parto:
-        $ref: '#/definitions/models.TipoParto'
-    required:
-    - data_parto
-    - resultado_parto
+      deleted_at:
+        type: string
+      equino:
+        allOf:
+        - $ref: '#/definitions/models.Equino'
+        description: Relacionamentos
+      equinoid:
+        type: string
+      id:
+        type: integer
+      numero_crias:
+        type: integer
+      periodo_referencia:
+        type: string
+      pontuacao_reprodutiva:
+        type: integer
+      posicao_ranking:
+        type: integer
+      taxa_sucesso:
+        type: number
+      tipo_ranking:
+        $ref: '#/definitions/models.TipoRankingReprodutivo'
+      valor_medio_cria:
+        type: number
+      valor_total_crias:
+        type: number
     type: object
+  models.RankingValorizacao:
+    properties:
+      categoria_ranking:
+        type: string
+      created_at:
+        type: string
+      data_ranking:
+        type: string
+      deleted_at:
+        type: string
+      equino:
+        allOf:
+        - $ref: '#/definitions/models.Equino'
+        description: Relacionamentos
+      equinoid:
+        type: string
+      id:
+        type: integer
+      nivel_valorizacao:
+        $ref: '#/definitions/models.NivelValorizacao'
+      periodo_referencia:
+        type: string
+      pontuacao_total:
+        type: integer
+      posicao:
+        type: integer
+      tipo_ranking:
+        $ref: '#/definitions/models.TipoRanking'
+    type: object
+  models.RegistroAnalise:
+    properties:
+      amostra_analisada:
+        type: integer
+      analista_credencial:
+        type: string
+      analista_nome:
+        type: string
+      comparacoes:
+        $ref: '#/definitions/models.JSONB'
+      conclusoes:
+        type: string
+      created_at:
+        type: string
+      data_confirmacao:
+        type: string
+      deleted_at:
+        type: string
+      ferramentas_utilizadas:
+        $ref: '#/definitions/models.JSONB'
+      id:
+        type: integer
+      instituicao_analista:
+        type: string
+      metodologia_usada:
+        type: string
+      nivel_confianca:
+        type: number
+      pais_analista:
+        type: string
+      periodo_analise:
+        type: string
+      precisao_predicao:
+        type: number
+      predicao_confirmada:
+        type: boolean
+      predicoes:
+        $ref: '#/definitions/models.JSONB'
+      recomendacoes:
+        type: string
+      registro_valorizacao:
+        allOf:
+        - $ref: '#/definitions/models.RegistroValorizacao'
+        description: Relacionamentos
+      registro_valorizacao_id:
+        type: integer
+      tipo_analise:
+        $ref: '#/definitions/models.TipoAnalise'
+      updated_at:
+        type: string
+    type: object
+  models.RegistroEducacao:
+    properties:
+      created_at:
+        type: string
+      data_certificacao:
+        type: string
+      data_validade:
+        type: string
+      deleted_at:
+        type: string
+      duracao_treinamento:
+        type: string
+      habilidades_desenvolvidas:
+        $ref: '#/definitions/models.JSONB'
+      id:
+        type: integer
+      instituicao:
+        type: string
+      instituicao_certificadora:
+        type: string
+      instrutor:
+        type: string
+      modalidade:
+        type: string
+      nivel:
+        $ref: '#/definitions/models.NivelEducacao'
+      nota_final:
+        type: number
+      numero_certificado:
+        type: string
+      proximos_niveis:
+        $ref: '#/definitions/models.JSONB'
+      registro_valorizacao:
+        allOf:
+        - $ref: '#/definitions/models.RegistroValorizacao'
+        description: Relacionamentos
+      registro_valorizacao_id:
+        type: integer
+      tipo_certificacao:
+        $ref: '#/definitions/models.TipoCertificacao'
+      updated_at:
+        type: string
+    type: object
+  models.RegistroMidia:
+    properties:
+      alcance_publicacao:
+        type: integer
+      bilheteria:
+        type: number
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      diretor:
+        type: string
+      duracao_participacao:
+        type: string
+      engajamento:
+        type: number
+      estudio:
+        type: string
+      id:
+        type: integer
+      nome_producao:
+        type: string
+      orcamento:
+        type: number
+      papel:
+        type: string
+      premiacoes:
+        $ref: '#/definitions/models.JSONB'
+      registro_valorizacao:
+        allOf:
+        - $ref: '#/definitions/models.RegistroValorizacao'
+        description: Relacionamentos
+      registro_valorizacao_id:
+        type: integer
+      seguidores_redes_sociais:
+        type: integer
+      tipo_midia:
+        $ref: '#/definitions/models.TipoMidia'
+      updated_at:
+        type: string
+    type: object
+  models.RegistroParceria:
+    properties:
+      created_at:
+        type: string
+      data_fim:
+        type: string
+      data_inicio:
+        type: string
+      deleted_at:
+        type: string
+      duracao_parceria:
+        type: string
+      id:
+        type: integer
+      investimento:
+        type: number
+      numero_contrato:
+        type: string
+      objetivo_parceria:
+        type: string
+      pais_parceiro:
+        type: string
+      parceiro_nome:
+        type: string
+      parceiro_tipo:
+        $ref: '#/definitions/models.TipoParceiroEntity'
+      registro_valorizacao:
+        allOf:
+        - $ref: '#/definitions/models.RegistroValorizacao'
+        description: Relacionamentos
+      registro_valorizacao_id:
+        type: integer
+      resultados_esperados:
+        type: string
+      resultados_obtidos:
+        type: string
+      status_parceria:
+        $ref: '#/definitions/models.StatusParceria'
+      tipo_parceria:
+        $ref: '#/definitions/models.TipoParceria'
+      updated_at:
+        type: string
+    type: object
+  models.RegistroSaude:
+    properties:
+      altura:
+        type: number
+      cirurgias_realizadas:
+        $ref: '#/definitions/models.JSONB'
+      condicao_fisica:
+        $ref: '#/definitions/models.CondicaoFisica'
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      exame_genetico:
+        $ref: '#/definitions/models.JSONB'
+      exame_raio_x:
+        $ref: '#/definitions/models.JSONB'
+      exame_sangue:
+        $ref: '#/definitions/models.JSONB'
+      exame_ultrassom:
+        $ref: '#/definitions/models.JSONB'
+      exames_recentes:
+        $ref: '#/definitions/models.JSONB'
+      expectativa_vida:
+        type: string
+      id:
+        type: integer
+      idade_atual:
+        type: integer
+      medicamentos_atuais:
+        $ref: '#/definitions/models.JSONB'
+      peso:
+        type: number
+      problemas_saude:
+        $ref: '#/definitions/models.JSONB'
+      registro_valorizacao:
+        allOf:
+        - $ref: '#/definitions/models.RegistroValorizacao'
+        description: Relacionamentos
+      registro_valorizacao_id:
+        type: integer
+      resistencia:
+        $ref: '#/definitions/models.Resistencia'
+      updated_at:
+        type: string
+      vacinas_atualizadas:
+        type: boolean
+    type: object
+  models.RegistroValorizacao:
+    properties:
+      blockchain_tx_hash:
+        type: string
+      categoria:
+        $ref: '#/definitions/models.CategoriaValorizacao'
+      cidade:
+        type: string
+      competicoes:
+        items:
+          $ref: '#/definitions/models.Competicao'
+        type: array
+      created_at:
+        type: string
+      criado_por:
+        type: integer
+      criador:
+        $ref: '#/definitions/models.User'
+      data_registro:
+        type: string
+      data_validacao:
+        type: string
+      data_validade:
+        type: string
+      deleted_at:
+        type: string
+      descricao:
+        type: string
+      documentos:
+        $ref: '#/definitions/models.JSONB'
+      equino:
+        allOf:
+        - $ref: '#/definitions/models.Equino'
+        description: Relacionamentos
+      equinoid:
+        type: string
+      estado:
+        type: string
+      evidencia_fotografica:
+        $ref: '#/definitions/models.JSONB'
+      evidencia_video:
+        $ref: '#/definitions/models.JSONB'
+      hash_documento:
+        type: string
+      id:
+        type: integer
+      instituicao_certificadora:
+        type: string
+      leiloes:
+        items:
+          $ref: '#/definitions/models.LeilaoValorizacao'
+        type: array
+      local_evento:
+        type: string
+      nivel_importancia:
+        $ref: '#/definitions/models.NivelImportancia'
+      numero_certificado:
+        type: string
+      observacoes_validacao:
+        type: string
+      organizacao:
+        type: string
+      pais:
+        type: string
+      pontos_valorizacao:
+        type: integer
+      registros_analise:
+        items:
+          $ref: '#/definitions/models.RegistroAnalise'
+        type: array
+      registros_educacao:
+        items:
+          $ref: '#/definitions/models.RegistroEducacao'
+        type: array
+      registros_midia:
+        items:
+          $ref: '#/definitions/models.RegistroMidia'
+        type: array
+      registros_parcerias:
+        items:
+          $ref: '#/definitions/models.RegistroParceria'
+        type: array
+      registros_saude:
+        items:
+          $ref: '#/definitions/models.RegistroSaude'
+        type: array
+      registros_viagens:
+        items:
+          $ref: '#/definitions/models.RegistroViagem'
+        type: array
+      status_validacao:
+        $ref: '#/definitions/models.StatusValidacao'
+      tipo_registro:
+        type: string
+      titulo:
+        type: string
+      updated_at:
+        type: string
+      validado_por:
+        type: integer
+      validador:
+        $ref: '#/definitions/models.User'
+      valor_monetario:
+        type: number
+    type: object
+  models.RegistroViagem:
+    properties:
+      acomodacoes:
+        type: string
+      acompanhantes:
+        $ref: '#/definitions/models.JSONB'
+      certificados_emitidos:
+        $ref: '#/definitions/models.JSONB'
+      created_at:
+        type: string
+      custo_viagem:
+        type: number
+      data_partida:
+        type: string
+      data_retorno:
+        type: string
+      deleted_at:
+        type: string
+      destino:
+        type: string
+      duracao_dias:
+        type: integer
+      id:
+        type: integer
+      meio_transporte:
+        $ref: '#/definitions/models.MeioTransporte'
+      motivo_viagem:
+        type: string
+      objetivo_alcancado:
+        type: boolean
+      pais_destino:
+        type: string
+      registro_valorizacao:
+        allOf:
+        - $ref: '#/definitions/models.RegistroValorizacao'
+        description: Relacionamentos
+      registro_valorizacao_id:
+        type: integer
+      resultados_obtidos:
+        type: string
+      tipo_viagem:
+        $ref: '#/definitions/models.TipoViagem'
+      updated_at:
+        type: string
+    type: object
+  models.Resistencia:
+    enum:
+    - alta
+    - media
+    - baixa
+    type: string
+    x-enum-varnames:
+    - ResistenciaAlta
+    - ResistenciaMedia
+    - ResistenciaBaixa
+  models.ResultadoExame:
+    enum:
+    - normal
+    - alterado
+    - positivo
+    - negativo
+    - inconclusivo
+    type: string
+    x-enum-varnames:
+    - ResultadoNormal
+    - ResultadoAlterado
+    - ResultadoPositivo
+    - ResultadoNegativo
+    - ResultadoInconclusivo
   models.ResultadoLeilao:
     enum:
     - vendido
@@ -493,23 +1660,6 @@ definitions:
     - ResultadoVendido
     - ResultadoNaoVendido
     - ResultadoRetirado
-  models.SearchCriteria:
-    properties:
-      idade_max:
-        type: integer
-      idade_min:
-        type: integer
-      limit:
-        type: integer
-      nome:
-        type: string
-      page:
-        type: integer
-      raca:
-        type: string
-      sexo:
-        type: string
-    type: object
   models.SexoEquino:
     enum:
     - macho
@@ -518,6 +1668,28 @@ definitions:
     x-enum-varnames:
     - SexoMacho
     - SexoFemea
+  models.StatusCobertura:
+    enum:
+    - pendente
+    - realizada
+    - confirmada
+    - falhou
+    type: string
+    x-enum-varnames:
+    - StatusCoberturaPendente
+    - StatusCoberturaRealizada
+    - StatusCoberturaConfirmada
+    - StatusCoberturaFalhou
+  models.StatusDisponibilidade:
+    enum:
+    - disponivel
+    - vendido
+    - indisponivel
+    type: string
+    x-enum-varnames:
+    - StatusDisponivel
+    - StatusDispVendido
+    - StatusIndisponivel
   models.StatusEquino:
     enum:
     - ativo
@@ -532,18 +1704,132 @@ definitions:
     - StatusVendido
     - StatusFalecido
     - StatusTransferir
+  models.StatusGestacao:
+    enum:
+    - ativa
+    - concluida
+    - interrompida
+    - perdida
+    type: string
+    x-enum-varnames:
+    - StatusGestacaoAtiva
+    - StatusGestacaoConcluida
+    - StatusGestacaoInterrompida
+    - StatusGestacaoPerdida
+  models.StatusIntegracao:
+    enum:
+    - ativa
+    - pausada
+    - erro
+    - expirada
+    type: string
+    x-enum-varnames:
+    - StatusIntegracaoAtiva
+    - StatusIntegracaoPausada
+    - StatusIntegracaoErro
+    - StatusIntegracaoExpirada
+  models.StatusLance:
+    enum:
+    - ativo
+    - superado
+    - vencedor
+    - cancelado
+    type: string
+    x-enum-varnames:
+    - StatusLanceAtivo
+    - StatusLanceSuperado
+    - StatusLanceVencedor
+    - StatusLanceCancelado
   models.StatusLeilao:
     enum:
     - agendado
     - em_andamento
-    - concluido
+    - encerrado
     - cancelado
     type: string
     x-enum-varnames:
     - StatusLeilaoAgendado
     - StatusLeilaoEmAndamento
-    - StatusLeilaoConcluido
+    - StatusLeilaoEncerrado
     - StatusLeilaoCancelado
+  models.StatusParceria:
+    enum:
+    - ativa
+    - concluida
+    - suspensa
+    - cancelada
+    type: string
+    x-enum-varnames:
+    - StatusParceriaAtiva
+    - StatusParceriaConcluida
+    - StatusParceriaSuspensa
+    - StatusParceriaCancelada
+  models.StatusParticipacaoLeilao:
+    enum:
+    - inscrito
+    - aprovado
+    - vendido
+    - nao_vendido
+    - cancelado
+    type: string
+    x-enum-varnames:
+    - StatusParticipacaoInscrito
+    - StatusParticipacaoAprovado
+    - StatusParticipacaoVendido
+    - StatusParticipacaoNaoVendido
+    - StatusParticipacaoCancelado
+  models.StatusPost:
+    enum:
+    - ativo
+    - arquivado
+    - removido
+    type: string
+    x-enum-varnames:
+    - StatusPostAtivo
+    - StatusPostArquivado
+    - StatusPostRemovido
+  models.StatusValidacao:
+    enum:
+    - pendente
+    - validado
+    - aprovado
+    - rejeitado
+    type: string
+    x-enum-varnames:
+    - StatusPendente
+    - StatusValidado
+    - StatusAprovado
+    - StatusRejeitado
+  models.TipoAnalise:
+    enum:
+    - performance
+    - genetica
+    - comercial
+    - tendencias
+    - predicao
+    - comparativa
+    - estatistica
+    type: string
+    x-enum-varnames:
+    - TipoAnalisePerformance
+    - TipoAnaliseGenetica
+    - TipoAnaliseComercial
+    - TipoAnaliseTendencias
+    - TipoAnalisePredicao
+    - TipoAnaliseComparativa
+    - TipoAnaliseEstatistica
+  models.TipoCertificacao:
+    enum:
+    - internacional
+    - nacional
+    - regional
+    - local
+    type: string
+    x-enum-varnames:
+    - TipoCertificacaoInternacional
+    - TipoCertificacaoNacional
+    - TipoCertificacaoRegional
+    - TipoCertificacaoLocal
   models.TipoCobertura:
     enum:
     - natural
@@ -551,8 +1837,8 @@ definitions:
     - embriao
     type: string
     x-enum-varnames:
-    - TipoCoberturanatural
-    - TipoCoberturanInseminacao
+    - TipoCoberturaNatural
+    - TipoCoberturaInseminacao
     - TipoCoberturaEmbriao
   models.TipoConteudo:
     enum:
@@ -612,32 +1898,98 @@ definitions:
     - TipoInteracaoAmor
     - TipoInteracaoRisada
     - TipoInteracaoSurpresa
+  models.TipoLance:
+    enum:
+    - inicial
+    - incremento
+    - final
+    type: string
+    x-enum-varnames:
+    - TipoLanceInicial
+    - TipoLanceIncremento
+    - TipoLanceFinal
   models.TipoLeilao:
     enum:
-    - publico
-    - privado
+    - presencial
     - online
     - hibrido
     type: string
     x-enum-varnames:
-    - TipoLeilaoPublico
-    - TipoLeilaoPrivado
+    - TipoLeilaoPresencial
     - TipoLeilaoOnline
     - TipoLeilaoHibrido
-  models.TipoOferta:
+  models.TipoMedalha:
     enum:
-    - compra
-    - cobertura
-    - participacao
-    - sociedade
-    - aluguel
+    - ouro
+    - prata
+    - bronze
     type: string
     x-enum-varnames:
-    - TipoOfertaCompra
-    - TipoOfertaCobertura
-    - TipoOfertaParticipacao
-    - TipoOfertaSociedade
-    - TipoOfertaAluguel
+    - MedalhaOuro
+    - MedalhaPrata
+    - MedalhaBronze
+  models.TipoMidia:
+    enum:
+    - filme_internacional
+    - filme_nacional
+    - serie_tv
+    - publicidade
+    - documentario
+    - revista
+    - redes_sociais
+    - programa_tv
+    - livro
+    type: string
+    x-enum-varnames:
+    - TipoMidiaFilmeInternacional
+    - TipoMidiaFilmeNacional
+    - TipoMidiaSerieTV
+    - TipoMidiaPublicidade
+    - TipoMidiaDocumentario
+    - TipoMidiaRevista
+    - TipoMidiaRedesSociais
+    - TipoMidiaProgramaTV
+    - TipoMidiaLivro
+  models.TipoParceiroEntity:
+    enum:
+    - pessoa_fisica
+    - pessoa_juridica
+    - instituicao
+    - governo
+    type: string
+    x-enum-varnames:
+    - TipoParceiroEntityPessoaFisica
+    - TipoParceiroEntityPessoaJuridica
+    - TipoParceiroEntityInstituicao
+    - TipoParceiroEntityGoverno
+  models.TipoParceria:
+    enum:
+    - haras
+    - veterinario
+    - treinador
+    - comercial
+    - pesquisa
+    - academica
+    - governamental
+    type: string
+    x-enum-varnames:
+    - TipoParceriaHaras
+    - TipoParceriaVeterinario
+    - TipoParceriaTreinador
+    - TipoParceriaComercial
+    - TipoParceriaPesquisa
+    - TipoParceriaAcademica
+    - TipoParceriaGovernamental
+  models.TipoParticipante:
+    enum:
+    - pessoa_fisica
+    - pessoa_juridica
+    - representante
+    type: string
+    x-enum-varnames:
+    - TipoParticipantePessoaFisica
+    - TipoParticipantePessoaJuridica
+    - TipoParticipanteRepresentante
   models.TipoParto:
     enum:
     - normal
@@ -648,43 +2000,150 @@ definitions:
     - TipoPartoNormal
     - TipoPartoCesariana
     - TipoPartoAssistido
-  models.TokenResponse:
+  models.TipoPerfil:
+    enum:
+    - publico
+    - privado
+    - comercial
+    type: string
+    x-enum-varnames:
+    - TipoPerfilPublico
+    - TipoPerfilPrivado
+    - TipoPerfilComercial
+  models.TipoPropriedade:
+    enum:
+    - haras
+    - hipica
+    type: string
+    x-enum-varnames:
+    - TipoPropriedadeHaras
+    - TipoPropriedadeHipica
+  models.TipoRanking:
+    enum:
+    - nacional
+    - internacional
+    - raca
+    - categoria
+    type: string
+    x-enum-varnames:
+    - TipoRankingNacional
+    - TipoRankingInternacional
+    - TipoRankingRaca
+    - TipoRankingCategoria
+  models.TipoRankingReprodutivo:
+    enum:
+    - reprodutor
+    - matriz
+    type: string
+    x-enum-varnames:
+    - TipoRankingReprodutor
+    - TipoRankingMatriz
+  models.TipoViagem:
+    enum:
+    - competicao_internacional
+    - exportacao
+    - importacao
+    - tour_mundial
+    - intercambio
+    - missao_comercial
+    - evento_internacional
+    type: string
+    x-enum-varnames:
+    - TipoViagemCompeticaoInternacional
+    - TipoViagemExportacao
+    - TipoViagemImportacao
+    - TipoViagemTourMundial
+    - TipoViagemIntercambio
+    - TipoViagemMissaoComercial
+    - TipoViagemEventoInternacional
+  models.Ultrassonografia:
     properties:
-      expires_in:
+      batimento_cardiaco:
+        type: boolean
+      created_at:
+        type: string
+      data_exame:
+        type: string
+      deleted_at:
+        type: string
+      desenvolvimento_normal:
+        type: boolean
+      diagnostico:
+        type: string
+      documentos:
+        $ref: '#/definitions/models.JSONB'
+      frequencia_cardiaca:
         type: integer
-      token:
+      gestacao:
+        allOf:
+        - $ref: '#/definitions/models.Gestacao'
+        description: Relacionamentos
+      gestacao_id:
+        type: integer
+      id:
+        type: integer
+      idade_gestacional:
+        type: integer
+      numero_embrioes:
+        type: integer
+      observacoes:
         type: string
-      user:
-        $ref: '#/definitions/models.UserResponse'
+      presenca_embriao:
+        type: boolean
+      proximo_exame:
+        type: string
+      tamanho_embriao:
+        type: number
+      veterinario:
+        $ref: '#/definitions/models.User'
+      veterinario_responsavel:
+        type: integer
     type: object
-  models.UpdateProfileRequest:
-    properties:
-      cpf_cnpj:
-        type: string
-      name:
-        type: string
-    required:
-    - cpf_cnpj
-    - name
-    type: object
-  models.UserResponse:
+  models.User:
     properties:
       certificate:
-        $ref: '#/definitions/models.CertificateResponse'
+        allOf:
+        - $ref: '#/definitions/models.Certificate'
+        description: Relacionamentos
       cpf_cnpj:
         type: string
       created_at:
         type: string
+      deleted_at:
+        type: string
       email:
         type: string
+      equinos:
+        items:
+          $ref: '#/definitions/models.Equino'
+        type: array
+      eventos:
+        items:
+          $ref: '#/definitions/models.Evento'
+        type: array
       id:
         type: integer
       is_active:
         type: boolean
+      is_email_verified:
+        type: boolean
+      keycloak_sub:
+        type: string
       name:
+        type: string
+      role:
+        type: string
+      supabase_id:
+        type: string
+      updated_at:
         type: string
       user_type:
         $ref: '#/definitions/models.UserType'
+    required:
+    - cpf_cnpj
+    - email
+    - name
+    - user_type
     type: object
   models.UserType:
     enum:
@@ -692,138 +2151,188 @@ definitions:
     - veterinario
     - admin
     - laboratorio
+    - parceiro
+    - leiloeiro
     type: string
     x-enum-varnames:
     - UserTypeCriador
     - UserTypeVeterinario
     - UserTypeAdmin
     - UserTypeLaboratorio
-  models.VeterinarioSimpleResponse:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-host: localhost:8080
+    - UserTypeParceiro
+    - UserTypeLeiloeiro
+host: seahorse-app-28du8.ondigitalocean.app
 info:
   contact:
-    email: support@equinoid.org
-    name: EquinoId Support
-    url: https://equinoid.org/support
-  description: Sistema internacional de identificação e gestão de equinos
+    email: suporte@equinoid.com
+    name: Equinoid Support
+    url: https://equinoid.com/support
+  description: 'API completa para gestão de equinos com Tokenização RWA (Real World
+    Assets). Inclui: autenticação, gestão de equinos, tokenização, leilões, exames
+    laboratoriais, nutrição com IA, treinamento, rankings, financeiro e muito mais.'
   license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
-  termsOfService: https://equinoid.org/terms
-  title: EquinoId API
-  version: "1.0"
+    name: Proprietária
+    url: https://equinoid.com/license
+  termsOfService: https://equinoid.com/terms
+  title: Equinoid API - Sistema Perfeito
+  version: "2.0"
 paths:
-  /auth/forgot-password:
-    post:
-      consumes:
-      - application/json
-      description: Envia email para recuperação de senha
+  /exames:
+    get:
+      description: Retorna lista de exames, opcionalmente filtrada por laboratório
+        ou solicitante
       parameters:
-      - description: Email do usuário
-        in: body
-        name: forgot
-        required: true
-        schema:
-          properties:
-            email:
-              type: string
-          type: object
+      - description: ID do laboratório
+        in: query
+        name: laboratorio_id
+        type: integer
+      - description: ID do solicitante
+        in: query
+        name: solicitante_id
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.APIResponse'
+            items:
+              $ref: '#/definitions/models.ExameLaboratorial'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Lista exames laboratoriais
+      tags:
+      - exames
+    post:
+      consumes:
+      - application/json
+      description: Cria uma solicitação de exame laboratorial
+      parameters:
+      - description: Dados do exame
+        in: body
+        name: exame
+        required: true
+        schema:
+          $ref: '#/definitions/models.ExameLaboratorial'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ExameLaboratorial'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Solicita novo exame
+      tags:
+      - exames
+  /exames/{id}:
+    get:
+      description: Retorna detalhes de um exame específico
+      parameters:
+      - description: ID do exame
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ExameLaboratorial'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Esqueci minha senha
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Busca exame por ID
       tags:
-      - auth
-  /auth/login:
-    post:
+      - exames
+    put:
       consumes:
       - application/json
-      description: Autentica usuário e retorna JWT token
+      description: Atualiza informações de um exame
       parameters:
-      - description: Dados de login
+      - description: ID do exame
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Dados para atualizar
         in: body
-        name: login
+        name: exame
         required: true
         schema:
-          $ref: '#/definitions/models.LoginRequest'
+          type: object
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            allOf:
-            - $ref: '#/definitions/models.APIResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.TokenResponse'
-              type: object
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Login do usuário
-      tags:
-      - auth
-  /auth/logout:
-    post:
-      description: Revoga o token JWT atual
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            additionalProperties:
+              type: string
+            type: object
       security:
       - BearerAuth: []
-      summary: Logout
+      summary: Atualiza exame
       tags:
-      - auth
-  /auth/refresh:
+      - exames
+  /exames/{id}/atribuir-laboratorio:
     post:
       consumes:
       - application/json
-      description: Renova JWT token usando refresh token
+      description: Atribui um laboratório para realizar o exame
       parameters:
-      - description: Refresh token
+      - description: ID do exame
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ID do laboratório
         in: body
-        name: refresh
+        name: laboratorio
         required: true
         schema:
           properties:
-            refresh_token:
-              type: string
+            laboratorio_id:
+              type: number
           type: object
       produces:
       - application/json
@@ -831,150 +2340,45 @@ paths:
         "200":
           description: OK
           schema:
-            allOf:
-            - $ref: '#/definitions/models.APIResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.TokenResponse'
-              type: object
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Renovar token
-      tags:
-      - auth
-  /auth/register:
-    post:
-      consumes:
-      - application/json
-      description: Registra novo usuário no sistema
-      parameters:
-      - description: Dados de registro
-        in: body
-        name: register
-        required: true
-        schema:
-          $ref: '#/definitions/models.RegisterRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            allOf:
-            - $ref: '#/definitions/models.APIResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.UserResponse'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "409":
-          description: Conflict
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Registro de usuário
-      tags:
-      - auth
-  /auth/reset-password:
-    post:
-      consumes:
-      - application/json
-      description: Redefine senha usando token de recuperação
-      parameters:
-      - description: Token e nova senha
-        in: body
-        name: reset
-        required: true
-        schema:
-          properties:
-            new_password:
+            additionalProperties:
               type: string
-            token:
-              type: string
-          type: object
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Resetar senha
-      tags:
-      - auth
-  /certificates/generate:
-    post:
-      consumes:
-      - application/json
-      description: Gera certificado digital para o equino
-      parameters:
-      - description: Dados do certificado
-        in: body
-        name: request
-        required: true
-        schema:
-          properties:
-            equinoid:
-              type: string
-            tipo_certificado:
-              type: string
-          type: object
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            type: object
       security:
       - BearerAuth: []
-      summary: Gerar certificado
+      summary: Atribui laboratório ao exame
       tags:
-      - certificados
-  /certificates/revoke:
+      - exames
+  /exames/{id}/cancelar:
     post:
       consumes:
       - application/json
-      description: Revoga certificado digital
+      description: Cancela um exame laboratorial
       parameters:
-      - description: Dados de revogação
+      - description: ID do exame
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Motivo do cancelamento
         in: body
-        name: request
+        name: cancelamento
         required: true
         schema:
           properties:
             motivo:
               type: string
-            serial_number:
-              type: string
           type: object
       produces:
       - application/json
@@ -982,1063 +2386,73 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.APIResponse'
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            additionalProperties:
+              type: string
+            type: object
       security:
       - BearerAuth: []
-      summary: Revogar certificado
+      summary: Cancela exame
       tags:
-      - certificados
-  /certificates/validate/{serial}:
-    get:
-      description: Valida certificado digital pelo número de série
+      - exames
+  /exames/{id}/registrar-coleta:
+    post:
+      description: Registra que a coleta de material foi realizada
       parameters:
-      - description: Número de série do certificado
+      - description: ID do exame
         in: path
-        name: serial
+        name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.APIResponse'
-        "404":
-          description: Not Found
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Validar certificado
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Registra coleta de material
       tags:
-      - certificados
-  /chatbot/query:
+      - exames
+  /exames/{id}/resultado:
     post:
       consumes:
       - application/json
-      description: Consulta chatbot com IA sobre equinos
+      description: Adiciona resultado e finaliza um exame
       parameters:
-      - description: Query para o chatbot
+      - description: ID do exame
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Resultado do exame
         in: body
-        name: request
+        name: resultado
         required: true
         schema:
           properties:
-            equinoid:
-              type: string
-            query:
-              type: string
-          type: object
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Chatbot query
-      tags:
-      - chatbot
-  /equinos:
-    get:
-      description: Retorna lista paginada de equinos
-      parameters:
-      - default: 1
-        description: Número da página
-        in: query
-        name: page
-        type: integer
-      - default: 20
-        description: Itens por página
-        in: query
-        name: limit
-        type: integer
-      - description: Busca por nome ou EquinoId
-        in: query
-        name: search
-        type: string
-      - description: Filtro por status
-        in: query
-        name: status
-        type: string
-      - description: Filtro por raça
-        in: query
-        name: raca
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/models.APIResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.PaginatedResponse'
-              type: object
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Listar equinos
-      tags:
-      - equinos
-    post:
-      consumes:
-      - application/json
-      description: Registra um novo equino no sistema
-      parameters:
-      - description: Dados do equino
-        in: body
-        name: equino
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateEquinoRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            allOf:
-            - $ref: '#/definitions/models.APIResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.EquinoResponse'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "409":
-          description: Conflict
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Criar novo equino
-      tags:
-      - equinos
-  /equinos/{equinoid}:
-    get:
-      description: Retorna detalhes de um equino específico
-      parameters:
-      - description: EquinoId do equino
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/models.APIResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.EquinoResponse'
-              type: object
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Obter equino por ID
-      tags:
-      - equinos
-  /equinos/{equinoid}/arvore-genealogica:
-    get:
-      description: Retorna árvore genealógica completa até N gerações
-      parameters:
-      - description: EquinoID
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - default: 3
-        description: Número de gerações
-        in: query
-        name: geracoes
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Obter árvore genealógica
-      tags:
-      - linhagem
-  /equinos/{equinoid}/avaliacoes-semen:
-    get:
-      description: Lista todas as avaliações de sêmen do reprodutor
-      parameters:
-      - description: EquinoId do reprodutor
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Listar avaliações de sêmen
-      tags:
-      - reprodução
-    post:
-      consumes:
-      - application/json
-      description: Cria avaliação de qualidade de sêmen do reprodutor
-      parameters:
-      - description: EquinoID do reprodutor
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: Dados da avaliação
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateAvaliacaoSemenRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Criar avaliação de sêmen
-      tags:
-      - reprodução
-  /equinos/{equinoid}/coberturas:
-    get:
-      description: Lista coberturas do equino (como reprodutor ou matriz)
-      parameters:
-      - description: EquinoID
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Listar coberturas
-      tags:
-      - reprodução
-    post:
-      consumes:
-      - application/json
-      description: Registra uma cobertura entre reprodutor e matriz
-      parameters:
-      - description: EquinoID do reprodutor
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: Dados da cobertura
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateCoberturaRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Registrar cobertura
-      tags:
-      - reprodução
-  /equinos/{equinoid}/eventos:
-    get:
-      description: Lista todos os eventos do equino
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Listar eventos do equino
-      tags:
-      - equinos
-    post:
-      consumes:
-      - application/json
-      description: Registra novo evento para o equino
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: Dados do evento
-        in: body
-        name: request
-        required: true
-        schema:
-          properties:
-            data_evento:
-              type: string
-            descricao:
-              type: string
-            tipo_evento:
-              type: string
-          type: object
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Criar evento
-      tags:
-      - equinos
-  /equinos/{equinoid}/gestacoes:
-    get:
-      description: Lista gestações da matriz
-      parameters:
-      - description: EquinoID da matriz
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Listar gestações
-      tags:
-      - reprodução
-  /equinos/{equinoid}/historico-leiloes:
-    get:
-      description: Retorna histórico de leilões do equino
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Histórico de leilões
-      tags:
-      - leilões
-  /equinos/{equinoid}/interacoes:
-    post:
-      consumes:
-      - application/json
-      description: Registra interação (like, share, comment) em post
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: Tipo de interação
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateInteracaoRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Criar interação social
-      tags:
-      - social
-  /equinos/{equinoid}/leiloes:
-    post:
-      consumes:
-      - application/json
-      description: Registra equino em leilão
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: Dados do leilão
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.DadosLeilaoRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Criar leilão
-      tags:
-      - leilões
-  /equinos/{equinoid}/linhagem:
-    get:
-      description: Retorna descendentes diretos do equino
-      parameters:
-      - description: EquinoID
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Obter linhagem do equino
-      tags:
-      - linhagem
-  /equinos/{equinoid}/ofertas:
-    post:
-      consumes:
-      - application/json
-      description: Registra oferta de compra/venda para o equino
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: Dados da oferta
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateOfertaRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Criar oferta comercial
-      tags:
-      - social
-  /equinos/{equinoid}/perfil-social:
-    get:
-      description: Retorna perfil social público do equino
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Obter perfil social
-      tags:
-      - social
-    post:
-      consumes:
-      - multipart/form-data
-      description: Cria perfil social para o equino (vitrine pública)
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: Biografia do equino
-        in: formData
-        name: biografia
-        type: string
-      - description: URL do vídeo destaque
-        in: formData
-        name: video_destaque
-        type: string
-      - description: Website oficial
-        in: formData
-        name: site
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Criar perfil social
-      tags:
-      - social
-  /equinos/{equinoid}/performance-materna:
-    post:
-      consumes:
-      - application/json
-      - application/json
-      description: |-
-        Registra performance materna após parto
-        Registra performance materna após parto (em desenvolvimento)
-      parameters:
-      - description: EquinoId da matriz
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: Dados de performance
-        in: body
-        name: request
-        required: true
-        schema:
-          properties:
-            comportamento_maternal:
-              type: string
-            gestacao_id:
-              type: integer
-            producao_leite:
-              type: string
-            saude_pos_parto:
-              type: string
-          type: object
-      - description: EquinoId da matriz
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: Dados de performance
-        in: body
-        name: request
-        required: true
-        schema:
-          properties:
-            gestacao_id:
-              type: integer
-            observacoes:
-              type: string
-          type: object
-      produces:
-      - application/json
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      - BearerAuth: []
-      summary: Criar performance materna
-      tags:
-      - reprodução
-      - reprodução
-  /equinos/{equinoid}/posts:
-    get:
-      description: Lista posts da vitrine social do equino
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - default: 1
-        description: Página
-        in: query
-        name: page
-        type: integer
-      - default: 20
-        description: Itens por página
-        in: query
-        name: limit
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Listar posts sociais
-      tags:
-      - social
-    post:
-      consumes:
-      - application/json
-      description: Cria post na vitrine social do equino
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: Dados do post
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreatePostRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Criar post social
-      tags:
-      - social
-  /equinos/{equinoid}/rankings:
-    get:
-      description: Retorna rankings de valorização do equino
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: Tipo de ranking
-        in: query
-        name: tipo
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Obter rankings de valorização
-      tags:
-      - valorização
-  /equinos/{equinoid}/rankings-reprodutivos:
-    get:
-      description: |-
-        Retorna rankings reprodutivos do equino
-        Retorna rankings reprodutivos do equino (em desenvolvimento)
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      produces:
-      - application/json
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      - BearerAuth: []
-      summary: Obter rankings reprodutivos
-      tags:
-      - reprodução
-      - reprodução
-  /equinos/{equinoid}/validar-parentesco:
-    post:
-      consumes:
-      - application/json
-      description: Valida parentesco e retorna coeficiente de consanguinidade
-      parameters:
-      - description: EquinoID 1
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: EquinoID 2
-        in: body
-        name: request
-        required: true
-        schema:
-          properties:
-            equinoid_2:
-              type: string
-          type: object
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Validar parentesco entre equinos
-      tags:
-      - linhagem
-  /equinos/{equinoid}/valorizacao:
-    get:
-      description: Retorna registros de valorização do equino com paginação
-      parameters:
-      - description: EquinoID
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - default: 1
-        description: Página
-        in: query
-        name: page
-        type: integer
-      - default: 20
-        description: Itens por página
-        in: query
-        name: limit
-        type: integer
-      - description: Filtrar por categoria
-        in: query
-        name: categoria
-        type: string
-      - description: Filtrar por status de validação
-        in: query
-        name: status
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Listar registros de valorização
-      tags:
-      - valorização
-    post:
-      consumes:
-      - application/json
-      description: Cria novo registro de valorização para o equino
-      parameters:
-      - description: EquinoID
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      - description: Dados do registro
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateValorizacaoRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Criar registro de valorização
-      tags:
-      - valorização
-  /gestacoes/{gestacao_id}/parto:
-    post:
-      consumes:
-      - application/json
-      description: Registra parto de uma gestação
-      parameters:
-      - description: ID da gestação
-        in: path
-        name: gestacao_id
-        required: true
-        type: string
-      - description: Dados do parto
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.RegistrarPartoRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Registrar parto
-      tags:
-      - reprodução
-  /gestacoes/{gestacao_id}/ultrassonografias:
-    post:
-      consumes:
-      - application/json
-      description: Registra ultrassonografia de gestação
-      parameters:
-      - description: ID da gestação
-        in: path
-        name: gestacao_id
-        required: true
-        type: string
-      - description: Dados da ultrassonografia
-        in: body
-        name: request
-        required: true
-        schema:
-          properties:
-            data_exame:
+            documento_url:
               type: string
             observacoes:
               type: string
@@ -2048,151 +2462,36 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Criar ultrassonografia
-      tags:
-      - reprodução
-  /health:
-    get:
-      description: Verifica o status de saúde da aplicação e serviços
-      produces:
-      - application/json
-      responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handlers.HealthStatus'
-        "503":
-          description: Service Unavailable
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Health Check
-      tags:
-      - health
-  /health/live:
-    get:
-      description: Verifica se a aplicação está viva
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/models.APIResponse'
-            - properties:
-                data:
-                  properties:
-                    alive:
-                      type: boolean
-                  type: object
-              type: object
-      summary: Liveness Check
-      tags:
-      - health
-  /health/ready:
-    get:
-      description: Verifica se a aplicação está pronta para receber tráfego
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/models.APIResponse'
-            - properties:
-                data:
-                  properties:
-                    ready:
-                      type: boolean
-                  type: object
-              type: object
-        "503":
-          description: Service Unavailable
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Readiness Check
-      tags:
-      - health
-  /integrations/gedave/{equinoid}:
-    get:
-      description: Obtém dados do equino no sistema GEDAVE
-      parameters:
-      - description: EquinoId
-        in: path
-        name: equinoid
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Obter dados GEDAVE
-      tags:
-      - integrações
-  /integrations/gedave/sync:
-    post:
-      consumes:
-      - application/json
-      description: Sincroniza dados do equino com sistema GEDAVE
-      parameters:
-      - description: EquinoId para sincronizar
-        in: body
-        name: request
-        required: true
-        schema:
-          properties:
-            equinoid:
+            additionalProperties:
               type: string
-          type: object
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
+            type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       security:
       - BearerAuth: []
-      summary: Sincronizar com GEDAVE
+      summary: Adiciona resultado ao exame
       tags:
-      - integrações
-  /rankings/{tipo}:
+      - exames
+  /leiloes:
     get:
-      description: Retorna ranking geral por tipo (valorização, reprodução, etc)
+      description: Retorna lista de leilões, opcionalmente filtrada por leiloeiro
       parameters:
-      - description: Tipo de ranking
-        in: path
-        name: tipo
-        required: true
-        type: string
-      - default: 10
-        description: Limite de resultados
+      - description: ID do leiloeiro
         in: query
-        name: limit
+        name: leiloeiro_id
         type: integer
       produces:
       - application/json
@@ -2200,312 +2499,370 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Ranking geral
-      tags:
-      - rankings
-  /reports/dashboard:
-    get:
-      description: Retorna estatísticas para o dashboard
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Dashboard stats
-      tags:
-      - relatórios
-  /reports/equinos:
-    get:
-      description: Gera relatório customizado de equinos
-      parameters:
-      - default: json
-        description: Formato do relatório
-        enum:
-        - json
-        - csv
-        - pdf
-        in: query
-        name: formato
-        type: string
-      - description: Filtros JSON
-        in: query
-        name: filtros
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Gerar relatório de equinos
-      tags:
-      - relatórios
-  /search/equinos:
-    post:
-      consumes:
-      - application/json
-      description: Busca avançada de equinos com múltiplos filtros
-      parameters:
-      - description: Critérios de busca
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.SearchCriteria'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Buscar equinos
-      tags:
-      - busca
-  /users/change-password:
-    post:
-      consumes:
-      - application/json
-      description: Altera a senha do usuário autenticado
-      parameters:
-      - description: Senhas atual e nova
-        in: body
-        name: password
-        required: true
-        schema:
-          properties:
-            current_password:
-              type: string
-            new_password:
-              type: string
-          type: object
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            items:
+              $ref: '#/definitions/models.Leilao'
+            type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            additionalProperties:
+              type: string
+            type: object
       security:
       - BearerAuth: []
-      summary: Alterar senha
+      summary: Lista leilões
       tags:
-      - users
-  /users/check-email:
+      - leiloes
     post:
       consumes:
       - application/json
-      description: Verifica se um email está disponível para registro
+      description: Cria um novo leilão (apenas leiloeiros)
       parameters:
-      - description: Email para verificar
+      - description: Dados do leilão
         in: body
-        name: check
+        name: leilao
         required: true
         schema:
-          properties:
-            email:
-              type: string
-          type: object
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/models.APIResponse'
-            - properties:
-                data:
-                  properties:
-                    available:
-                      type: boolean
-                  type: object
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Verificar disponibilidade de email
-      tags:
-      - users
-  /users/profile:
-    delete:
-      description: Deleta (soft delete) a conta do usuário autenticado
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Deletar conta do usuário
-      tags:
-      - users
-    get:
-      description: Retorna o perfil do usuário autenticado
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/models.APIResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.UserResponse'
-              type: object
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Obter perfil do usuário
-      tags:
-      - users
-    put:
-      consumes:
-      - application/json
-      description: Atualiza dados do perfil do usuário autenticado
-      parameters:
-      - description: Dados para atualização
-        in: body
-        name: profile
-        required: true
-        schema:
-          $ref: '#/definitions/models.UpdateProfileRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/models.APIResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.UserResponse'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Atualizar perfil do usuário
-      tags:
-      - users
-  /webhooks/register:
-    post:
-      consumes:
-      - application/json
-      description: Registra webhook para receber notificações
-      parameters:
-      - description: URL e eventos do webhook
-        in: body
-        name: request
-        required: true
-        schema:
-          properties:
-            eventos:
-              type: array
-            url:
-              type: string
-          type: object
+          $ref: '#/definitions/models.Leilao'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.APIResponse'
+            $ref: '#/definitions/models.Leilao'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       security:
       - BearerAuth: []
-      summary: Registrar webhook
+      summary: Cria novo leilão
       tags:
-      - webhooks
+      - leiloes
+  /leiloes/{id}:
+    get:
+      description: Retorna detalhes de um leilão específico
+      parameters:
+      - description: ID do leilão
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Leilao'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Busca leilão por ID
+      tags:
+      - leiloes
+  /leiloes/{id}/finalizar:
+    post:
+      description: Encerra um leilão e calcula totais
+      parameters:
+      - description: ID do leilão
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Leilao'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Finaliza leilão
+      tags:
+      - leiloes
+  /leiloes/{id}/participacoes:
+    get:
+      description: Retorna todas as participações de um leilão específico
+      parameters:
+      - description: ID do leilão
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ParticipacaoLeilao'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Lista participações de um leilão
+      tags:
+      - leiloes
+    post:
+      consumes:
+      - application/json
+      description: Inscreve um equino em um leilão
+      parameters:
+      - description: ID do leilão
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Dados da participação
+        in: body
+        name: participacao
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParticipacaoLeilao'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ParticipacaoLeilao'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Cria participação em leilão
+      tags:
+      - leiloes
+  /leiloes/participacoes/{id}/aprovar:
+    post:
+      description: Aprova a participação de um equino no leilão
+      parameters:
+      - description: ID da participação
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Aprova participação
+      tags:
+      - leiloes
+  /leiloes/participacoes/{id}/ausencia:
+    post:
+      description: Marca a ausência de um equino em leilão presencial e aplica penalização
+      parameters:
+      - description: ID da participação
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Marca ausência em leilão presencial
+      tags:
+      - leiloes
+  /leiloes/participacoes/{id}/presenca:
+    post:
+      description: Marca a presença de um equino em leilão presencial
+      parameters:
+      - description: ID da participação
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Marca presença em leilão presencial
+      tags:
+      - leiloes
+  /leiloes/participacoes/{id}/venda:
+    post:
+      consumes:
+      - application/json
+      description: Registra a venda de um equino no leilão
+      parameters:
+      - description: ID da participação
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Dados da venda
+        in: body
+        name: venda
+        required: true
+        schema:
+          properties:
+            comprador_id:
+              type: number
+            valor_vendido:
+              type: number
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Registra venda em leilão
+      tags:
+      - leiloes
+  /leiloes/relatorio-ganhos:
+    get:
+      description: Retorna relatório de ganhos de leilões finalizados
+      parameters:
+      - description: ID do leiloeiro
+        in: query
+        name: leiloeiro_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: object
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Relatório de ganhos de leilões
+      tags:
+      - leiloes
 securityDefinitions:
   BearerAuth:
+    description: 'JWT Bearer token. Formato: "Bearer {token}"'
     in: header
     name: Authorization
     type: apiKey
 swagger: "2.0"
+tags:
+- description: Endpoints de autenticação e autorização (JWT)
+  name: Auth
+- description: Gerenciamento de usuários (perfil + admin)
+  name: Users
+- description: CRUD completo de equinos
+  name: Equinos
+- description: Sistema RWA - Tokenização de equinos (CORE BUSINESS)
+  name: Tokenização
+- description: Participações em leilões e vendas
+  name: Leilões
+- description: Workflow de exames laboratoriais
+  name: Exames
+- description: Gestão financeira e dashboard
+  name: Financeiro
+- description: Planos alimentares com IA
+  name: Nutrição
+- description: Programas e sessões de treinamento
+  name: Treinamento

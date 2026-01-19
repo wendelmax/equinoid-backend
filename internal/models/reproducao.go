@@ -23,7 +23,7 @@ type Cobertura struct {
 	Documentos             JSONB           `json:"documentos" gorm:"type:jsonb"`
 	CreatedAt              time.Time       `json:"created_at"`
 	UpdatedAt              time.Time       `json:"updated_at"`
-	DeletedAt              gorm.DeletedAt  `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt              gorm.DeletedAt  `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Reprodutor  *Equino         `json:"reprodutor,omitempty" gorm:"foreignKey:ReprodutorEquinoid;references:Equinoid"`
@@ -74,7 +74,7 @@ type AvaliacaoSemen struct {
 	Observacoes                 string             `json:"observacoes" gorm:"type:text"`
 	Documentos                  JSONB              `json:"documentos" gorm:"type:jsonb"`
 	CreatedAt                   time.Time          `json:"created_at"`
-	DeletedAt                   gorm.DeletedAt     `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt                   gorm.DeletedAt     `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Reprodutor  *Equino         `json:"reprodutor,omitempty" gorm:"foreignKey:ReprodutorEquinoid;references:Equinoid"`
@@ -125,7 +125,7 @@ type Gestacao struct {
 	Documentos               JSONB          `json:"documentos" gorm:"type:jsonb"`
 	CreatedAt                time.Time      `json:"created_at"`
 	UpdatedAt                time.Time      `json:"updated_at"`
-	DeletedAt                gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt                gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Matriz             *Equino             `json:"matriz,omitempty" gorm:"foreignKey:MatrizEquinoid;references:Equinoid"`
@@ -173,7 +173,7 @@ type Ultrassonografia struct {
 	ProximoExame           *time.Time     `json:"proximo_exame"`
 	Documentos             JSONB          `json:"documentos" gorm:"type:jsonb"`
 	CreatedAt              time.Time      `json:"created_at"`
-	DeletedAt              gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt              gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Gestacao    *Gestacao `json:"gestacao,omitempty" gorm:"foreignKey:GestacaoID"`
@@ -197,7 +197,7 @@ type PerformanceMaterna struct {
 	IntervaloProximoParto    *int            `json:"intervalo_proximo_parto"`
 	Observacoes              string          `json:"observacoes" gorm:"type:text"`
 	CreatedAt                time.Time       `json:"created_at"`
-	DeletedAt                gorm.DeletedAt  `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt                gorm.DeletedAt  `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Matriz   *Equino   `json:"matriz,omitempty" gorm:"foreignKey:MatrizEquinoid;references:Equinoid"`
@@ -240,7 +240,7 @@ type RankingReprodutivo struct {
 	PeriodoReferencia    string                 `json:"periodo_referencia" gorm:"size:20"`
 	DataRanking          time.Time              `json:"data_ranking" gorm:"not null"`
 	CreatedAt            time.Time              `json:"created_at"`
-	DeletedAt            gorm.DeletedAt         `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt            gorm.DeletedAt         `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Equino *Equino `json:"equino,omitempty" gorm:"foreignKey:Equinoid;references:Equinoid"`
@@ -269,7 +269,7 @@ type LaboratorioDNA struct {
 	APIKeyHash         string         `json:"api_key_hash" gorm:"size:255"`
 	CreatedAt          time.Time      `json:"created_at"`
 	UpdatedAt          time.Time      `json:"updated_at"`
-	DeletedAt          gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt          gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Coberturas      []Cobertura      `json:"coberturas,omitempty" gorm:"foreignKey:LaboratorioID"`

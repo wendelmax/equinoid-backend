@@ -28,7 +28,7 @@ type PerfilSocial struct {
 	CriadoPor              uint                  `json:"criado_por" gorm:"not null"`
 	CreatedAt              time.Time             `json:"created_at"`
 	UpdatedAt              time.Time             `json:"updated_at"`
-	DeletedAt              gorm.DeletedAt        `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt              gorm.DeletedAt        `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Equino              *Equino              `json:"equino,omitempty" gorm:"foreignKey:Equinoid;references:Equinoid"`
@@ -78,7 +78,7 @@ type PostSocial struct {
 	CriadoPor                uint           `json:"criado_por" gorm:"not null"`
 	CreatedAt                time.Time      `json:"created_at"`
 	UpdatedAt                time.Time      `json:"updated_at"`
-	DeletedAt                gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt                gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Equino       *Equino            `json:"equino,omitempty" gorm:"foreignKey:Equinoid;references:Equinoid"`
@@ -115,7 +115,7 @@ type InteracaoSocial struct {
 	UserID        uint           `json:"user_id" gorm:"not null"`
 	TipoInteracao TipoInteracao  `json:"tipo_interacao" gorm:"not null"`
 	CreatedAt     time.Time      `json:"created_at"`
-	DeletedAt     gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt     gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Post *PostSocial `json:"post,omitempty" gorm:"foreignKey:PostID"`
@@ -144,7 +144,7 @@ type ComentarioSocial struct {
 	Conteudo  string         `json:"conteudo" gorm:"type:text;not null"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Post      *PostSocial        `json:"post,omitempty" gorm:"foreignKey:PostID"`
@@ -182,7 +182,7 @@ type IntegracaoInstagram struct {
 	ProximaSincronizacao *time.Time       `json:"proxima_sincronizacao"`
 	CreatedAt            time.Time        `json:"created_at"`
 	UpdatedAt            time.Time        `json:"updated_at"`
-	DeletedAt            gorm.DeletedAt   `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt            gorm.DeletedAt   `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Equino       *Equino       `json:"equino,omitempty" gorm:"foreignKey:Equinoid;references:Equinoid"`
@@ -214,7 +214,7 @@ type SeguirEquino struct {
 	UserID    uint           `json:"user_id" gorm:"not null"`
 	Equinoid  string         `json:"equinoid" gorm:"size:25;not null"`
 	CreatedAt time.Time      `json:"created_at"`
-	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	User   *User   `json:"user,omitempty" gorm:"foreignKey:UserID"`
@@ -237,7 +237,7 @@ type Oferta struct {
 	ObservacoesInternas  string         `json:"observacoes_internas" gorm:"type:text"`
 	CreatedAt            time.Time      `json:"created_at"`
 	UpdatedAt            time.Time      `json:"updated_at"`
-	DeletedAt            gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt            gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Equino    *Equino `json:"equino,omitempty" gorm:"foreignKey:Equinoid;references:Equinoid"`

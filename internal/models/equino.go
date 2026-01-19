@@ -33,7 +33,7 @@ type Equino struct {
 	Status         StatusEquino   `json:"status" gorm:"default:'ativo'"`
 	CreatedAt      time.Time      `json:"created_at"`
 	UpdatedAt      time.Time      `json:"updated_at"`
-	DeletedAt      gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt      gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Proprietario         *User                 `json:"proprietario,omitempty" gorm:"foreignKey:ProprietarioID"`

@@ -34,7 +34,7 @@ type PlanoNutricional struct {
 	Status                StatusPlano    `json:"status" gorm:"size:20;default:'ativo'"`
 	CreatedAt             time.Time      `json:"created_at"`
 	UpdatedAt             time.Time      `json:"updated_at"`
-	DeletedAt             gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt             gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	Equino        *Equino       `json:"equino,omitempty" gorm:"foreignKey:EquinoID"`
 	Veterinario   *User         `json:"veterinario,omitempty" gorm:"foreignKey:VeterinarioID"`
@@ -78,7 +78,7 @@ type Refeicao struct {
 	Observacoes        string         `json:"observacoes" gorm:"type:text"`
 	RegistradoPor      uint           `json:"registrado_por" gorm:"not null"`
 	CreatedAt          time.Time      `json:"created_at"`
-	DeletedAt          gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt          gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	PlanoNutricional *PlanoNutricional `json:"plano_nutricional,omitempty" gorm:"foreignKey:PlanoNutricionalID"`
 	Equino           *Equino           `json:"equino,omitempty" gorm:"foreignKey:EquinoID"`

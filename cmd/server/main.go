@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	_ "github.com/equinoid/backend/docs"
 	"github.com/equinoid/backend/internal/app"
 	"github.com/equinoid/backend/internal/config"
 	"github.com/equinoid/backend/pkg/logging"
@@ -21,7 +22,7 @@ import (
 // @license.name Proprietária
 // @license.url https://equinoid.com/license
 
-// @host api.equinoid.com
+// @host seahorse-app-28du8.ondigitalocean.app
 // @BasePath /api/v1
 
 // @securityDefinitions.apikey BearerAuth

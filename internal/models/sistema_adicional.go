@@ -24,7 +24,7 @@ type RegistroMidia struct {
 	Engajamento            *float64       `json:"engajamento" gorm:"type:decimal(5,2)"`
 	CreatedAt              time.Time      `json:"created_at"`
 	UpdatedAt              time.Time      `json:"updated_at"`
-	DeletedAt              gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt              gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	RegistroValorizacao *RegistroValorizacao `json:"registro_valorizacao,omitempty" gorm:"foreignKey:RegistroValorizacaoID"`
@@ -66,7 +66,7 @@ type RegistroSaude struct {
 	ExameGenetico         JSONB          `json:"exame_genetico" gorm:"type:jsonb"`
 	CreatedAt             time.Time      `json:"created_at"`
 	UpdatedAt             time.Time      `json:"updated_at"`
-	DeletedAt             gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt             gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	RegistroValorizacao *RegistroValorizacao `json:"registro_valorizacao,omitempty" gorm:"foreignKey:RegistroValorizacaoID"`
@@ -110,7 +110,7 @@ type RegistroEducacao struct {
 	InstituicaoCertificadora string           `json:"instituicao_certificadora" gorm:"size:200"`
 	CreatedAt                time.Time        `json:"created_at"`
 	UpdatedAt                time.Time        `json:"updated_at"`
-	DeletedAt                gorm.DeletedAt   `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt                gorm.DeletedAt   `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	RegistroValorizacao *RegistroValorizacao `json:"registro_valorizacao,omitempty" gorm:"foreignKey:RegistroValorizacaoID"`
@@ -157,7 +157,7 @@ type RegistroViagem struct {
 	CertificadosEmitidos  JSONB          `json:"certificados_emitidos" gorm:"type:jsonb"`
 	CreatedAt             time.Time      `json:"created_at"`
 	UpdatedAt             time.Time      `json:"updated_at"`
-	DeletedAt             gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt             gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	RegistroValorizacao *RegistroValorizacao `json:"registro_valorizacao,omitempty" gorm:"foreignKey:RegistroValorizacaoID"`
@@ -204,7 +204,7 @@ type RegistroParceria struct {
 	StatusParceria        StatusParceria     `json:"status_parceria" gorm:"default:'ativa'"`
 	CreatedAt             time.Time          `json:"created_at"`
 	UpdatedAt             time.Time          `json:"updated_at"`
-	DeletedAt             gorm.DeletedAt     `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt             gorm.DeletedAt     `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	RegistroValorizacao *RegistroValorizacao `json:"registro_valorizacao,omitempty" gorm:"foreignKey:RegistroValorizacaoID"`
@@ -266,7 +266,7 @@ type RegistroAnalise struct {
 	PrecisaoPredicao      *float64       `json:"precisao_predicao" gorm:"type:decimal(5,2)"`
 	CreatedAt             time.Time      `json:"created_at"`
 	UpdatedAt             time.Time      `json:"updated_at"`
-	DeletedAt             gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt             gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	RegistroValorizacao *RegistroValorizacao `json:"registro_valorizacao,omitempty" gorm:"foreignKey:RegistroValorizacaoID"`
@@ -301,7 +301,7 @@ type PerformanceReprodutiva struct {
 	PeriodoInicio         *time.Time                 `json:"periodo_inicio"`
 	PeriodoFim            *time.Time                 `json:"periodo_fim"`
 	CreatedAt             time.Time                  `json:"created_at"`
-	DeletedAt             gorm.DeletedAt             `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt             gorm.DeletedAt             `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	RegistroValorizacao *RegistroValorizacao `json:"registro_valorizacao,omitempty" gorm:"foreignKey:RegistroValorizacaoID"`
@@ -325,7 +325,7 @@ type Webhook struct {
 	IsActive  bool           `json:"is_active" gorm:"default:true"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	User *User `json:"user,omitempty" gorm:"foreignKey:UserID"`
@@ -348,7 +348,7 @@ type ChatbotQuery struct {
 	Confidence     *float64       `json:"confidence" gorm:"type:decimal(3,2)"`
 	ProcessingTime *int           `json:"processing_time"` // milliseconds
 	CreatedAt      time.Time      `json:"created_at"`
-	DeletedAt      gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt      gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	User   *User   `json:"user,omitempty" gorm:"foreignKey:UserID"`

@@ -24,7 +24,7 @@ type Certificate struct {
 	RevocationReason string         `json:"revocation_reason,omitempty" gorm:"type:text"`
 	CreatedAt        time.Time      `json:"created_at"`
 	UpdatedAt        time.Time      `json:"updated_at"`
-	DeletedAt        gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt        gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	User *User `json:"user,omitempty" gorm:"foreignKey:UserID"`

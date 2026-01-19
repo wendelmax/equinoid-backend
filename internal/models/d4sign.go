@@ -20,7 +20,7 @@ type D4SignDocument struct {
 	CreatedAt         time.Time      `json:"created_at"`
 	UpdatedAt         time.Time      `json:"updated_at"`
 	SignedAt          *time.Time     `json:"signed_at,omitempty"`
-	DeletedAt         gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt         gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
 	// Relacionamentos
 	Creator *User `json:"creator,omitempty" gorm:"foreignKey:CreatedBy"`

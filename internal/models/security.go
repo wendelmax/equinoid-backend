@@ -22,7 +22,7 @@ type AuditLog struct {
 	RiskLevel  string         `json:"risk_level"`
 	Timestamp  time.Time      `json:"timestamp"`
 	CreatedAt  time.Time      `json:"created_at"`
-	DeletedAt  gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt  gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 }
 
 type BiometricData struct {
@@ -35,7 +35,7 @@ type BiometricData struct {
 	IsActive          bool           `json:"is_active" gorm:"default:true"`
 	CreatedAt         time.Time      `json:"created_at"`
 	UpdatedAt         time.Time      `json:"updated_at"`
-	DeletedAt         gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt         gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 }
 
 type DigitalSignature struct {
@@ -50,7 +50,7 @@ type DigitalSignature struct {
 	Timestamp     time.Time      `json:"timestamp"`
 	Location      string         `json:"location"`
 	CreatedAt     time.Time      `json:"created_at"`
-	DeletedAt     gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt     gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 }
 
 type ComplianceRecord struct {
@@ -64,7 +64,7 @@ type ComplianceRecord struct {
 	ExpiresAt      *time.Time     `json:"expires_at,omitempty"`
 	CreatedAt      time.Time      `json:"created_at"`
 	UpdatedAt      time.Time      `json:"updated_at"`
-	DeletedAt      gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt      gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 }
 
 type MFADevice struct {
@@ -77,7 +77,7 @@ type MFADevice struct {
 	IsActive    bool           `json:"is_active" gorm:"default:false"`
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"updated_at"`
-	DeletedAt   gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt   gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 }
 
 type Session struct {
@@ -88,7 +88,7 @@ type Session struct {
 	UserAgent string         `json:"user_agent"`
 	ExpiresAt time.Time      `json:"expires_at"`
 	CreatedAt time.Time      `json:"created_at"`
-	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 }
 
 type BlockchainRecord struct {
@@ -104,5 +104,5 @@ type BlockchainRecord struct {
 	Confirmations int            `json:"confirmations" gorm:"default:0"`
 	CreatedAt     time.Time      `json:"created_at"`
 	UpdatedAt     time.Time      `json:"updated_at"`
-	DeletedAt     gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
+	DeletedAt     gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 }
