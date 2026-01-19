@@ -22,6 +22,18 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// Login godoc
+// @Summary Login de usuário
+// @Description Autentica um usuário e retorna tokens JWT
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param login body models.LoginRequest true "Credenciais de login"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /auth/login [post]
 func (h *Handler) Login(c *gin.Context) {
 	var req models.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -74,6 +86,18 @@ func (h *Handler) Login(c *gin.Context) {
 	})
 }
 
+// Register godoc
+// @Summary Registro de novo usuário
+// @Description Cria uma nova conta de usuário no sistema
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param register body models.RegisterRequest true "Dados de registro"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 409 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /auth/register [post]
 func (h *Handler) Register(c *gin.Context) {
 	var req models.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -112,6 +136,18 @@ func (h *Handler) Register(c *gin.Context) {
 	})
 }
 
+// RefreshToken godoc
+// @Summary Atualizar token de acesso
+// @Description Gera um novo par de tokens usando o refresh token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param refresh body object{refresh_token=string} true "Refresh token"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /auth/refresh [post]
 func (h *Handler) RefreshToken(c *gin.Context) {
 	var req struct {
 		RefreshToken string `json:"refresh_token" binding:"required"`
@@ -158,6 +194,17 @@ func (h *Handler) RefreshToken(c *gin.Context) {
 	})
 }
 
+// ForgotPassword godoc
+// @Summary Esqueci minha senha
+// @Description Envia email para recuperação de senha
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param forgot body object{email=string} true "Email do usuário"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /auth/forgot-password [post]
 func (h *Handler) ForgotPassword(c *gin.Context) {
 	var req struct {
 		Email string `json:"email" binding:"required,email"`
@@ -189,6 +236,18 @@ func (h *Handler) ForgotPassword(c *gin.Context) {
 	})
 }
 
+// ResetPassword godoc
+// @Summary Redefinir senha
+// @Description Redefine a senha do usuário usando token de recuperação
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param reset body object{token=string,new_password=string} true "Token e nova senha"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /auth/reset-password [post]
 func (h *Handler) ResetPassword(c *gin.Context) {
 	var req struct {
 		Token       string `json:"token" binding:"required"`
@@ -230,6 +289,16 @@ func (h *Handler) ResetPassword(c *gin.Context) {
 	})
 }
 
+// Logout godoc
+// @Summary Logout de usuário
+// @Description Invalida o token atual do usuário
+// @Tags auth
+// @Produce json
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /auth/logout [post]
+// @Security BearerAuth
 func (h *Handler) Logout(c *gin.Context) {
 	token, exists := c.Get("token")
 	if !exists {

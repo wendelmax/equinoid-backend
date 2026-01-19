@@ -25,6 +25,17 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// GetProfile godoc
+// @Summary Obter perfil do usuário autenticado
+// @Description Retorna os dados do perfil do usuário logado
+// @Tags Users
+// @Produce json
+// @Success 200 {object} models.APIResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /users/me [get]
+// @Security BearerAuth
 func (h *Handler) GetProfile(c *gin.Context) {
 	userID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {
@@ -63,6 +74,20 @@ func (h *Handler) GetProfile(c *gin.Context) {
 	})
 }
 
+// UpdateProfile godoc
+// @Summary Atualizar perfil do usuário
+// @Description Atualiza os dados do perfil do usuário logado
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param profile body models.UpdateProfileRequest true "Dados do perfil"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /users/me [put]
+// @Security BearerAuth
 func (h *Handler) UpdateProfile(c *gin.Context) {
 	userID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {
@@ -111,6 +136,17 @@ func (h *Handler) UpdateProfile(c *gin.Context) {
 	})
 }
 
+// DeleteAccount godoc
+// @Summary Deletar conta do usuário
+// @Description Remove a conta do usuário logado do sistema
+// @Tags Users
+// @Produce json
+// @Success 200 {object} models.APIResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /users/me [delete]
+// @Security BearerAuth
 func (h *Handler) DeleteAccount(c *gin.Context) {
 	userID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {
@@ -148,6 +184,19 @@ func (h *Handler) DeleteAccount(c *gin.Context) {
 	})
 }
 
+// ChangePassword godoc
+// @Summary Alterar senha
+// @Description Altera a senha do usuário logado
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param password body object{current_password=string,new_password=string} true "Senhas"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /users/me/change-password [post]
+// @Security BearerAuth
 func (h *Handler) ChangePassword(c *gin.Context) {
 	userID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {
@@ -199,6 +248,17 @@ func (h *Handler) ChangePassword(c *gin.Context) {
 	})
 }
 
+// CheckEmailAvailability godoc
+// @Summary Verificar disponibilidade de email
+// @Description Verifica se um email já está em uso
+// @Tags Users
+// @Produce json
+// @Param email query string true "Email a verificar"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /users/check-email [get]
+// @Security BearerAuth
 func (h *Handler) CheckEmailAvailability(c *gin.Context) {
 	email := c.Query("email")
 	if email == "" {
@@ -231,6 +291,17 @@ func (h *Handler) CheckEmailAvailability(c *gin.Context) {
 	})
 }
 
+// ListUsers godoc
+// @Summary Listar usuários
+// @Description Lista todos os usuários com paginação
+// @Tags Users
+// @Produce json
+// @Param page query int false "Página" default(1)
+// @Param limit query int false "Itens por página" default(20)
+// @Success 200 {object} models.APIResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /users [get]
+// @Security BearerAuth
 func (h *Handler) ListUsers(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))
@@ -278,6 +349,18 @@ func (h *Handler) ListUsers(c *gin.Context) {
 	})
 }
 
+// GetUserByID godoc
+// @Summary Buscar usuário por ID (Admin)
+// @Description Retorna os dados de um usuário específico
+// @Tags Users
+// @Produce json
+// @Param id path int true "ID do usuário"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /users/{id} [get]
+// @Security BearerAuth
 func (h *Handler) GetUserByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -316,6 +399,19 @@ func (h *Handler) GetUserByID(c *gin.Context) {
 	})
 }
 
+// CreateUser godoc
+// @Summary Criar novo usuário (Admin)
+// @Description Cria um novo usuário no sistema
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param user body models.RegisterRequest true "Dados do usuário"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 409 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /users [post]
+// @Security BearerAuth
 func (h *Handler) CreateUser(c *gin.Context) {
 	var req models.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

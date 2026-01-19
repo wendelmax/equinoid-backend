@@ -25,6 +25,23 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// ListEquinos godoc
+// @Summary Listar equinos
+// @Description Lista todos os equinos com filtros e paginação
+// @Tags Equinos
+// @Produce json
+// @Param page query int false "Página" default(1)
+// @Param limit query int false "Itens por página" default(20)
+// @Param search query string false "Buscar por nome ou Equinoid"
+// @Param status query string false "Filtrar por status"
+// @Param raca query string false "Filtrar por raça"
+// @Param owner_id query int false "Filtrar por proprietário"
+// @Param veterinario_id query int false "Filtrar por veterinário"
+// @Success 200 {object} models.APIResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /equinos [get]
+// @Security BearerAuth
 func (h *Handler) ListEquinos(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))
@@ -101,6 +118,18 @@ func (h *Handler) ListEquinos(c *gin.Context) {
 	})
 }
 
+// GetEquino godoc
+// @Summary Buscar equino por Equinoid
+// @Description Retorna os dados completos de um equino
+// @Tags Equinos
+// @Produce json
+// @Param equinoid path string true "Equinoid do equino"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /equinos/{equinoid} [get]
+// @Security BearerAuth
 func (h *Handler) GetEquino(c *gin.Context) {
 	equinoid := c.Param("equinoid")
 
@@ -131,6 +160,19 @@ func (h *Handler) GetEquino(c *gin.Context) {
 	})
 }
 
+// CreateEquino godoc
+// @Summary Criar novo equino
+// @Description Registra um novo equino no sistema
+// @Tags Equinos
+// @Accept json
+// @Produce json
+// @Param equino body models.CreateEquinoRequest true "Dados do equino"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /equinos [post]
+// @Security BearerAuth
 func (h *Handler) CreateEquino(c *gin.Context) {
 	var req models.CreateEquinoRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -179,6 +221,21 @@ func (h *Handler) CreateEquino(c *gin.Context) {
 	})
 }
 
+// UpdateEquino godoc
+// @Summary Atualizar equino
+// @Description Atualiza os dados de um equino existente
+// @Tags Equinos
+// @Accept json
+// @Produce json
+// @Param equinoid path string true "Equinoid do equino"
+// @Param equino body models.UpdateEquinoRequest true "Dados para atualização"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 403 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /equinos/{equinoid} [put]
+// @Security BearerAuth
 func (h *Handler) UpdateEquino(c *gin.Context) {
 	equinoid := c.Param("equinoid")
 
@@ -219,6 +276,19 @@ func (h *Handler) UpdateEquino(c *gin.Context) {
 	})
 }
 
+// DeleteEquino godoc
+// @Summary Deletar equino
+// @Description Remove um equino do sistema
+// @Tags Equinos
+// @Produce json
+// @Param equinoid path string true "Equinoid do equino"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 403 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /equinos/{equinoid} [delete]
+// @Security BearerAuth
 func (h *Handler) DeleteEquino(c *gin.Context) {
 	equinoid := c.Param("equinoid")
 

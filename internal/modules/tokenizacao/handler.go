@@ -25,6 +25,19 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// ListAll godoc
+// @Summary Listar tokenizações
+// @Description Lista todas as tokenizações RWA com paginação e filtros
+// @Tags Tokenização
+// @Produce json
+// @Param page query int false "Página" default(1)
+// @Param limit query int false "Itens por página" default(20)
+// @Param status query string false "Filtrar por status"
+// @Param rating query string false "Filtrar por rating"
+// @Success 200 {object} models.APIResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /tokenizacao [get]
+// @Security BearerAuth
 func (h *Handler) ListAll(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))
@@ -69,6 +82,18 @@ func (h *Handler) ListAll(c *gin.Context) {
 	})
 }
 
+// GetByID godoc
+// @Summary Buscar tokenização por ID
+// @Description Retorna os dados completos de uma tokenização RWA
+// @Tags Tokenização
+// @Produce json
+// @Param id path int true "ID da tokenização"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /tokenizacao/{id} [get]
+// @Security BearerAuth
 func (h *Handler) GetByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -107,6 +132,18 @@ func (h *Handler) GetByID(c *gin.Context) {
 	})
 }
 
+// GetByEquinoid godoc
+// @Summary Buscar tokenização por Equinoid
+// @Description Retorna a tokenização de um equino específico
+// @Tags Tokenização
+// @Produce json
+// @Param equinoid path string true "Equinoid do equino"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /tokenizacao/equino/{equinoid} [get]
+// @Security BearerAuth
 func (h *Handler) GetByEquinoid(c *gin.Context) {
 	equinoid := c.Param("equinoid")
 
@@ -136,6 +173,19 @@ func (h *Handler) GetByEquinoid(c *gin.Context) {
 	})
 }
 
+// Create godoc
+// @Summary Criar tokenização RWA
+// @Description Tokeniza um equino criando um ativo digital (RWA)
+// @Tags Tokenização
+// @Accept json
+// @Produce json
+// @Param tokenizacao body models.CreateTokenizacaoRequest true "Dados da tokenização"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /tokenizacao [post]
+// @Security BearerAuth
 func (h *Handler) Create(c *gin.Context) {
 	userID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {
@@ -197,6 +247,18 @@ func (h *Handler) Create(c *gin.Context) {
 	})
 }
 
+// ListTransacoes godoc
+// @Summary Listar transações de uma tokenização
+// @Description Retorna o histórico de transações de uma tokenização RWA
+// @Tags Tokenização
+// @Produce json
+// @Param id path int true "ID da tokenização"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /tokenizacao/{id}/transacoes [get]
+// @Security BearerAuth
 func (h *Handler) ListTransacoes(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -227,6 +289,20 @@ func (h *Handler) ListTransacoes(c *gin.Context) {
 	})
 }
 
+// ExecutarOrdem godoc
+// @Summary Executar ordem de compra/venda
+// @Description Executa uma ordem de compra ou venda de tokens RWA
+// @Tags Tokenização
+// @Accept json
+// @Produce json
+// @Param ordem body object true "Dados da ordem"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /tokenizacao/executar [post]
+// @Security BearerAuth
 func (h *Handler) ExecutarOrdem(c *gin.Context) {
 	userID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {
@@ -288,6 +364,20 @@ func (h *Handler) ExecutarOrdem(c *gin.Context) {
 	})
 }
 
+// CriarOferta godoc
+// @Summary Criar oferta de tokens
+// @Description Cria uma oferta de compra ou venda de tokens RWA
+// @Tags Tokenização
+// @Accept json
+// @Produce json
+// @Param oferta body object true "Dados da oferta"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /tokenizacao/ofertas [post]
+// @Security BearerAuth
 func (h *Handler) CriarOferta(c *gin.Context) {
 	userID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {

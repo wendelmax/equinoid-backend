@@ -1,5 +1,15 @@
 basePath: /api/v1
 definitions:
+  models.APIResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+      timestamp:
+        type: string
+    type: object
   models.AptidaoReprodutiva:
     enum:
     - alta
@@ -265,6 +275,88 @@ definitions:
     - CondicaoFisicaBoa
     - CondicaoFisicaRegular
     - CondicaoFisicaRuim
+  models.CreateEquinoRequest:
+    properties:
+      data_nascimento:
+        type: string
+      external_ids:
+        items:
+          $ref: '#/definitions/models.ExternalID'
+        type: array
+      foto_perfil:
+        type: string
+      genitor_equinoid:
+        type: string
+      genitora_equinoid:
+        type: string
+      microchip_id:
+        type: string
+      nome:
+        type: string
+      pais_origem:
+        type: string
+      pelagem:
+        type: string
+      propriedade_id:
+        type: integer
+      proprietario_id:
+        type: integer
+      raca:
+        type: string
+      sexo:
+        $ref: '#/definitions/models.SexoEquino'
+    required:
+    - data_nascimento
+    - microchip_id
+    - nome
+    - pais_origem
+    - pelagem
+    - proprietario_id
+    - raca
+    - sexo
+    type: object
+  models.CreateTokenizacaoRequest:
+    properties:
+      apolice_seguro_url:
+        type: string
+      custo_custodia_mensal:
+        type: number
+      equinoid:
+        type: integer
+      garantias_biologicas:
+        items:
+          type: string
+        type: array
+      observacoes_compliance:
+        type: string
+      percentual_comercializavel_publicamente:
+        maximum: 49
+        minimum: 0
+        type: number
+      percentual_minimo_dono:
+        maximum: 100
+        minimum: 51
+        type: number
+      preco_inicial_token:
+        type: number
+      prioridade_recompra:
+        type: boolean
+      tem_seguro:
+        type: boolean
+      total_tokens:
+        minimum: 100
+        type: integer
+      trava_controle_dono:
+        type: boolean
+      valor_assegurado:
+        type: number
+    required:
+    - equinoid
+    - percentual_comercializavel_publicamente
+    - percentual_minimo_dono
+    - preco_inicial_token
+    - total_tokens
+    type: object
   models.CuidadoMaterno:
     enum:
     - excelente
@@ -397,6 +489,16 @@ definitions:
       veterinario_id:
         type: integer
     type: object
+  models.ErrorResponse:
+    properties:
+      details: {}
+      error:
+        type: string
+      success:
+        type: boolean
+      timestamp:
+        type: string
+    type: object
   models.Evento:
     properties:
       aceita_patrocinio:
@@ -504,6 +606,16 @@ definitions:
         $ref: '#/definitions/models.User'
       veterinario_solicitante_id:
         type: integer
+    type: object
+  models.ExternalID:
+    properties:
+      id:
+        type: string
+      sistema:
+        type: string
+    required:
+    - id
+    - sistema
     type: object
   models.Gestacao:
     properties:
@@ -843,6 +955,16 @@ definitions:
         type: number
       videos_leilao:
         $ref: '#/definitions/models.JSONB'
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
     type: object
   models.MeioTransporte:
     enum:
@@ -1250,6 +1372,26 @@ definitions:
         type: integer
       tipo_ranking:
         $ref: '#/definitions/models.TipoRanking'
+    type: object
+  models.RegisterRequest:
+    properties:
+      cpf_cnpj:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      user_type:
+        $ref: '#/definitions/models.UserType'
+    required:
+    - cpf_cnpj
+    - email
+    - name
+    - password
+    - user_type
     type: object
   models.RegistroAnalise:
     properties:
@@ -2099,6 +2241,41 @@ definitions:
       veterinario_responsavel:
         type: integer
     type: object
+  models.UpdateEquinoRequest:
+    properties:
+      external_ids:
+        items:
+          $ref: '#/definitions/models.ExternalID'
+        type: array
+      foto_perfil:
+        type: string
+      fotos_galeria:
+        items:
+          type: string
+        type: array
+      nome:
+        type: string
+      pais_origem:
+        type: string
+      pelagem:
+        type: string
+      propriedade_id:
+        type: integer
+      raca:
+        type: string
+      status:
+        $ref: '#/definitions/models.StatusEquino'
+    type: object
+  models.UpdateProfileRequest:
+    properties:
+      cpf_cnpj:
+        type: string
+      name:
+        type: string
+    required:
+    - cpf_cnpj
+    - name
+    type: object
   models.User:
     properties:
       certificate:
@@ -2177,6 +2354,408 @@ info:
   title: Equinoid API - Sistema Perfeito
   version: "2.0"
 paths:
+  /auth/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Envia email para recuperação de senha
+      parameters:
+      - description: Email do usuário
+        in: body
+        name: forgot
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Esqueci minha senha
+      tags:
+      - auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Autentica um usuário e retorna tokens JWT
+      parameters:
+      - description: Credenciais de login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Login de usuário
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      description: Invalida o token atual do usuário
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Logout de usuário
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Gera um novo par de tokens usando o refresh token
+      parameters:
+      - description: Refresh token
+        in: body
+        name: refresh
+        required: true
+        schema:
+          properties:
+            refresh_token:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Atualizar token de acesso
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Cria uma nova conta de usuário no sistema
+      parameters:
+      - description: Dados de registro
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Registro de novo usuário
+      tags:
+      - auth
+  /auth/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Redefine a senha do usuário usando token de recuperação
+      parameters:
+      - description: Token e nova senha
+        in: body
+        name: reset
+        required: true
+        schema:
+          properties:
+            new_password:
+              type: string
+            token:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Redefinir senha
+      tags:
+      - auth
+  /equinos:
+    get:
+      description: Lista todos os equinos com filtros e paginação
+      parameters:
+      - default: 1
+        description: Página
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: Itens por página
+        in: query
+        name: limit
+        type: integer
+      - description: Buscar por nome ou Equinoid
+        in: query
+        name: search
+        type: string
+      - description: Filtrar por status
+        in: query
+        name: status
+        type: string
+      - description: Filtrar por raça
+        in: query
+        name: raca
+        type: string
+      - description: Filtrar por proprietário
+        in: query
+        name: owner_id
+        type: integer
+      - description: Filtrar por veterinário
+        in: query
+        name: veterinario_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar equinos
+      tags:
+      - Equinos
+    post:
+      consumes:
+      - application/json
+      description: Registra um novo equino no sistema
+      parameters:
+      - description: Dados do equino
+        in: body
+        name: equino
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateEquinoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar novo equino
+      tags:
+      - Equinos
+  /equinos/{equinoid}:
+    delete:
+      description: Remove um equino do sistema
+      parameters:
+      - description: Equinoid do equino
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Deletar equino
+      tags:
+      - Equinos
+    get:
+      description: Retorna os dados completos de um equino
+      parameters:
+      - description: Equinoid do equino
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Buscar equino por Equinoid
+      tags:
+      - Equinos
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados de um equino existente
+      parameters:
+      - description: Equinoid do equino
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Dados para atualização
+        in: body
+        name: equino
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateEquinoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Atualizar equino
+      tags:
+      - Equinos
   /exames:
     get:
       description: Retorna lista de exames, opcionalmente filtrada por laboratório
@@ -2840,6 +3419,518 @@ paths:
       summary: Relatório de ganhos de leilões
       tags:
       - leiloes
+  /tokenizacao:
+    get:
+      description: Lista todas as tokenizações RWA com paginação e filtros
+      parameters:
+      - default: 1
+        description: Página
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: Itens por página
+        in: query
+        name: limit
+        type: integer
+      - description: Filtrar por status
+        in: query
+        name: status
+        type: string
+      - description: Filtrar por rating
+        in: query
+        name: rating
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar tokenizações
+      tags:
+      - Tokenização
+    post:
+      consumes:
+      - application/json
+      description: Tokeniza um equino criando um ativo digital (RWA)
+      parameters:
+      - description: Dados da tokenização
+        in: body
+        name: tokenizacao
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateTokenizacaoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar tokenização RWA
+      tags:
+      - Tokenização
+  /tokenizacao/{id}:
+    get:
+      description: Retorna os dados completos de uma tokenização RWA
+      parameters:
+      - description: ID da tokenização
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Buscar tokenização por ID
+      tags:
+      - Tokenização
+  /tokenizacao/{id}/transacoes:
+    get:
+      description: Retorna o histórico de transações de uma tokenização RWA
+      parameters:
+      - description: ID da tokenização
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar transações de uma tokenização
+      tags:
+      - Tokenização
+  /tokenizacao/equino/{equinoid}:
+    get:
+      description: Retorna a tokenização de um equino específico
+      parameters:
+      - description: Equinoid do equino
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Buscar tokenização por Equinoid
+      tags:
+      - Tokenização
+  /tokenizacao/executar:
+    post:
+      consumes:
+      - application/json
+      description: Executa uma ordem de compra ou venda de tokens RWA
+      parameters:
+      - description: Dados da ordem
+        in: body
+        name: ordem
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Executar ordem de compra/venda
+      tags:
+      - Tokenização
+  /tokenizacao/ofertas:
+    post:
+      consumes:
+      - application/json
+      description: Cria uma oferta de compra ou venda de tokens RWA
+      parameters:
+      - description: Dados da oferta
+        in: body
+        name: oferta
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar oferta de tokens
+      tags:
+      - Tokenização
+  /users:
+    get:
+      description: Lista todos os usuários com paginação
+      parameters:
+      - default: 1
+        description: Página
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: Itens por página
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar usuários
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo usuário no sistema
+      parameters:
+      - description: Dados do usuário
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar novo usuário (Admin)
+      tags:
+      - Users
+  /users/{id}:
+    get:
+      description: Retorna os dados de um usuário específico
+      parameters:
+      - description: ID do usuário
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Buscar usuário por ID (Admin)
+      tags:
+      - Users
+  /users/check-email:
+    get:
+      description: Verifica se um email já está em uso
+      parameters:
+      - description: Email a verificar
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Verificar disponibilidade de email
+      tags:
+      - Users
+  /users/me:
+    delete:
+      description: Remove a conta do usuário logado do sistema
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Deletar conta do usuário
+      tags:
+      - Users
+    get:
+      description: Retorna os dados do perfil do usuário logado
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter perfil do usuário autenticado
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados do perfil do usuário logado
+      parameters:
+      - description: Dados do perfil
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Atualizar perfil do usuário
+      tags:
+      - Users
+  /users/me/change-password:
+    post:
+      consumes:
+      - application/json
+      description: Altera a senha do usuário logado
+      parameters:
+      - description: Senhas
+        in: body
+        name: password
+        required: true
+        schema:
+          properties:
+            current_password:
+              type: string
+            new_password:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Alterar senha
+      tags:
+      - Users
 securityDefinitions:
   BearerAuth:
     description: 'JWT Bearer token. Formato: "Bearer {token}"'
