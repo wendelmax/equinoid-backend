@@ -34,7 +34,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Esqueci minha senha",
                 "parameters": [
@@ -85,7 +85,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Login de usuário",
                 "parameters": [
@@ -139,7 +139,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Logout de usuário",
                 "responses": {
@@ -174,7 +174,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Atualizar token de acesso",
                 "parameters": [
@@ -231,7 +231,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Registro de novo usuário",
                 "parameters": [
@@ -283,7 +283,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Redefinir senha",
                 "parameters": [
@@ -647,6 +647,882 @@ const docTemplate = `{
                 }
             }
         },
+        "/equinos/{equinoid}/eventos": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna todos os eventos de um equino específico",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Eventos"
+                ],
+                "summary": "Listar eventos de um equino",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Equinoid do equino",
+                        "name": "equinoid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/equinos/{equinoid}/participacoes-eventos": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna todas as participações em eventos de um equino",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Participações"
+                ],
+                "summary": "Listar participações de um equino",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Equinoid do equino",
+                        "name": "equinoid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/equinos/{equinoid}/performance-materna": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Registra a performance materna de uma égua após o parto",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Gestação"
+                ],
+                "summary": "Registrar performance materna",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Equinoid da égua",
+                        "name": "equinoid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados da performance",
+                        "name": "performance",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreatePerformanceMaternaRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/equinos/{equinoid}/rankings": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna todos os rankings de um equino específico",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rankings"
+                ],
+                "summary": "Obter rankings de um equino",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Equinoid do equino",
+                        "name": "equinoid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/equinos/{equinoid}/transferir": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Transfere a propriedade de um equino para outro usuário",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Equinos"
+                ],
+                "summary": "Transferir propriedade de equino",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Equinoid do equino",
+                        "name": "equinoid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ID do novo proprietário",
+                        "name": "transfer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "novo_proprietario_id": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/eventos": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Lista todos os eventos com paginação e filtros",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Eventos"
+                ],
+                "summary": "Listar eventos",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Página",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Itens por página",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filtrar por categoria",
+                        "name": "categoria",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filtrar por tipo",
+                        "name": "tipo_evento",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Data início",
+                        "name": "data_inicio",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Data fim",
+                        "name": "data_fim",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cria um novo evento",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Eventos"
+                ],
+                "summary": "Criar evento",
+                "parameters": [
+                    {
+                        "description": "Dados do evento",
+                        "name": "evento",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateEventoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/eventos/participacoes": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cria uma nova participação em um evento",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Participações"
+                ],
+                "summary": "Criar participação em evento",
+                "parameters": [
+                    {
+                        "description": "Dados da participação",
+                        "name": "participacao",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateParticipacaoEventoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/eventos/participacoes/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Atualiza os dados de uma participação em evento",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Participações"
+                ],
+                "summary": "Atualizar participação",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da participação",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados para atualização",
+                        "name": "participacao",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateParticipacaoEventoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Remove uma participação em evento",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Participações"
+                ],
+                "summary": "Deletar participação",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da participação",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/eventos/participacoes/{id}/ausencia": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Marca um equino como ausente em um evento",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Participações"
+                ],
+                "summary": "Marcar ausência em evento",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da participação",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/eventos/participacoes/{id}/presenca": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Marca um equino como presente em um evento",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Participações"
+                ],
+                "summary": "Marcar presença em evento",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da participação",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/eventos/{evento_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna os dados de um evento específico",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Eventos"
+                ],
+                "summary": "Buscar evento por ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do evento",
+                        "name": "evento_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Atualiza os dados de um evento",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Eventos"
+                ],
+                "summary": "Atualizar evento",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do evento",
+                        "name": "evento_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados para atualização",
+                        "name": "evento",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Remove um evento do sistema",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Eventos"
+                ],
+                "summary": "Deletar evento",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do evento",
+                        "name": "evento_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/eventos/{evento_id}/participacoes": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna todas as participações de um evento",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Participações"
+                ],
+                "summary": "Listar participações de um evento",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do evento",
+                        "name": "evento_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/exames": {
             "get": {
                 "security": [
@@ -748,6 +1624,459 @@ const docTemplate = `{
                             "additionalProperties": {
                                 "type": "string"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/exames-laboratoriais": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Lista todos os exames laboratoriais com filtros opcionais",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exames"
+                ],
+                "summary": "Listar exames laboratoriais",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filtrar por Equinoid",
+                        "name": "equinoid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filtrar por status",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filtrar por tipo de exame",
+                        "name": "tipo_exame",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Filtrar por veterinário",
+                        "name": "veterinario_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Filtrar por laboratório",
+                        "name": "laboratorio_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cria uma nova solicitação de exame laboratorial",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exames"
+                ],
+                "summary": "Criar solicitação de exame",
+                "parameters": [
+                    {
+                        "description": "Dados do exame",
+                        "name": "exame",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateExameRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/exames-laboratoriais/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna os dados completos de um exame laboratorial",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exames"
+                ],
+                "summary": "Buscar exame por ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do exame",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Atualiza informações de um exame laboratorial",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exames"
+                ],
+                "summary": "Atualizar exame",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do exame",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados para atualização",
+                        "name": "exame",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateExameRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Remove um exame laboratorial do sistema",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exames"
+                ],
+                "summary": "Deletar exame",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do exame",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/exames-laboratoriais/{id}/concluir": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Finaliza o exame registrando resultado, valores e laudo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exames"
+                ],
+                "summary": "Concluir exame com resultado",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do exame",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Resultado do exame",
+                        "name": "resultado",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "laudo": {
+                                    "type": "string"
+                                },
+                                "resultado": {
+                                    "type": "string"
+                                },
+                                "valores": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/exames-laboratoriais/{id}/iniciar-analise": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Marca o início da análise laboratorial",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exames"
+                ],
+                "summary": "Iniciar análise do exame",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do exame",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/exames-laboratoriais/{id}/receber-amostra": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Registra o recebimento da amostra no laboratório",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exames"
+                ],
+                "summary": "Receber amostra no laboratório",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do exame",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Data de recebimento",
+                        "name": "recebimento",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data_recebimento": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -1129,6 +2458,321 @@ const docTemplate = `{
                 }
             }
         },
+        "/financeiro/breakdown": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna breakdown detalhado de despesas por categoria",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Financeiro"
+                ],
+                "summary": "Obter breakdown de despesas",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/financeiro/monthly": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna dados financeiros mensais",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Financeiro"
+                ],
+                "summary": "Obter dados mensais",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/financeiro/stats": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna estatísticas financeiras gerais",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Financeiro"
+                ],
+                "summary": "Obter estatísticas financeiras",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/financeiro/transactions": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Lista todas as transações com filtros opcionais",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Financeiro"
+                ],
+                "summary": "Listar transações financeiras",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filtrar por tipo",
+                        "name": "tipo",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filtrar por categoria",
+                        "name": "categoria",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Registra uma nova transação financeira",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Financeiro"
+                ],
+                "summary": "Criar transação financeira",
+                "parameters": [
+                    {
+                        "description": "Dados da transação",
+                        "name": "transacao",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateTransacaoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/gestacoes/{gestacao_id}/parto": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Registra o parto de uma gestação",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Gestação"
+                ],
+                "summary": "Registrar parto",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da gestação",
+                        "name": "gestacao_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados do parto",
+                        "name": "parto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RegistrarPartoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/gestacoes/{gestacao_id}/ultrassonografias": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Registra uma nova ultrassonografia de gestação",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Gestação"
+                ],
+                "summary": "Criar ultrassonografia",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da gestação",
+                        "name": "gestacao_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados da ultrassonografia",
+                        "name": "ultrassom",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateUltrassonografiaRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/leiloes": {
             "get": {
                 "security": [
@@ -1236,14 +2880,14 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Aprova a participação de um equino no leilão",
+                "description": "Aprova uma participação pendente em um leilão",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "leiloes"
+                    "Leilões"
                 ],
-                "summary": "Aprova participação",
+                "summary": "Aprovar participação em leilão",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1257,19 +2901,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -1282,14 +2932,14 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Marca a ausência de um equino em leilão presencial e aplica penalização",
+                "description": "Marca um participante como ausente no leilão",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "leiloes"
+                    "Leilões"
                 ],
-                "summary": "Marca ausência em leilão presencial",
+                "summary": "Marcar ausência em leilão",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1303,19 +2953,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -1328,14 +2984,14 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Marca a presença de um equino em leilão presencial",
+                "description": "Marca um participante como presente no leilão",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "leiloes"
+                    "Leilões"
                 ],
-                "summary": "Marca presença em leilão presencial",
+                "summary": "Marcar presença em leilão",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1349,19 +3005,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -1374,7 +3036,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Registra a venda de um equino no leilão",
+                "description": "Registra a venda de um equino em uma participação de leilão",
                 "consumes": [
                     "application/json"
                 ],
@@ -1382,9 +3044,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "leiloes"
+                    "Leilões"
                 ],
-                "summary": "Registra venda em leilão",
+                "summary": "Registrar venda em participação",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1399,15 +3061,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "comprador_id": {
-                                    "type": "number"
-                                },
-                                "valor_vendido": {
-                                    "type": "number"
-                                }
-                            }
+                            "$ref": "#/definitions/models.RegistrarVendaRequest"
                         }
                     }
                 ],
@@ -1415,37 +3069,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.APIResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -1685,6 +3327,479 @@ const docTemplate = `{
                             "additionalProperties": {
                                 "type": "string"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/leiloes/{leilao_id}/participacoes": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna todas as participações de um leilão específico",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Leilões"
+                ],
+                "summary": "Listar participações de um leilão",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do leilão",
+                        "name": "leilao_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cria uma nova participação em um leilão",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Leilões"
+                ],
+                "summary": "Criar participação em leilão",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do leilão",
+                        "name": "leilao_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados da participação",
+                        "name": "participacao",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateParticipacaoLeilaoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nutricao/equino/{equinoid}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna o plano nutricional de um equino",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Nutrição"
+                ],
+                "summary": "Obter plano nutricional",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Equinoid do equino",
+                        "name": "equinoid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nutricao/equino/{equinoid}/ai-suggestion": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Gera uma sugestão de plano nutricional usando inteligência artificial",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Nutrição"
+                ],
+                "summary": "Obter sugestão nutricional com IA",
+                "parameters": [
+                    {
+                        "description": "Dados para sugestão",
+                        "name": "sugestao",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SugestaoIARequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nutricao/plano": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cria um novo plano nutricional para um equino",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Nutrição"
+                ],
+                "summary": "Criar plano nutricional",
+                "parameters": [
+                    {
+                        "description": "Dados do plano",
+                        "name": "plano",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreatePlanoNutricionalRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nutricao/refeicoes": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Registra uma refeição realizada pelo equino",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Nutrição"
+                ],
+                "summary": "Criar registro de refeição",
+                "parameters": [
+                    {
+                        "description": "Dados da refeição",
+                        "name": "refeicao",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateRefeicaoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rankings/{tipo}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna ranking geral por tipo (geral, raca, categoria, etc)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rankings"
+                ],
+                "summary": "Obter ranking geral",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tipo de ranking",
+                        "name": "tipo",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reports/dashboard": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna estatísticas gerais para o dashboard",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Relatórios"
+                ],
+                "summary": "Obter estatísticas do dashboard",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reproducao/simular": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Simula um cruzamento entre dois equinos e retorna projeções genéticas",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Simulador"
+                ],
+                "summary": "Simular cruzamento",
+                "parameters": [
+                    {
+                        "description": "Dados do cruzamento",
+                        "name": "simulacao",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "mae_equinoid": {
+                                    "type": "string"
+                                },
+                                "pai_equinoid": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -2067,6 +4182,220 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/treinamento/programas": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna todos os programas de treinamento de um equino",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Treinamento"
+                ],
+                "summary": "Listar programas de treinamento",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Equinoid do equino",
+                        "name": "equinoid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cria um novo programa de treinamento para um equino",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Treinamento"
+                ],
+                "summary": "Criar programa de treinamento",
+                "parameters": [
+                    {
+                        "description": "Dados do programa",
+                        "name": "programa",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateProgramaTreinamentoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/treinamento/sessoes": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna todas as sessões de treinamento de um equino",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Treinamento"
+                ],
+                "summary": "Listar sessões de treinamento",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Equinoid do equino",
+                        "name": "equinoid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Registra uma nova sessão de treinamento",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Treinamento"
+                ],
+                "summary": "Criar sessão de treinamento",
+                "parameters": [
+                    {
+                        "description": "Dados da sessão",
+                        "name": "sessao",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateSessaoTreinamentoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
@@ -2509,6 +4838,28 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "timestamp": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.AlimentoRefeicao": {
+            "type": "object",
+            "required": [
+                "nome",
+                "quantidade",
+                "unidade"
+            ],
+            "properties": {
+                "calorias": {
+                    "type": "integer"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "quantidade": {
+                    "type": "number"
+                },
+                "unidade": {
                     "type": "string"
                 }
             }
@@ -2964,6 +5315,379 @@ const docTemplate = `{
                 }
             }
         },
+        "models.CreateEventoRequest": {
+            "type": "object",
+            "required": [
+                "data_evento",
+                "descricao",
+                "tipo_evento"
+            ],
+            "properties": {
+                "aceita_patrocinio": {
+                    "type": "boolean"
+                },
+                "categoria": {
+                    "type": "string"
+                },
+                "data_evento": {
+                    "type": "string"
+                },
+                "descricao": {
+                    "type": "string"
+                },
+                "documentos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DocumentoEvento"
+                    }
+                },
+                "informacoes_patrocinio": {
+                    "type": "string"
+                },
+                "local": {
+                    "type": "string"
+                },
+                "nome_evento": {
+                    "type": "string"
+                },
+                "organizador": {
+                    "type": "string"
+                },
+                "participante": {
+                    "type": "boolean"
+                },
+                "particularidades": {
+                    "type": "string"
+                },
+                "resultados": {
+                    "type": "string"
+                },
+                "tipo_evento": {
+                    "$ref": "#/definitions/models.TipoEvento"
+                },
+                "tipo_evento_competitivo": {
+                    "type": "string"
+                },
+                "tipo_evento_publico": {
+                    "type": "string"
+                },
+                "valor_inscricao": {
+                    "type": "number"
+                },
+                "veterinario_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.CreateExameRequest": {
+            "type": "object",
+            "required": [
+                "equinoid",
+                "nome_exame",
+                "tipo_exame",
+                "veterinario_solicitante_id"
+            ],
+            "properties": {
+                "descricao": {
+                    "type": "string"
+                },
+                "equinoid": {
+                    "type": "string"
+                },
+                "laboratorio_id": {
+                    "type": "integer"
+                },
+                "nome_exame": {
+                    "type": "string"
+                },
+                "observacoes": {
+                    "type": "string"
+                },
+                "tipo_exame": {
+                    "type": "string"
+                },
+                "veterinario_solicitante_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.CreateParticipacaoEventoRequest": {
+            "type": "object",
+            "required": [
+                "equino_id",
+                "evento_id"
+            ],
+            "properties": {
+                "classificacao": {
+                    "type": "integer"
+                },
+                "equino_id": {
+                    "type": "integer"
+                },
+                "evento_id": {
+                    "type": "integer"
+                },
+                "particularidades": {
+                    "type": "string"
+                },
+                "resultado": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateParticipacaoLeilaoRequest": {
+            "type": "object",
+            "required": [
+                "equinoid",
+                "valor_inicial"
+            ],
+            "properties": {
+                "equinoid": {
+                    "type": "string"
+                },
+                "particularidades": {
+                    "type": "string"
+                },
+                "valor_inicial": {
+                    "type": "number"
+                },
+                "valor_reserva": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.CreatePerformanceMaternaRequest": {
+            "type": "object",
+            "properties": {
+                "cuidado_materno": {
+                    "$ref": "#/definitions/models.CuidadoMaterno"
+                },
+                "ganho_peso_gestacao": {
+                    "type": "number"
+                },
+                "intervalo_proximo_parto": {
+                    "type": "integer"
+                },
+                "observacoes": {
+                    "type": "string"
+                },
+                "peso_fim_gestacao": {
+                    "type": "number"
+                },
+                "peso_inicio_gestacao": {
+                    "type": "number"
+                },
+                "peso_potro_desmame": {
+                    "type": "number"
+                },
+                "producao_leite_diaria": {
+                    "type": "number"
+                },
+                "qualidade_leite": {
+                    "$ref": "#/definitions/models.QualidadeLeite"
+                },
+                "tempo_desmame": {
+                    "type": "integer"
+                },
+                "tempo_recuperacao_pos_parto": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.CreatePlanoNutricionalRequest": {
+            "type": "object",
+            "required": [
+                "equinoid",
+                "objetivo",
+                "peso_atual",
+                "peso_ideal",
+                "tipo_plano"
+            ],
+            "properties": {
+                "equinoid": {
+                    "type": "string"
+                },
+                "frequencia_refeicoes": {
+                    "type": "integer",
+                    "maximum": 6,
+                    "minimum": 2
+                },
+                "gerar_com_ia": {
+                    "type": "boolean"
+                },
+                "objetivo": {
+                    "type": "string"
+                },
+                "observacoes_gerais": {
+                    "type": "string"
+                },
+                "peso_atual": {
+                    "type": "number"
+                },
+                "peso_ideal": {
+                    "type": "number"
+                },
+                "restricoes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "suplementos": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tipo_plano": {
+                    "$ref": "#/definitions/models.TipoPlano"
+                }
+            }
+        },
+        "models.CreateProgramaTreinamentoRequest": {
+            "type": "object",
+            "required": [
+                "duracao_semanas",
+                "duracao_sessao_min",
+                "equinoid",
+                "frequencia_semanal",
+                "intensidade",
+                "modalidades",
+                "nome_programa",
+                "objetivo",
+                "tipo_programa"
+            ],
+            "properties": {
+                "duracao_semanas": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "duracao_sessao_min": {
+                    "type": "integer",
+                    "minimum": 15
+                },
+                "equinoid": {
+                    "type": "string"
+                },
+                "frequencia_semanal": {
+                    "type": "integer",
+                    "maximum": 7,
+                    "minimum": 1
+                },
+                "intensidade": {
+                    "$ref": "#/definitions/models.Intensidade"
+                },
+                "modalidades": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "nome_programa": {
+                    "type": "string"
+                },
+                "objetivo": {
+                    "type": "string"
+                },
+                "observacoes": {
+                    "type": "string"
+                },
+                "tipo_programa": {
+                    "$ref": "#/definitions/models.TipoPrograma"
+                }
+            }
+        },
+        "models.CreateRefeicaoRequest": {
+            "type": "object",
+            "required": [
+                "alimentos",
+                "equinoid",
+                "tipo_refeicao"
+            ],
+            "properties": {
+                "alimentos": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/models.AlimentoRefeicao"
+                    }
+                },
+                "data_refeicao": {
+                    "type": "string"
+                },
+                "equinoid": {
+                    "type": "string"
+                },
+                "observacoes": {
+                    "type": "string"
+                },
+                "tipo_refeicao": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateSessaoTreinamentoRequest": {
+            "type": "object",
+            "required": [
+                "duracao_minutos",
+                "equinoid",
+                "intensidade",
+                "modalidade"
+            ],
+            "properties": {
+                "calorias_gastas": {
+                    "type": "integer"
+                },
+                "condicoes_climaticas": {
+                    "type": "string"
+                },
+                "data_sessao": {
+                    "type": "string"
+                },
+                "desempenho_geral": {
+                    "type": "integer",
+                    "maximum": 5,
+                    "minimum": 1
+                },
+                "distancia": {
+                    "type": "number"
+                },
+                "duracao_minutos": {
+                    "type": "integer",
+                    "minimum": 5
+                },
+                "equinoid": {
+                    "type": "string"
+                },
+                "exercicios_realizados": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ExercicioRealizado"
+                    }
+                },
+                "frequencia_cardiaca_media": {
+                    "type": "integer"
+                },
+                "intensidade": {
+                    "$ref": "#/definitions/models.Intensidade"
+                },
+                "modalidade": {
+                    "type": "string"
+                },
+                "observacoes": {
+                    "type": "string"
+                },
+                "programa_treinamento_id": {
+                    "type": "integer"
+                },
+                "temperatura_c": {
+                    "type": "number"
+                },
+                "velocidade_media": {
+                    "type": "number"
+                }
+            }
+        },
         "models.CreateTokenizacaoRequest": {
             "type": "object",
             "required": [
@@ -3023,6 +5747,77 @@ const docTemplate = `{
                 }
             }
         },
+        "models.CreateTransacaoRequest": {
+            "type": "object",
+            "required": [
+                "categoria",
+                "data",
+                "descricao",
+                "tipo",
+                "valor"
+            ],
+            "properties": {
+                "categoria": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "string"
+                },
+                "descricao": {
+                    "type": "string"
+                },
+                "equino_id": {
+                    "type": "integer"
+                },
+                "tipo": {
+                    "$ref": "#/definitions/models.TipoTransacao"
+                },
+                "valor": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.CreateUltrassonografiaRequest": {
+            "type": "object",
+            "required": [
+                "data_exame"
+            ],
+            "properties": {
+                "batimento_cardiaco": {
+                    "type": "boolean"
+                },
+                "data_exame": {
+                    "type": "string"
+                },
+                "desenvolvimento_normal": {
+                    "type": "boolean"
+                },
+                "diagnostico": {
+                    "type": "string"
+                },
+                "frequencia_cardiaca": {
+                    "type": "integer"
+                },
+                "idade_gestacional": {
+                    "type": "integer"
+                },
+                "numero_embrioes": {
+                    "type": "integer"
+                },
+                "observacoes": {
+                    "type": "string"
+                },
+                "presenca_embriao": {
+                    "type": "boolean"
+                },
+                "proximo_exame": {
+                    "type": "string"
+                },
+                "tamanho_embriao": {
+                    "type": "number"
+                }
+            }
+        },
         "models.CuidadoMaterno": {
             "type": "string",
             "enum": [
@@ -3037,6 +5832,31 @@ const docTemplate = `{
                 "CuidadoMaternoRegular",
                 "CuidadoMaternoRuim"
             ]
+        },
+        "models.DocumentoEvento": {
+            "type": "object",
+            "required": [
+                "nome",
+                "tipo"
+            ],
+            "properties": {
+                "conteudo": {
+                    "description": "Base64 encoded content",
+                    "type": "string"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "tamanho": {
+                    "type": "integer"
+                },
+                "tipo": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
         },
         "models.Equino": {
             "type": "object",
@@ -3403,6 +6223,23 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ExercicioRealizado": {
+            "type": "object",
+            "properties": {
+                "duracao_segundos": {
+                    "type": "integer"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "repeticoes": {
+                    "type": "integer"
+                },
+                "series": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.ExternalID": {
             "type": "object",
             "required": [
@@ -3624,6 +6461,19 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "models.Intensidade": {
+            "type": "string",
+            "enum": [
+                "baixa",
+                "media",
+                "alta"
+            ],
+            "x-enum-varnames": [
+                "IntensidadeBaixa",
+                "IntensidadeMedia",
+                "IntensidadeAlta"
+            ]
         },
         "models.InteracaoSocial": {
             "type": "object",
@@ -4581,6 +7431,42 @@ const docTemplate = `{
                 }
             }
         },
+        "models.RegistrarPartoRequest": {
+            "type": "object",
+            "required": [
+                "data_parto",
+                "resultado_parto"
+            ],
+            "properties": {
+                "data_parto": {
+                    "type": "string"
+                },
+                "observacoes_parto": {
+                    "type": "string"
+                },
+                "resultado_parto": {
+                    "type": "string"
+                },
+                "tipo_parto": {
+                    "$ref": "#/definitions/models.TipoParto"
+                }
+            }
+        },
+        "models.RegistrarVendaRequest": {
+            "type": "object",
+            "required": [
+                "comprador_id",
+                "valor_vendido"
+            ],
+            "properties": {
+                "comprador_id": {
+                    "type": "integer"
+                },
+                "valor_vendido": {
+                    "type": "number"
+                }
+            }
+        },
         "models.RegistroAnalise": {
             "type": "object",
             "properties": {
@@ -5380,6 +8266,29 @@ const docTemplate = `{
                 "StatusRejeitado"
             ]
         },
+        "models.SugestaoIARequest": {
+            "type": "object",
+            "required": [
+                "equinoid",
+                "objetivo",
+                "peso_atual",
+                "tipo_plano"
+            ],
+            "properties": {
+                "equinoid": {
+                    "type": "string"
+                },
+                "objetivo": {
+                    "type": "string"
+                },
+                "peso_atual": {
+                    "type": "number"
+                },
+                "tipo_plano": {
+                    "$ref": "#/definitions/models.TipoPlano"
+                }
+            }
+        },
         "models.TipoAnalise": {
             "type": "string",
             "enum": [
@@ -5635,6 +8544,44 @@ const docTemplate = `{
                 "TipoPerfilComercial"
             ]
         },
+        "models.TipoPlano": {
+            "type": "string",
+            "enum": [
+                "manutencao",
+                "ganho_massa",
+                "perda_peso",
+                "recuperacao",
+                "alto_rendimento",
+                "gestacao",
+                "lactacao"
+            ],
+            "x-enum-varnames": [
+                "TipoPlanoManutencao",
+                "TipoPlanoGanhoMassa",
+                "TipoPlanoPerdaPeso",
+                "TipoPlanoRecuperacao",
+                "TipoPlanoAltoRendimento",
+                "TipoPlanoGestacao",
+                "TipoPlanoLactacao"
+            ]
+        },
+        "models.TipoPrograma": {
+            "type": "string",
+            "enum": [
+                "basico",
+                "intermediario",
+                "avancado",
+                "competicao",
+                "reabilitacao"
+            ],
+            "x-enum-varnames": [
+                "TipoProgramaBasico",
+                "TipoProgramaIntermediario",
+                "TipoProgramaAvancado",
+                "TipoProgramaCompeticao",
+                "TipoProgramaReabilitacao"
+            ]
+        },
         "models.TipoPropriedade": {
             "type": "string",
             "enum": [
@@ -5670,6 +8617,17 @@ const docTemplate = `{
             "x-enum-varnames": [
                 "TipoRankingReprodutor",
                 "TipoRankingMatriz"
+            ]
+        },
+        "models.TipoTransacao": {
+            "type": "string",
+            "enum": [
+                "receita",
+                "despesa"
+            ],
+            "x-enum-varnames": [
+                "TipoReceita",
+                "TipoDespesa"
             ]
         },
         "models.TipoViagem": {
@@ -5795,6 +8753,53 @@ const docTemplate = `{
                 },
                 "status": {
                     "$ref": "#/definitions/models.StatusEquino"
+                }
+            }
+        },
+        "models.UpdateExameRequest": {
+            "type": "object",
+            "properties": {
+                "data_coleta": {
+                    "type": "string"
+                },
+                "data_conclusao": {
+                    "type": "string"
+                },
+                "data_inicio_analise": {
+                    "type": "string"
+                },
+                "data_recebimento_amostra": {
+                    "type": "string"
+                },
+                "laudo": {
+                    "type": "string"
+                },
+                "observacoes": {
+                    "type": "string"
+                },
+                "resultado": {
+                    "$ref": "#/definitions/models.ResultadoExame"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "valores": {
+                    "type": "object",
+                    "additionalProperties": true
+                }
+            }
+        },
+        "models.UpdateParticipacaoEventoRequest": {
+            "type": "object",
+            "properties": {
+                "classificacao": {
+                    "type": "integer"
+                },
+                "particularidades": {
+                    "type": "string"
+                },
+                "resultado": {
+                    "type": "string"
                 }
             }
         },

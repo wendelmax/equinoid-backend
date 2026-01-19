@@ -10,6 +10,21 @@ definitions:
       timestamp:
         type: string
     type: object
+  models.AlimentoRefeicao:
+    properties:
+      calorias:
+        type: integer
+      nome:
+        type: string
+      quantidade:
+        type: number
+      unidade:
+        type: string
+    required:
+    - nome
+    - quantidade
+    - unidade
+    type: object
   models.AptidaoReprodutiva:
     enum:
     - alta
@@ -315,6 +330,263 @@ definitions:
     - raca
     - sexo
     type: object
+  models.CreateEventoRequest:
+    properties:
+      aceita_patrocinio:
+        type: boolean
+      categoria:
+        type: string
+      data_evento:
+        type: string
+      descricao:
+        type: string
+      documentos:
+        items:
+          $ref: '#/definitions/models.DocumentoEvento'
+        type: array
+      informacoes_patrocinio:
+        type: string
+      local:
+        type: string
+      nome_evento:
+        type: string
+      organizador:
+        type: string
+      participante:
+        type: boolean
+      particularidades:
+        type: string
+      resultados:
+        type: string
+      tipo_evento:
+        $ref: '#/definitions/models.TipoEvento'
+      tipo_evento_competitivo:
+        type: string
+      tipo_evento_publico:
+        type: string
+      valor_inscricao:
+        type: number
+      veterinario_id:
+        type: integer
+    required:
+    - data_evento
+    - descricao
+    - tipo_evento
+    type: object
+  models.CreateExameRequest:
+    properties:
+      descricao:
+        type: string
+      equinoid:
+        type: string
+      laboratorio_id:
+        type: integer
+      nome_exame:
+        type: string
+      observacoes:
+        type: string
+      tipo_exame:
+        type: string
+      veterinario_solicitante_id:
+        type: integer
+    required:
+    - equinoid
+    - nome_exame
+    - tipo_exame
+    - veterinario_solicitante_id
+    type: object
+  models.CreateParticipacaoEventoRequest:
+    properties:
+      classificacao:
+        type: integer
+      equino_id:
+        type: integer
+      evento_id:
+        type: integer
+      particularidades:
+        type: string
+      resultado:
+        type: string
+    required:
+    - equino_id
+    - evento_id
+    type: object
+  models.CreateParticipacaoLeilaoRequest:
+    properties:
+      equinoid:
+        type: string
+      particularidades:
+        type: string
+      valor_inicial:
+        type: number
+      valor_reserva:
+        type: number
+    required:
+    - equinoid
+    - valor_inicial
+    type: object
+  models.CreatePerformanceMaternaRequest:
+    properties:
+      cuidado_materno:
+        $ref: '#/definitions/models.CuidadoMaterno'
+      ganho_peso_gestacao:
+        type: number
+      intervalo_proximo_parto:
+        type: integer
+      observacoes:
+        type: string
+      peso_fim_gestacao:
+        type: number
+      peso_inicio_gestacao:
+        type: number
+      peso_potro_desmame:
+        type: number
+      producao_leite_diaria:
+        type: number
+      qualidade_leite:
+        $ref: '#/definitions/models.QualidadeLeite'
+      tempo_desmame:
+        type: integer
+      tempo_recuperacao_pos_parto:
+        type: integer
+    type: object
+  models.CreatePlanoNutricionalRequest:
+    properties:
+      equinoid:
+        type: string
+      frequencia_refeicoes:
+        maximum: 6
+        minimum: 2
+        type: integer
+      gerar_com_ia:
+        type: boolean
+      objetivo:
+        type: string
+      observacoes_gerais:
+        type: string
+      peso_atual:
+        type: number
+      peso_ideal:
+        type: number
+      restricoes:
+        items:
+          type: string
+        type: array
+      suplementos:
+        items:
+          type: string
+        type: array
+      tipo_plano:
+        $ref: '#/definitions/models.TipoPlano'
+    required:
+    - equinoid
+    - objetivo
+    - peso_atual
+    - peso_ideal
+    - tipo_plano
+    type: object
+  models.CreateProgramaTreinamentoRequest:
+    properties:
+      duracao_semanas:
+        minimum: 1
+        type: integer
+      duracao_sessao_min:
+        minimum: 15
+        type: integer
+      equinoid:
+        type: string
+      frequencia_semanal:
+        maximum: 7
+        minimum: 1
+        type: integer
+      intensidade:
+        $ref: '#/definitions/models.Intensidade'
+      modalidades:
+        items:
+          type: string
+        type: array
+      nome_programa:
+        type: string
+      objetivo:
+        type: string
+      observacoes:
+        type: string
+      tipo_programa:
+        $ref: '#/definitions/models.TipoPrograma'
+    required:
+    - duracao_semanas
+    - duracao_sessao_min
+    - equinoid
+    - frequencia_semanal
+    - intensidade
+    - modalidades
+    - nome_programa
+    - objetivo
+    - tipo_programa
+    type: object
+  models.CreateRefeicaoRequest:
+    properties:
+      alimentos:
+        items:
+          $ref: '#/definitions/models.AlimentoRefeicao'
+        minItems: 1
+        type: array
+      data_refeicao:
+        type: string
+      equinoid:
+        type: string
+      observacoes:
+        type: string
+      tipo_refeicao:
+        type: string
+    required:
+    - alimentos
+    - equinoid
+    - tipo_refeicao
+    type: object
+  models.CreateSessaoTreinamentoRequest:
+    properties:
+      calorias_gastas:
+        type: integer
+      condicoes_climaticas:
+        type: string
+      data_sessao:
+        type: string
+      desempenho_geral:
+        maximum: 5
+        minimum: 1
+        type: integer
+      distancia:
+        type: number
+      duracao_minutos:
+        minimum: 5
+        type: integer
+      equinoid:
+        type: string
+      exercicios_realizados:
+        items:
+          $ref: '#/definitions/models.ExercicioRealizado'
+        type: array
+      frequencia_cardiaca_media:
+        type: integer
+      intensidade:
+        $ref: '#/definitions/models.Intensidade'
+      modalidade:
+        type: string
+      observacoes:
+        type: string
+      programa_treinamento_id:
+        type: integer
+      temperatura_c:
+        type: number
+      velocidade_media:
+        type: number
+    required:
+    - duracao_minutos
+    - equinoid
+    - intensidade
+    - modalidade
+    type: object
   models.CreateTokenizacaoRequest:
     properties:
       apolice_seguro_url:
@@ -357,6 +629,54 @@ definitions:
     - preco_inicial_token
     - total_tokens
     type: object
+  models.CreateTransacaoRequest:
+    properties:
+      categoria:
+        type: string
+      data:
+        type: string
+      descricao:
+        type: string
+      equino_id:
+        type: integer
+      tipo:
+        $ref: '#/definitions/models.TipoTransacao'
+      valor:
+        type: number
+    required:
+    - categoria
+    - data
+    - descricao
+    - tipo
+    - valor
+    type: object
+  models.CreateUltrassonografiaRequest:
+    properties:
+      batimento_cardiaco:
+        type: boolean
+      data_exame:
+        type: string
+      desenvolvimento_normal:
+        type: boolean
+      diagnostico:
+        type: string
+      frequencia_cardiaca:
+        type: integer
+      idade_gestacional:
+        type: integer
+      numero_embrioes:
+        type: integer
+      observacoes:
+        type: string
+      presenca_embriao:
+        type: boolean
+      proximo_exame:
+        type: string
+      tamanho_embriao:
+        type: number
+    required:
+    - data_exame
+    type: object
   models.CuidadoMaterno:
     enum:
     - excelente
@@ -369,6 +689,23 @@ definitions:
     - CuidadoMaternoBom
     - CuidadoMaternoRegular
     - CuidadoMaternoRuim
+  models.DocumentoEvento:
+    properties:
+      conteudo:
+        description: Base64 encoded content
+        type: string
+      nome:
+        type: string
+      tamanho:
+        type: integer
+      tipo:
+        type: string
+      url:
+        type: string
+    required:
+    - nome
+    - tipo
+    type: object
   models.Equino:
     properties:
       avaliacoes_semen:
@@ -607,6 +944,17 @@ definitions:
       veterinario_solicitante_id:
         type: integer
     type: object
+  models.ExercicioRealizado:
+    properties:
+      duracao_segundos:
+        type: integer
+      nome:
+        type: string
+      repeticoes:
+        type: integer
+      series:
+        type: integer
+    type: object
   models.ExternalID:
     properties:
       id:
@@ -753,6 +1101,16 @@ definitions:
       updated_at:
         type: string
     type: object
+  models.Intensidade:
+    enum:
+    - baixa
+    - media
+    - alta
+    type: string
+    x-enum-varnames:
+    - IntensidadeBaixa
+    - IntensidadeMedia
+    - IntensidadeAlta
   models.InteracaoSocial:
     properties:
       created_at:
@@ -1393,6 +1751,30 @@ definitions:
     - password
     - user_type
     type: object
+  models.RegistrarPartoRequest:
+    properties:
+      data_parto:
+        type: string
+      observacoes_parto:
+        type: string
+      resultado_parto:
+        type: string
+      tipo_parto:
+        $ref: '#/definitions/models.TipoParto'
+    required:
+    - data_parto
+    - resultado_parto
+    type: object
+  models.RegistrarVendaRequest:
+    properties:
+      comprador_id:
+        type: integer
+      valor_vendido:
+        type: number
+    required:
+    - comprador_id
+    - valor_vendido
+    type: object
   models.RegistroAnalise:
     properties:
       amostra_analisada:
@@ -1942,6 +2324,22 @@ definitions:
     - StatusValidado
     - StatusAprovado
     - StatusRejeitado
+  models.SugestaoIARequest:
+    properties:
+      equinoid:
+        type: string
+      objetivo:
+        type: string
+      peso_atual:
+        type: number
+      tipo_plano:
+        $ref: '#/definitions/models.TipoPlano'
+    required:
+    - equinoid
+    - objetivo
+    - peso_atual
+    - tipo_plano
+    type: object
   models.TipoAnalise:
     enum:
     - performance
@@ -2152,6 +2550,38 @@ definitions:
     - TipoPerfilPublico
     - TipoPerfilPrivado
     - TipoPerfilComercial
+  models.TipoPlano:
+    enum:
+    - manutencao
+    - ganho_massa
+    - perda_peso
+    - recuperacao
+    - alto_rendimento
+    - gestacao
+    - lactacao
+    type: string
+    x-enum-varnames:
+    - TipoPlanoManutencao
+    - TipoPlanoGanhoMassa
+    - TipoPlanoPerdaPeso
+    - TipoPlanoRecuperacao
+    - TipoPlanoAltoRendimento
+    - TipoPlanoGestacao
+    - TipoPlanoLactacao
+  models.TipoPrograma:
+    enum:
+    - basico
+    - intermediario
+    - avancado
+    - competicao
+    - reabilitacao
+    type: string
+    x-enum-varnames:
+    - TipoProgramaBasico
+    - TipoProgramaIntermediario
+    - TipoProgramaAvancado
+    - TipoProgramaCompeticao
+    - TipoProgramaReabilitacao
   models.TipoPropriedade:
     enum:
     - haras
@@ -2180,6 +2610,14 @@ definitions:
     x-enum-varnames:
     - TipoRankingReprodutor
     - TipoRankingMatriz
+  models.TipoTransacao:
+    enum:
+    - receita
+    - despesa
+    type: string
+    x-enum-varnames:
+    - TipoReceita
+    - TipoDespesa
   models.TipoViagem:
     enum:
     - competicao_internacional
@@ -2265,6 +2703,37 @@ definitions:
         type: string
       status:
         $ref: '#/definitions/models.StatusEquino'
+    type: object
+  models.UpdateExameRequest:
+    properties:
+      data_coleta:
+        type: string
+      data_conclusao:
+        type: string
+      data_inicio_analise:
+        type: string
+      data_recebimento_amostra:
+        type: string
+      laudo:
+        type: string
+      observacoes:
+        type: string
+      resultado:
+        $ref: '#/definitions/models.ResultadoExame'
+      status:
+        type: string
+      valores:
+        additionalProperties: true
+        type: object
+    type: object
+  models.UpdateParticipacaoEventoRequest:
+    properties:
+      classificacao:
+        type: integer
+      particularidades:
+        type: string
+      resultado:
+        type: string
     type: object
   models.UpdateProfileRequest:
     properties:
@@ -2386,7 +2855,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Esqueci minha senha
       tags:
-      - auth
+      - Auth
   /auth/login:
     post:
       consumes:
@@ -2420,7 +2889,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Login de usuário
       tags:
-      - auth
+      - Auth
   /auth/logout:
     post:
       description: Invalida o token atual do usuário
@@ -2443,7 +2912,7 @@ paths:
       - BearerAuth: []
       summary: Logout de usuário
       tags:
-      - auth
+      - Auth
   /auth/refresh:
     post:
       consumes:
@@ -2480,7 +2949,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Atualizar token de acesso
       tags:
-      - auth
+      - Auth
   /auth/register:
     post:
       consumes:
@@ -2514,7 +2983,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Registro de novo usuário
       tags:
-      - auth
+      - Auth
   /auth/reset-password:
     post:
       consumes:
@@ -2553,7 +3022,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Redefinir senha
       tags:
-      - auth
+      - Auth
   /equinos:
     get:
       description: Lista todos os equinos com filtros e paginação
@@ -2756,6 +3225,564 @@ paths:
       summary: Atualizar equino
       tags:
       - Equinos
+  /equinos/{equinoid}/eventos:
+    get:
+      description: Retorna todos os eventos de um equino específico
+      parameters:
+      - description: Equinoid do equino
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar eventos de um equino
+      tags:
+      - Eventos
+  /equinos/{equinoid}/participacoes-eventos:
+    get:
+      description: Retorna todas as participações em eventos de um equino
+      parameters:
+      - description: Equinoid do equino
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar participações de um equino
+      tags:
+      - Participações
+  /equinos/{equinoid}/performance-materna:
+    post:
+      consumes:
+      - application/json
+      description: Registra a performance materna de uma égua após o parto
+      parameters:
+      - description: Equinoid da égua
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: Dados da performance
+        in: body
+        name: performance
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreatePerformanceMaternaRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Registrar performance materna
+      tags:
+      - Gestação
+  /equinos/{equinoid}/rankings:
+    get:
+      description: Retorna todos os rankings de um equino específico
+      parameters:
+      - description: Equinoid do equino
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter rankings de um equino
+      tags:
+      - Rankings
+  /equinos/{equinoid}/transferir:
+    post:
+      consumes:
+      - application/json
+      description: Transfere a propriedade de um equino para outro usuário
+      parameters:
+      - description: Equinoid do equino
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      - description: ID do novo proprietário
+        in: body
+        name: transfer
+        required: true
+        schema:
+          properties:
+            novo_proprietario_id:
+              type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Transferir propriedade de equino
+      tags:
+      - Equinos
+  /eventos:
+    get:
+      description: Lista todos os eventos com paginação e filtros
+      parameters:
+      - default: 1
+        description: Página
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: Itens por página
+        in: query
+        name: limit
+        type: integer
+      - description: Filtrar por categoria
+        in: query
+        name: categoria
+        type: string
+      - description: Filtrar por tipo
+        in: query
+        name: tipo_evento
+        type: string
+      - description: Data início
+        in: query
+        name: data_inicio
+        type: string
+      - description: Data fim
+        in: query
+        name: data_fim
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar eventos
+      tags:
+      - Eventos
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo evento
+      parameters:
+      - description: Dados do evento
+        in: body
+        name: evento
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateEventoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar evento
+      tags:
+      - Eventos
+  /eventos/{evento_id}:
+    delete:
+      description: Remove um evento do sistema
+      parameters:
+      - description: ID do evento
+        in: path
+        name: evento_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Deletar evento
+      tags:
+      - Eventos
+    get:
+      description: Retorna os dados de um evento específico
+      parameters:
+      - description: ID do evento
+        in: path
+        name: evento_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Buscar evento por ID
+      tags:
+      - Eventos
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados de um evento
+      parameters:
+      - description: ID do evento
+        in: path
+        name: evento_id
+        required: true
+        type: integer
+      - description: Dados para atualização
+        in: body
+        name: evento
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Atualizar evento
+      tags:
+      - Eventos
+  /eventos/{evento_id}/participacoes:
+    get:
+      description: Retorna todas as participações de um evento
+      parameters:
+      - description: ID do evento
+        in: path
+        name: evento_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar participações de um evento
+      tags:
+      - Participações
+  /eventos/participacoes:
+    post:
+      consumes:
+      - application/json
+      description: Cria uma nova participação em um evento
+      parameters:
+      - description: Dados da participação
+        in: body
+        name: participacao
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateParticipacaoEventoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar participação em evento
+      tags:
+      - Participações
+  /eventos/participacoes/{id}:
+    delete:
+      description: Remove uma participação em evento
+      parameters:
+      - description: ID da participação
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Deletar participação
+      tags:
+      - Participações
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados de uma participação em evento
+      parameters:
+      - description: ID da participação
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Dados para atualização
+        in: body
+        name: participacao
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateParticipacaoEventoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Atualizar participação
+      tags:
+      - Participações
+  /eventos/participacoes/{id}/ausencia:
+    post:
+      description: Marca um equino como ausente em um evento
+      parameters:
+      - description: ID da participação
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Marcar ausência em evento
+      tags:
+      - Participações
+  /eventos/participacoes/{id}/presenca:
+    post:
+      description: Marca um equino como presente em um evento
+      parameters:
+      - description: ID da participação
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Marcar presença em evento
+      tags:
+      - Participações
   /exames:
     get:
       description: Retorna lista de exames, opcionalmente filtrada por laboratório
@@ -2824,6 +3851,294 @@ paths:
       summary: Solicita novo exame
       tags:
       - exames
+  /exames-laboratoriais:
+    get:
+      description: Lista todos os exames laboratoriais com filtros opcionais
+      parameters:
+      - description: Filtrar por Equinoid
+        in: query
+        name: equinoid
+        type: string
+      - description: Filtrar por status
+        in: query
+        name: status
+        type: string
+      - description: Filtrar por tipo de exame
+        in: query
+        name: tipo_exame
+        type: string
+      - description: Filtrar por veterinário
+        in: query
+        name: veterinario_id
+        type: integer
+      - description: Filtrar por laboratório
+        in: query
+        name: laboratorio_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar exames laboratoriais
+      tags:
+      - Exames
+    post:
+      consumes:
+      - application/json
+      description: Cria uma nova solicitação de exame laboratorial
+      parameters:
+      - description: Dados do exame
+        in: body
+        name: exame
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateExameRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar solicitação de exame
+      tags:
+      - Exames
+  /exames-laboratoriais/{id}:
+    delete:
+      description: Remove um exame laboratorial do sistema
+      parameters:
+      - description: ID do exame
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Deletar exame
+      tags:
+      - Exames
+    get:
+      description: Retorna os dados completos de um exame laboratorial
+      parameters:
+      - description: ID do exame
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Buscar exame por ID
+      tags:
+      - Exames
+    put:
+      consumes:
+      - application/json
+      description: Atualiza informações de um exame laboratorial
+      parameters:
+      - description: ID do exame
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Dados para atualização
+        in: body
+        name: exame
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateExameRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Atualizar exame
+      tags:
+      - Exames
+  /exames-laboratoriais/{id}/concluir:
+    put:
+      consumes:
+      - application/json
+      description: Finaliza o exame registrando resultado, valores e laudo
+      parameters:
+      - description: ID do exame
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Resultado do exame
+        in: body
+        name: resultado
+        required: true
+        schema:
+          properties:
+            laudo:
+              type: string
+            resultado:
+              type: string
+            valores:
+              type: object
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Concluir exame com resultado
+      tags:
+      - Exames
+  /exames-laboratoriais/{id}/iniciar-analise:
+    put:
+      description: Marca o início da análise laboratorial
+      parameters:
+      - description: ID do exame
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Iniciar análise do exame
+      tags:
+      - Exames
+  /exames-laboratoriais/{id}/receber-amostra:
+    put:
+      consumes:
+      - application/json
+      description: Registra o recebimento da amostra no laboratório
+      parameters:
+      - description: ID do exame
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data de recebimento
+        in: body
+        name: recebimento
+        schema:
+          properties:
+            data_recebimento:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Receber amostra no laboratório
+      tags:
+      - Exames
   /exames/{id}:
     get:
       description: Retorna detalhes de um exame específico
@@ -3064,6 +4379,204 @@ paths:
       summary: Adiciona resultado ao exame
       tags:
       - exames
+  /financeiro/breakdown:
+    get:
+      description: Retorna breakdown detalhado de despesas por categoria
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter breakdown de despesas
+      tags:
+      - Financeiro
+  /financeiro/monthly:
+    get:
+      description: Retorna dados financeiros mensais
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter dados mensais
+      tags:
+      - Financeiro
+  /financeiro/stats:
+    get:
+      description: Retorna estatísticas financeiras gerais
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter estatísticas financeiras
+      tags:
+      - Financeiro
+  /financeiro/transactions:
+    get:
+      description: Lista todas as transações com filtros opcionais
+      parameters:
+      - description: Filtrar por tipo
+        in: query
+        name: tipo
+        type: string
+      - description: Filtrar por categoria
+        in: query
+        name: categoria
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar transações financeiras
+      tags:
+      - Financeiro
+    post:
+      consumes:
+      - application/json
+      description: Registra uma nova transação financeira
+      parameters:
+      - description: Dados da transação
+        in: body
+        name: transacao
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateTransacaoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar transação financeira
+      tags:
+      - Financeiro
+  /gestacoes/{gestacao_id}/parto:
+    post:
+      consumes:
+      - application/json
+      description: Registra o parto de uma gestação
+      parameters:
+      - description: ID da gestação
+        in: path
+        name: gestacao_id
+        required: true
+        type: integer
+      - description: Dados do parto
+        in: body
+        name: parto
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegistrarPartoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Registrar parto
+      tags:
+      - Gestação
+  /gestacoes/{gestacao_id}/ultrassonografias:
+    post:
+      consumes:
+      - application/json
+      description: Registra uma nova ultrassonografia de gestação
+      parameters:
+      - description: ID da gestação
+        in: path
+        name: gestacao_id
+        required: true
+        type: integer
+      - description: Dados da ultrassonografia
+        in: body
+        name: ultrassom
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateUltrassonografiaRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar ultrassonografia
+      tags:
+      - Gestação
   /leiloes:
     get:
       description: Retorna lista de leilões, opcionalmente filtrada por leiloeiro
@@ -3250,9 +4763,82 @@ paths:
       summary: Cria participação em leilão
       tags:
       - leiloes
+  /leiloes/{leilao_id}/participacoes:
+    get:
+      description: Retorna todas as participações de um leilão específico
+      parameters:
+      - description: ID do leilão
+        in: path
+        name: leilao_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar participações de um leilão
+      tags:
+      - Leilões
+    post:
+      consumes:
+      - application/json
+      description: Cria uma nova participação em um leilão
+      parameters:
+      - description: ID do leilão
+        in: path
+        name: leilao_id
+        required: true
+        type: integer
+      - description: Dados da participação
+        in: body
+        name: participacao
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateParticipacaoLeilaoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar participação em leilão
+      tags:
+      - Leilões
   /leiloes/participacoes/{id}/aprovar:
     post:
-      description: Aprova a participação de um equino no leilão
+      description: Aprova uma participação pendente em um leilão
       parameters:
       - description: ID da participação
         in: path
@@ -3265,23 +4851,27 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Aprova participação
+      summary: Aprovar participação em leilão
       tags:
-      - leiloes
+      - Leilões
   /leiloes/participacoes/{id}/ausencia:
     post:
-      description: Marca a ausência de um equino em leilão presencial e aplica penalização
+      description: Marca um participante como ausente no leilão
       parameters:
       - description: ID da participação
         in: path
@@ -3294,23 +4884,27 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Marca ausência em leilão presencial
+      summary: Marcar ausência em leilão
       tags:
-      - leiloes
+      - Leilões
   /leiloes/participacoes/{id}/presenca:
     post:
-      description: Marca a presença de um equino em leilão presencial
+      description: Marca um participante como presente no leilão
       parameters:
       - description: ID da participação
         in: path
@@ -3323,25 +4917,29 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Marca presença em leilão presencial
+      summary: Marcar presença em leilão
       tags:
-      - leiloes
+      - Leilões
   /leiloes/participacoes/{id}/venda:
     post:
       consumes:
       - application/json
-      description: Registra a venda de um equino no leilão
+      description: Registra a venda de um equino em uma participação de leilão
       parameters:
       - description: ID da participação
         in: path
@@ -3353,44 +4951,31 @@ paths:
         name: venda
         required: true
         schema:
-          properties:
-            comprador_id:
-              type: number
-            valor_vendido:
-              type: number
-          type: object
+          $ref: '#/definitions/models.RegistrarVendaRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.APIResponse'
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Registra venda em leilão
+      summary: Registrar venda em participação
       tags:
-      - leiloes
+      - Leilões
   /leiloes/relatorio-ganhos:
     get:
       description: Retorna relatório de ganhos de leilões finalizados
@@ -3419,6 +5004,232 @@ paths:
       summary: Relatório de ganhos de leilões
       tags:
       - leiloes
+  /nutricao/equino/{equinoid}:
+    get:
+      description: Retorna o plano nutricional de um equino
+      parameters:
+      - description: Equinoid do equino
+        in: path
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter plano nutricional
+      tags:
+      - Nutrição
+  /nutricao/equino/{equinoid}/ai-suggestion:
+    post:
+      consumes:
+      - application/json
+      description: Gera uma sugestão de plano nutricional usando inteligência artificial
+      parameters:
+      - description: Dados para sugestão
+        in: body
+        name: sugestao
+        required: true
+        schema:
+          $ref: '#/definitions/models.SugestaoIARequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter sugestão nutricional com IA
+      tags:
+      - Nutrição
+  /nutricao/plano:
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo plano nutricional para um equino
+      parameters:
+      - description: Dados do plano
+        in: body
+        name: plano
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreatePlanoNutricionalRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar plano nutricional
+      tags:
+      - Nutrição
+  /nutricao/refeicoes:
+    post:
+      consumes:
+      - application/json
+      description: Registra uma refeição realizada pelo equino
+      parameters:
+      - description: Dados da refeição
+        in: body
+        name: refeicao
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateRefeicaoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar registro de refeição
+      tags:
+      - Nutrição
+  /rankings/{tipo}:
+    get:
+      description: Retorna ranking geral por tipo (geral, raca, categoria, etc)
+      parameters:
+      - description: Tipo de ranking
+        in: path
+        name: tipo
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter ranking geral
+      tags:
+      - Rankings
+  /reports/dashboard:
+    get:
+      description: Retorna estatísticas gerais para o dashboard
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obter estatísticas do dashboard
+      tags:
+      - Relatórios
+  /reproducao/simular:
+    post:
+      consumes:
+      - application/json
+      description: Simula um cruzamento entre dois equinos e retorna projeções genéticas
+      parameters:
+      - description: Dados do cruzamento
+        in: body
+        name: simulacao
+        required: true
+        schema:
+          properties:
+            mae_equinoid:
+              type: string
+            pai_equinoid:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Simular cruzamento
+      tags:
+      - Simulador
   /tokenizacao:
     get:
       description: Lista todas as tokenizações RWA com paginação e filtros
@@ -3671,6 +5482,142 @@ paths:
       summary: Criar oferta de tokens
       tags:
       - Tokenização
+  /treinamento/programas:
+    get:
+      description: Retorna todos os programas de treinamento de um equino
+      parameters:
+      - description: Equinoid do equino
+        in: query
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar programas de treinamento
+      tags:
+      - Treinamento
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo programa de treinamento para um equino
+      parameters:
+      - description: Dados do programa
+        in: body
+        name: programa
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateProgramaTreinamentoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar programa de treinamento
+      tags:
+      - Treinamento
+  /treinamento/sessoes:
+    get:
+      description: Retorna todas as sessões de treinamento de um equino
+      parameters:
+      - description: Equinoid do equino
+        in: query
+        name: equinoid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Listar sessões de treinamento
+      tags:
+      - Treinamento
+    post:
+      consumes:
+      - application/json
+      description: Registra uma nova sessão de treinamento
+      parameters:
+      - description: Dados da sessão
+        in: body
+        name: sessao
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateSessaoTreinamentoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Criar sessão de treinamento
+      tags:
+      - Treinamento
   /users:
     get:
       description: Lista todos os usuários com paginação

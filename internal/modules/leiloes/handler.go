@@ -25,6 +25,17 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// ListParticipacoes godoc
+// @Summary Listar participações de um leilão
+// @Description Retorna todas as participações de um leilão específico
+// @Tags Leilões
+// @Produce json
+// @Param leilao_id path int true "ID do leilão"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /leiloes/{leilao_id}/participacoes [get]
+// @Security BearerAuth
 func (h *Handler) ListParticipacoes(c *gin.Context) {
 	idStr := c.Param("leilao_id")
 	leilaoID, err := strconv.ParseUint(idStr, 10, 32)
@@ -55,6 +66,21 @@ func (h *Handler) ListParticipacoes(c *gin.Context) {
 	})
 }
 
+// CriarParticipacao godoc
+// @Summary Criar participação em leilão
+// @Description Cria uma nova participação em um leilão
+// @Tags Leilões
+// @Accept json
+// @Produce json
+// @Param leilao_id path int true "ID do leilão"
+// @Param participacao body models.CreateParticipacaoLeilaoRequest true "Dados da participação"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /leiloes/{leilao_id}/participacoes [post]
+// @Security BearerAuth
 func (h *Handler) CriarParticipacao(c *gin.Context) {
 	criadorID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {
@@ -121,6 +147,18 @@ func (h *Handler) CriarParticipacao(c *gin.Context) {
 	})
 }
 
+// AprovarParticipacao godoc
+// @Summary Aprovar participação em leilão
+// @Description Aprova uma participação pendente em um leilão
+// @Tags Leilões
+// @Produce json
+// @Param id path int true "ID da participação"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /leiloes/participacoes/{id}/aprovar [post]
+// @Security BearerAuth
 func (h *Handler) AprovarParticipacao(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -167,6 +205,20 @@ func (h *Handler) AprovarParticipacao(c *gin.Context) {
 	})
 }
 
+// RegistrarVenda godoc
+// @Summary Registrar venda em participação
+// @Description Registra a venda de um equino em uma participação de leilão
+// @Tags Leilões
+// @Accept json
+// @Produce json
+// @Param id path int true "ID da participação"
+// @Param venda body models.RegistrarVendaRequest true "Dados da venda"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /leiloes/participacoes/{id}/venda [post]
+// @Security BearerAuth
 func (h *Handler) RegistrarVenda(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -223,6 +275,18 @@ func (h *Handler) RegistrarVenda(c *gin.Context) {
 	})
 }
 
+// MarcarAusencia godoc
+// @Summary Marcar ausência em leilão
+// @Description Marca um participante como ausente no leilão
+// @Tags Leilões
+// @Produce json
+// @Param id path int true "ID da participação"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /leiloes/participacoes/{id}/ausencia [post]
+// @Security BearerAuth
 func (h *Handler) MarcarAusencia(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -269,6 +333,18 @@ func (h *Handler) MarcarAusencia(c *gin.Context) {
 	})
 }
 
+// MarcarPresenca godoc
+// @Summary Marcar presença em leilão
+// @Description Marca um participante como presente no leilão
+// @Tags Leilões
+// @Produce json
+// @Param id path int true "ID da participação"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /leiloes/participacoes/{id}/presenca [post]
+// @Security BearerAuth
 func (h *Handler) MarcarPresenca(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)

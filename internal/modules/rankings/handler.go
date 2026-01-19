@@ -22,6 +22,16 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// GetRankingGeral godoc
+// @Summary Obter ranking geral
+// @Description Retorna ranking geral por tipo (geral, raca, categoria, etc)
+// @Tags Rankings
+// @Produce json
+// @Param tipo path string true "Tipo de ranking"
+// @Success 200 {object} models.APIResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /rankings/{tipo} [get]
+// @Security BearerAuth
 func (h *Handler) GetRankingGeral(c *gin.Context) {
 	tipo := c.Param("tipo")
 	if tipo == "" {
@@ -46,6 +56,16 @@ func (h *Handler) GetRankingGeral(c *gin.Context) {
 	})
 }
 
+// GetRankingsEquino godoc
+// @Summary Obter rankings de um equino
+// @Description Retorna todos os rankings de um equino específico
+// @Tags Rankings
+// @Produce json
+// @Param equinoid path string true "Equinoid do equino"
+// @Success 200 {object} models.APIResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /equinos/{equinoid}/rankings [get]
+// @Security BearerAuth
 func (h *Handler) GetRankingsEquino(c *gin.Context) {
 	equinoid := c.Param("equinoid")
 

@@ -24,6 +24,20 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// List godoc
+// @Summary Listar exames laboratoriais
+// @Description Lista todos os exames laboratoriais com filtros opcionais
+// @Tags Exames
+// @Produce json
+// @Param equinoid query string false "Filtrar por Equinoid"
+// @Param status query string false "Filtrar por status"
+// @Param tipo_exame query string false "Filtrar por tipo de exame"
+// @Param veterinario_id query int false "Filtrar por veterinário"
+// @Param laboratorio_id query int false "Filtrar por laboratório"
+// @Success 200 {object} models.APIResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /exames-laboratoriais [get]
+// @Security BearerAuth
 func (h *Handler) List(c *gin.Context) {
 	filters := make(map[string]interface{})
 	
@@ -65,6 +79,18 @@ func (h *Handler) List(c *gin.Context) {
 	})
 }
 
+// GetByID godoc
+// @Summary Buscar exame por ID
+// @Description Retorna os dados completos de um exame laboratorial
+// @Tags Exames
+// @Produce json
+// @Param id path int true "ID do exame"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /exames-laboratoriais/{id} [get]
+// @Security BearerAuth
 func (h *Handler) GetByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -103,6 +129,18 @@ func (h *Handler) GetByID(c *gin.Context) {
 	})
 }
 
+// Create godoc
+// @Summary Criar solicitação de exame
+// @Description Cria uma nova solicitação de exame laboratorial
+// @Tags Exames
+// @Accept json
+// @Produce json
+// @Param exame body models.CreateExameRequest true "Dados do exame"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /exames-laboratoriais [post]
+// @Security BearerAuth
 func (h *Handler) Create(c *gin.Context) {
 	var req models.CreateExameRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -132,6 +170,20 @@ func (h *Handler) Create(c *gin.Context) {
 	})
 }
 
+// Update godoc
+// @Summary Atualizar exame
+// @Description Atualiza informações de um exame laboratorial
+// @Tags Exames
+// @Accept json
+// @Produce json
+// @Param id path int true "ID do exame"
+// @Param exame body models.UpdateExameRequest true "Dados para atualização"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /exames-laboratoriais/{id} [put]
+// @Security BearerAuth
 func (h *Handler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -180,6 +232,18 @@ func (h *Handler) Update(c *gin.Context) {
 	})
 }
 
+// Delete godoc
+// @Summary Deletar exame
+// @Description Remove um exame laboratorial do sistema
+// @Tags Exames
+// @Produce json
+// @Param id path int true "ID do exame"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /exames-laboratoriais/{id} [delete]
+// @Security BearerAuth
 func (h *Handler) Delete(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -217,6 +281,19 @@ func (h *Handler) Delete(c *gin.Context) {
 	})
 }
 
+// ReceberAmostra godoc
+// @Summary Receber amostra no laboratório
+// @Description Registra o recebimento da amostra no laboratório
+// @Tags Exames
+// @Accept json
+// @Produce json
+// @Param id path int true "ID do exame"
+// @Param recebimento body object{data_recebimento=string} false "Data de recebimento"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /exames-laboratoriais/{id}/receber-amostra [put]
+// @Security BearerAuth
 func (h *Handler) ReceberAmostra(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -260,6 +337,17 @@ func (h *Handler) ReceberAmostra(c *gin.Context) {
 	})
 }
 
+// IniciarAnalise godoc
+// @Summary Iniciar análise do exame
+// @Description Marca o início da análise laboratorial
+// @Tags Exames
+// @Produce json
+// @Param id path int true "ID do exame"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /exames-laboratoriais/{id}/iniciar-analise [put]
+// @Security BearerAuth
 func (h *Handler) IniciarAnalise(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -298,6 +386,19 @@ func (h *Handler) IniciarAnalise(c *gin.Context) {
 	})
 }
 
+// ConcluirExame godoc
+// @Summary Concluir exame com resultado
+// @Description Finaliza o exame registrando resultado, valores e laudo
+// @Tags Exames
+// @Accept json
+// @Produce json
+// @Param id path int true "ID do exame"
+// @Param resultado body object{resultado=string,valores=object,laudo=string} true "Resultado do exame"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /exames-laboratoriais/{id}/concluir [put]
+// @Security BearerAuth
 func (h *Handler) ConcluirExame(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)

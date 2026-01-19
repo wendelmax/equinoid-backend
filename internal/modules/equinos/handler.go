@@ -318,6 +318,21 @@ func (h *Handler) DeleteEquino(c *gin.Context) {
 	})
 }
 
+// TransferOwnership godoc
+// @Summary Transferir propriedade de equino
+// @Description Transfere a propriedade de um equino para outro usuário
+// @Tags Equinos
+// @Accept json
+// @Produce json
+// @Param equinoid path string true "Equinoid do equino"
+// @Param transfer body object{novo_proprietario_id=int} true "ID do novo proprietário"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 403 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /equinos/{equinoid}/transferir [post]
+// @Security BearerAuth
 func (h *Handler) TransferOwnership(c *gin.Context) {
 	equinoid := c.Param("equinoid")
 

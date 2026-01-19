@@ -21,6 +21,15 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// GetDashboardStats godoc
+// @Summary Obter estatísticas do dashboard
+// @Description Retorna estatísticas gerais para o dashboard
+// @Tags Relatórios
+// @Produce json
+// @Success 200 {object} models.APIResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /reports/dashboard [get]
+// @Security BearerAuth
 func (h *Handler) GetDashboardStats(c *gin.Context) {
 	stats, err := h.service.GetDashboardStats(c.Request.Context())
 	if err != nil {

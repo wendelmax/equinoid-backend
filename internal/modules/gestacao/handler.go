@@ -23,6 +23,20 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// CriarUltrassonografia godoc
+// @Summary Criar ultrassonografia
+// @Description Registra uma nova ultrassonografia de gestação
+// @Tags Gestação
+// @Accept json
+// @Produce json
+// @Param gestacao_id path int true "ID da gestação"
+// @Param ultrassom body models.CreateUltrassonografiaRequest true "Dados da ultrassonografia"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /gestacoes/{gestacao_id}/ultrassonografias [post]
+// @Security BearerAuth
 func (h *Handler) CriarUltrassonografia(c *gin.Context) {
 	gestacaoID, err := strconv.ParseUint(c.Param("gestacao_id"), 10, 32)
 	if err != nil {
@@ -80,6 +94,20 @@ func (h *Handler) CriarUltrassonografia(c *gin.Context) {
 	})
 }
 
+// RegistrarParto godoc
+// @Summary Registrar parto
+// @Description Registra o parto de uma gestação
+// @Tags Gestação
+// @Accept json
+// @Produce json
+// @Param gestacao_id path int true "ID da gestação"
+// @Param parto body models.RegistrarPartoRequest true "Dados do parto"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /gestacoes/{gestacao_id}/parto [post]
+// @Security BearerAuth
 func (h *Handler) RegistrarParto(c *gin.Context) {
 	gestacaoID, err := strconv.ParseUint(c.Param("gestacao_id"), 10, 32)
 	if err != nil {
@@ -136,6 +164,20 @@ func (h *Handler) RegistrarParto(c *gin.Context) {
 	})
 }
 
+// RegistrarPerformanceMaterna godoc
+// @Summary Registrar performance materna
+// @Description Registra a performance materna de uma égua após o parto
+// @Tags Gestação
+// @Accept json
+// @Produce json
+// @Param equinoid path string true "Equinoid da égua"
+// @Param performance body models.CreatePerformanceMaternaRequest true "Dados da performance"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /equinos/{equinoid}/performance-materna [post]
+// @Security BearerAuth
 func (h *Handler) RegistrarPerformanceMaterna(c *gin.Context) {
 	equinoid := c.Param("equinoid")
 

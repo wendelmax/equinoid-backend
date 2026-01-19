@@ -31,6 +31,15 @@ func NewHandler(repoService RepositoryService, logger *logging.Logger) *Handler 
 	}
 }
 
+// GetStats godoc
+// @Summary Obter estatísticas financeiras
+// @Description Retorna estatísticas financeiras gerais
+// @Tags Financeiro
+// @Produce json
+// @Success 200 {object} models.APIResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /financeiro/stats [get]
+// @Security BearerAuth
 func (h *Handler) GetStats(c *gin.Context) {
 	stats, err := h.repoService.GetStats(c.Request.Context())
 	if err != nil {
@@ -50,6 +59,15 @@ func (h *Handler) GetStats(c *gin.Context) {
 	})
 }
 
+// GetMonthlyData godoc
+// @Summary Obter dados mensais
+// @Description Retorna dados financeiros mensais
+// @Tags Financeiro
+// @Produce json
+// @Success 200 {object} models.APIResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /financeiro/monthly [get]
+// @Security BearerAuth
 func (h *Handler) GetMonthlyData(c *gin.Context) {
 	data, err := h.repoService.GetMonthlyData(c.Request.Context())
 	if err != nil {
@@ -69,6 +87,15 @@ func (h *Handler) GetMonthlyData(c *gin.Context) {
 	})
 }
 
+// GetExpenseBreakdown godoc
+// @Summary Obter breakdown de despesas
+// @Description Retorna breakdown detalhado de despesas por categoria
+// @Tags Financeiro
+// @Produce json
+// @Success 200 {object} models.APIResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /financeiro/breakdown [get]
+// @Security BearerAuth
 func (h *Handler) GetExpenseBreakdown(c *gin.Context) {
 	breakdown, err := h.repoService.GetExpenseBreakdown(c.Request.Context())
 	if err != nil {
@@ -88,6 +115,17 @@ func (h *Handler) GetExpenseBreakdown(c *gin.Context) {
 	})
 }
 
+// ListTransactions godoc
+// @Summary Listar transações financeiras
+// @Description Lista todas as transações com filtros opcionais
+// @Tags Financeiro
+// @Produce json
+// @Param tipo query string false "Filtrar por tipo"
+// @Param categoria query string false "Filtrar por categoria"
+// @Success 200 {object} models.APIResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /financeiro/transactions [get]
+// @Security BearerAuth
 func (h *Handler) ListTransactions(c *gin.Context) {
 	filters := make(map[string]interface{})
 	
@@ -116,6 +154,18 @@ func (h *Handler) ListTransactions(c *gin.Context) {
 	})
 }
 
+// CreateTransaction godoc
+// @Summary Criar transação financeira
+// @Description Registra uma nova transação financeira
+// @Tags Financeiro
+// @Accept json
+// @Produce json
+// @Param transacao body models.CreateTransacaoRequest true "Dados da transação"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /financeiro/transactions [post]
+// @Security BearerAuth
 func (h *Handler) CreateTransaction(c *gin.Context) {
 	var req models.CreateTransacaoRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

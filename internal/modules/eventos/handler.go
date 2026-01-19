@@ -25,6 +25,21 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// ListAll godoc
+// @Summary Listar eventos
+// @Description Lista todos os eventos com paginação e filtros
+// @Tags Eventos
+// @Produce json
+// @Param page query int false "Página" default(1)
+// @Param limit query int false "Itens por página" default(20)
+// @Param categoria query string false "Filtrar por categoria"
+// @Param tipo_evento query string false "Filtrar por tipo"
+// @Param data_inicio query string false "Data início"
+// @Param data_fim query string false "Data fim"
+// @Success 200 {object} models.APIResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /eventos [get]
+// @Security BearerAuth
 func (h *Handler) ListAll(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))
@@ -75,6 +90,18 @@ func (h *Handler) ListAll(c *gin.Context) {
 	})
 }
 
+// Create godoc
+// @Summary Criar evento
+// @Description Cria um novo evento
+// @Tags Eventos
+// @Accept json
+// @Produce json
+// @Param evento body models.CreateEventoRequest true "Dados do evento"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /eventos [post]
+// @Security BearerAuth
 func (h *Handler) Create(c *gin.Context) {
 	userID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {
@@ -122,6 +149,18 @@ func (h *Handler) Create(c *gin.Context) {
 	})
 }
 
+// GetByID godoc
+// @Summary Buscar evento por ID
+// @Description Retorna os dados de um evento específico
+// @Tags Eventos
+// @Produce json
+// @Param evento_id path int true "ID do evento"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /eventos/{evento_id} [get]
+// @Security BearerAuth
 func (h *Handler) GetByID(c *gin.Context) {
 	idStr := c.Param("evento_id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -160,6 +199,20 @@ func (h *Handler) GetByID(c *gin.Context) {
 	})
 }
 
+// Update godoc
+// @Summary Atualizar evento
+// @Description Atualiza os dados de um evento
+// @Tags Eventos
+// @Accept json
+// @Produce json
+// @Param evento_id path int true "ID do evento"
+// @Param evento body object true "Dados para atualização"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /eventos/{evento_id} [put]
+// @Security BearerAuth
 func (h *Handler) Update(c *gin.Context) {
 	idStr := c.Param("evento_id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -216,6 +269,18 @@ func (h *Handler) Update(c *gin.Context) {
 	})
 }
 
+// Delete godoc
+// @Summary Deletar evento
+// @Description Remove um evento do sistema
+// @Tags Eventos
+// @Produce json
+// @Param evento_id path int true "ID do evento"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /eventos/{evento_id} [delete]
+// @Security BearerAuth
 func (h *Handler) Delete(c *gin.Context) {
 	idStr := c.Param("evento_id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -253,6 +318,17 @@ func (h *Handler) Delete(c *gin.Context) {
 	})
 }
 
+// ListByEquino godoc
+// @Summary Listar eventos de um equino
+// @Description Retorna todos os eventos de um equino específico
+// @Tags Eventos
+// @Produce json
+// @Param equinoid path string true "Equinoid do equino"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /equinos/{equinoid}/eventos [get]
+// @Security BearerAuth
 func (h *Handler) ListByEquino(c *gin.Context) {
 	equinoid := c.Param("equinoid")
 

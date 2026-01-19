@@ -25,7 +25,7 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 // Login godoc
 // @Summary Login de usuário
 // @Description Autentica um usuário e retorna tokens JWT
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param login body models.LoginRequest true "Credenciais de login"
@@ -89,7 +89,7 @@ func (h *Handler) Login(c *gin.Context) {
 // Register godoc
 // @Summary Registro de novo usuário
 // @Description Cria uma nova conta de usuário no sistema
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param register body models.RegisterRequest true "Dados de registro"
@@ -139,7 +139,7 @@ func (h *Handler) Register(c *gin.Context) {
 // RefreshToken godoc
 // @Summary Atualizar token de acesso
 // @Description Gera um novo par de tokens usando o refresh token
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param refresh body object{refresh_token=string} true "Refresh token"
@@ -197,7 +197,7 @@ func (h *Handler) RefreshToken(c *gin.Context) {
 // ForgotPassword godoc
 // @Summary Esqueci minha senha
 // @Description Envia email para recuperação de senha
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param forgot body object{email=string} true "Email do usuário"
@@ -239,7 +239,7 @@ func (h *Handler) ForgotPassword(c *gin.Context) {
 // ResetPassword godoc
 // @Summary Redefinir senha
 // @Description Redefine a senha do usuário usando token de recuperação
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param reset body object{token=string,new_password=string} true "Token e nova senha"
@@ -292,7 +292,7 @@ func (h *Handler) ResetPassword(c *gin.Context) {
 // Logout godoc
 // @Summary Logout de usuário
 // @Description Invalida o token atual do usuário
-// @Tags auth
+// @Tags Auth
 // @Produce json
 // @Success 200 {object} models.APIResponse
 // @Failure 400 {object} models.ErrorResponse

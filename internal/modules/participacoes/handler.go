@@ -24,6 +24,17 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// ListByEvento godoc
+// @Summary Listar participações de um evento
+// @Description Retorna todas as participações de um evento
+// @Tags Participações
+// @Produce json
+// @Param evento_id path int true "ID do evento"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /eventos/{evento_id}/participacoes [get]
+// @Security BearerAuth
 func (h *Handler) ListByEvento(c *gin.Context) {
 	eventoID, err := strconv.ParseUint(c.Param("evento_id"), 10, 32)
 	if err != nil {
@@ -53,6 +64,17 @@ func (h *Handler) ListByEvento(c *gin.Context) {
 	})
 }
 
+// ListByEquino godoc
+// @Summary Listar participações de um equino
+// @Description Retorna todas as participações em eventos de um equino
+// @Tags Participações
+// @Produce json
+// @Param equinoid path string true "Equinoid do equino"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /equinos/{equinoid}/participacoes-eventos [get]
+// @Security BearerAuth
 func (h *Handler) ListByEquino(c *gin.Context) {
 	equinoID, err := strconv.ParseUint(c.Param("equinoid"), 10, 32)
 	if err != nil {
@@ -82,6 +104,19 @@ func (h *Handler) ListByEquino(c *gin.Context) {
 	})
 }
 
+// Create godoc
+// @Summary Criar participação em evento
+// @Description Cria uma nova participação em um evento
+// @Tags Participações
+// @Accept json
+// @Produce json
+// @Param participacao body models.CreateParticipacaoEventoRequest true "Dados da participação"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /eventos/participacoes [post]
+// @Security BearerAuth
 func (h *Handler) Create(c *gin.Context) {
 	var req models.CreateParticipacaoEventoRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -121,6 +156,20 @@ func (h *Handler) Create(c *gin.Context) {
 	})
 }
 
+// Update godoc
+// @Summary Atualizar participação
+// @Description Atualiza os dados de uma participação em evento
+// @Tags Participações
+// @Accept json
+// @Produce json
+// @Param id path int true "ID da participação"
+// @Param participacao body models.UpdateParticipacaoEventoRequest true "Dados para atualização"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /eventos/participacoes/{id} [put]
+// @Security BearerAuth
 func (h *Handler) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -169,6 +218,18 @@ func (h *Handler) Update(c *gin.Context) {
 	})
 }
 
+// Delete godoc
+// @Summary Deletar participação
+// @Description Remove uma participação em evento
+// @Tags Participações
+// @Produce json
+// @Param id path int true "ID da participação"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /eventos/participacoes/{id} [delete]
+// @Security BearerAuth
 func (h *Handler) Delete(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -206,6 +267,18 @@ func (h *Handler) Delete(c *gin.Context) {
 	})
 }
 
+// MarcarAusencia godoc
+// @Summary Marcar ausência em evento
+// @Description Marca um equino como ausente em um evento
+// @Tags Participações
+// @Produce json
+// @Param id path int true "ID da participação"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /eventos/participacoes/{id}/ausencia [post]
+// @Security BearerAuth
 func (h *Handler) MarcarAusencia(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -244,6 +317,18 @@ func (h *Handler) MarcarAusencia(c *gin.Context) {
 	})
 }
 
+// MarcarPresenca godoc
+// @Summary Marcar presença em evento
+// @Description Marca um equino como presente em um evento
+// @Tags Participações
+// @Produce json
+// @Param id path int true "ID da participação"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /eventos/participacoes/{id}/presenca [post]
+// @Security BearerAuth
 func (h *Handler) MarcarPresenca(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {

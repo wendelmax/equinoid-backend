@@ -27,6 +27,19 @@ type SimularCruzamentoRequest struct {
 	MaeEquinoid string `json:"mae_equinoid" binding:"required"`
 }
 
+// SimularCruzamento godoc
+// @Summary Simular cruzamento
+// @Description Simula um cruzamento entre dois equinos e retorna projeções genéticas
+// @Tags Simulador
+// @Accept json
+// @Produce json
+// @Param simulacao body object{pai_equinoid=string,mae_equinoid=string} true "Dados do cruzamento"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /reproducao/simular [post]
+// @Security BearerAuth
 func (h *Handler) SimularCruzamento(c *gin.Context) {
 	var req SimularCruzamentoRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

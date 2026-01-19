@@ -23,6 +23,17 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// GetPlano godoc
+// @Summary Obter plano nutricional
+// @Description Retorna o plano nutricional de um equino
+// @Tags Nutrição
+// @Produce json
+// @Param equinoid path string true "Equinoid do equino"
+// @Success 200 {object} models.APIResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /nutricao/equino/{equinoid} [get]
+// @Security BearerAuth
 func (h *Handler) GetPlano(c *gin.Context) {
 	equinoid := c.Param("equinoid")
 
@@ -52,6 +63,20 @@ func (h *Handler) GetPlano(c *gin.Context) {
 	})
 }
 
+// CreatePlano godoc
+// @Summary Criar plano nutricional
+// @Description Cria um novo plano nutricional para um equino
+// @Tags Nutrição
+// @Accept json
+// @Produce json
+// @Param plano body models.CreatePlanoNutricionalRequest true "Dados do plano"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /nutricao/plano [post]
+// @Security BearerAuth
 func (h *Handler) CreatePlano(c *gin.Context) {
 	userID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {
@@ -99,6 +124,19 @@ func (h *Handler) CreatePlano(c *gin.Context) {
 	})
 }
 
+// GetSugestaoIA godoc
+// @Summary Obter sugestão nutricional com IA
+// @Description Gera uma sugestão de plano nutricional usando inteligência artificial
+// @Tags Nutrição
+// @Accept json
+// @Produce json
+// @Param sugestao body models.SugestaoIARequest true "Dados para sugestão"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /nutricao/equino/{equinoid}/ai-suggestion [post]
+// @Security BearerAuth
 func (h *Handler) GetSugestaoIA(c *gin.Context) {
 	var req models.SugestaoIARequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -136,6 +174,19 @@ func (h *Handler) GetSugestaoIA(c *gin.Context) {
 	})
 }
 
+// CreateRefeicao godoc
+// @Summary Criar registro de refeição
+// @Description Registra uma refeição realizada pelo equino
+// @Tags Nutrição
+// @Accept json
+// @Produce json
+// @Param refeicao body models.CreateRefeicaoRequest true "Dados da refeição"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /nutricao/refeicoes [post]
+// @Security BearerAuth
 func (h *Handler) CreateRefeicao(c *gin.Context) {
 	userID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {

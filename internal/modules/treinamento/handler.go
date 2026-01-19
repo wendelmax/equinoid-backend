@@ -24,6 +24,17 @@ func NewHandler(service Service, logger *logging.Logger) *Handler {
 	}
 }
 
+// GetSessoes godoc
+// @Summary Listar sessões de treinamento
+// @Description Retorna todas as sessões de treinamento de um equino
+// @Tags Treinamento
+// @Produce json
+// @Param equinoid query string true "Equinoid do equino"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /treinamento/sessoes [get]
+// @Security BearerAuth
 func (h *Handler) GetSessoes(c *gin.Context) {
 	equinoid := c.Query("equinoid")
 	if equinoid == "" {
@@ -53,6 +64,20 @@ func (h *Handler) GetSessoes(c *gin.Context) {
 	})
 }
 
+// CreateSessao godoc
+// @Summary Criar sessão de treinamento
+// @Description Registra uma nova sessão de treinamento
+// @Tags Treinamento
+// @Accept json
+// @Produce json
+// @Param sessao body models.CreateSessaoTreinamentoRequest true "Dados da sessão"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /treinamento/sessoes [post]
+// @Security BearerAuth
 func (h *Handler) CreateSessao(c *gin.Context) {
 	treinadorID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {
@@ -100,6 +125,17 @@ func (h *Handler) CreateSessao(c *gin.Context) {
 	})
 }
 
+// GetProgramas godoc
+// @Summary Listar programas de treinamento
+// @Description Retorna todos os programas de treinamento de um equino
+// @Tags Treinamento
+// @Produce json
+// @Param equinoid query string true "Equinoid do equino"
+// @Success 200 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /treinamento/programas [get]
+// @Security BearerAuth
 func (h *Handler) GetProgramas(c *gin.Context) {
 	equinoid := c.Query("equinoid")
 	if equinoid == "" {
@@ -129,6 +165,20 @@ func (h *Handler) GetProgramas(c *gin.Context) {
 	})
 }
 
+// CreatePrograma godoc
+// @Summary Criar programa de treinamento
+// @Description Cria um novo programa de treinamento para um equino
+// @Tags Treinamento
+// @Accept json
+// @Produce json
+// @Param programa body models.CreateProgramaTreinamentoRequest true "Dados do programa"
+// @Success 201 {object} models.APIResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /treinamento/programas [post]
+// @Security BearerAuth
 func (h *Handler) CreatePrograma(c *gin.Context) {
 	treinadorID, exists := middleware.GetUserIDFromContext(c)
 	if !exists {
