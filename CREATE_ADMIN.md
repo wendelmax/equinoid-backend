@@ -60,7 +60,7 @@ Depois de criar o primeiro admin, você pode criar outros admins via API:
 
 ```bash
 # 1. Faça login como admin
-curl -X POST https://seahorse-app-28du8.ondigitalocean.app/api/v1/auth/login \
+curl -X POST https://equinoid.com/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "admin@equinoid.com",
@@ -68,7 +68,7 @@ curl -X POST https://seahorse-app-28du8.ondigitalocean.app/api/v1/auth/login \
   }'
 
 # 2. Use o access_token para criar novos usuários
-curl -X POST https://seahorse-app-28du8.ondigitalocean.app/api/v1/users \
+curl -X POST https://equinoid.com/api/v1/users \
   -H "Authorization: Bearer SEU_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -104,7 +104,7 @@ $env:DATABASE_URL = "postgresql://user:pass@host:5432/equinoid"
 Após criar o admin, teste o login:
 
 ```bash
-curl -X POST https://seahorse-app-28du8.ondigitalocean.app/api/v1/auth/login \
+curl -X POST https://equinoid.com/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "admin@equinoid.com",
@@ -135,6 +135,6 @@ Usuários com `user_type = "admin"` podem:
 
 ## 🔄 Criar Admin via Swagger
 
-1. Acesse: https://seahorse-app-28du8.ondigitalocean.app/swagger/index.html
+1. Acesse: https://equinoid.com/swagger/index.html
 2. Faça login como admin existente
 3. Use o endpoint `POST /users` para criar novos admins

@@ -22,7 +22,7 @@ import (
 // @license.name Proprietária
 // @license.url https://equinoid.com/license
 
-// @host seahorse-app-28du8.ondigitalocean.app
+// @host equinoid.com
 // @BasePath /api/v1
 
 // @securityDefinitions.apikey BearerAuth
