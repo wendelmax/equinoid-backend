@@ -758,7 +758,7 @@ definitions:
     - UserTypeLaboratorio
     - UserTypeParceiro
     - UserTypeLeiloeiro
-host: seahorse-app-28du8.ondigitalocean.app
+host: equinoid.com
 info:
   contact:
     email: suporte@equinoid.com

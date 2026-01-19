@@ -11,7 +11,7 @@ O Swagger estava mostrando apenas os endpoints de exames porque:
 
 ### 1. Correções Técnicas
 - ✅ Adicionado import `_ "github.com/equinoid/backend/docs"` no `main.go`
-- ✅ Atualizado host do Swagger para `seahorse-app-28du8.ondigitalocean.app`
+- ✅ Atualizado host do Swagger para `equinoid.com`
 - ✅ Corrigido tipos não reconhecidos:
   - `gorm.DeletedAt` → adicionado `swaggertype:"string"`
   - `time.Duration` → adicionado `swaggertype:"integer"`
@@ -103,7 +103,7 @@ Os seguintes módulos ainda precisam ter suas anotações Swagger adicionadas:
 ### Para Deploy no DigitalOcean
 1. **Opção 1 - Deploy Manual:**
    ```bash
-   scp bin/equinoid-api.exe usuario@seahorse-app-28du8.ondigitalocean.app:/caminho/do/deploy/
+   scp bin/equinoid-api.exe usuario@equinoid.com:/caminho/do/deploy/
    ```
 
 2. **Opção 2 - Via Git + CI/CD:**
@@ -128,9 +128,9 @@ go build -o bin/equinoid-api.exe cmd/server/main.go
 
 ## URLs do Swagger
 
-- **Produção**: https://seahorse-app-28du8.ondigitalocean.app/swagger/index.html
-- **JSON**: https://seahorse-app-28du8.ondigitalocean.app/swagger/doc.json
-- **YAML**: https://seahorse-app-28du8.ondigitalocean.app/swagger/swagger.yaml
+- **Produção**: https://equinoid.com/swagger/index.html
+- **JSON**: https://equinoid.com/swagger/doc.json
+- **YAML**: https://equinoid.com/swagger/swagger.yaml
 
 ## Tags Documentadas
 

@@ -15,7 +15,7 @@
         },
         "version": "2.0"
     },
-    "host": "seahorse-app-28du8.ondigitalocean.app",
+    "host": "equinoid.com",
     "basePath": "/api/v1",
     "paths": {
         "/auth/forgot-password": {
