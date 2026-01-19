@@ -43,32 +43,32 @@ type UpdateExameRequest struct {
 
 // ExameLaboratorial representa um exame laboratorial
 type ExameLaboratorial struct {
-	ID                       uint           `json:"id" gorm:"primaryKey"`
-	Equinoid                 string         `json:"equinoid" gorm:"size:25;not null;index"`
-	TipoExame                string         `json:"tipo_exame" gorm:"size:50;not null"`
-	NomeExame                string         `json:"nome_exame" gorm:"size:200;not null"`
-	Descricao                string         `json:"descricao" gorm:"type:text"`
-	VeterinarioSolicitanteID uint           `json:"veterinario_solicitante_id" gorm:"not null;index"`
-	LaboratorioID            *uint          `json:"laboratorio_id" gorm:"index"`
-	Status                   string         `json:"status" gorm:"size:50;default:'solicitado'"`
-	DataSolicitacao          time.Time      `json:"data_solicitacao"`
-	DataColeta               *time.Time     `json:"data_coleta"`
-	DataRecebimentoAmostra   *time.Time     `json:"data_recebimento_amostra"`
-	DataInicioAnalise        *time.Time     `json:"data_inicio_analise"`
-	DataConclusao            *time.Time     `json:"data_conclusao"`
+	ID                       uint            `json:"id" gorm:"primaryKey"`
+	Equinoid                 string          `json:"equinoid" gorm:"size:25;not null;index"`
+	TipoExame                string          `json:"tipo_exame" gorm:"size:50;not null"`
+	NomeExame                string          `json:"nome_exame" gorm:"size:200;not null"`
+	Descricao                string          `json:"descricao" gorm:"type:text"`
+	VeterinarioSolicitanteID uint            `json:"veterinario_solicitante_id" gorm:"not null;index"`
+	LaboratorioID            *uint           `json:"laboratorio_id" gorm:"index"`
+	Status                   string          `json:"status" gorm:"size:50;default:'solicitado'"`
+	DataSolicitacao          time.Time       `json:"data_solicitacao"`
+	DataColeta               *time.Time      `json:"data_coleta"`
+	DataRecebimentoAmostra   *time.Time      `json:"data_recebimento_amostra"`
+	DataInicioAnalise        *time.Time      `json:"data_inicio_analise"`
+	DataConclusao            *time.Time      `json:"data_conclusao"`
 	Resultado                *ResultadoExame `json:"resultado"`
-	Valores                  JSONB          `json:"valores" gorm:"type:jsonb"`
-	Laudo                    *string        `json:"laudo" gorm:"type:text"`
-	Observacoes              *string        `json:"observacoes" gorm:"type:text"`
-	CertificadoID            *uint          `json:"certificado_id"`
-	CreatedAt                time.Time      `json:"created_at"`
-	UpdatedAt                time.Time      `json:"updated_at"`
-	DeletedAt                gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
+	Valores                  JSONB           `json:"valores" gorm:"type:jsonb"`
+	Laudo                    *string         `json:"laudo" gorm:"type:text"`
+	Observacoes              *string         `json:"observacoes" gorm:"type:text"`
+	CertificadoID            *uint           `json:"certificado_id"`
+	CreatedAt                time.Time       `json:"created_at"`
+	UpdatedAt                time.Time       `json:"updated_at"`
+	DeletedAt                gorm.DeletedAt  `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
-	Equino                  *Equino `json:"equino,omitempty" gorm:"foreignKey:Equinoid;references:Equinoid"`
-	VeterinarioSolicitante  *User   `json:"veterinario_solicitante,omitempty" gorm:"foreignKey:VeterinarioSolicitanteID"`
-	Laboratorio             *User   `json:"laboratorio,omitempty" gorm:"foreignKey:LaboratorioID"`
-	Certificado             *Certificate `json:"certificado,omitempty" gorm:"foreignKey:CertificadoID"`
+	Equino                 *Equino      `json:"equino,omitempty" gorm:"foreignKey:Equinoid;references:Equinoid"`
+	VeterinarioSolicitante *User        `json:"veterinario_solicitante,omitempty" gorm:"foreignKey:VeterinarioSolicitanteID"`
+	Laboratorio            *User        `json:"laboratorio,omitempty" gorm:"foreignKey:LaboratorioID"`
+	Certificado            *Certificate `json:"certificado,omitempty" gorm:"foreignKey:CertificadoID"`
 }
 
 // TableName especifica o nome da tabela

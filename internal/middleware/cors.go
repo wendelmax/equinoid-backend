@@ -3,6 +3,8 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,14 +14,7 @@ func CORS() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		origin := c.Request.Header.Get("Origin")
 
-		// Lista de origens permitidas (configurável por ambiente)
-		allowedOrigins := []string{
-			"http://localhost:3000",
-			"http://localhost:3001",
-			"http://localhost:5173",
-			"https://app.equinoid.org",
-			"https://equinoid.org",
-		}
+		allowedOrigins := getAllowedOrigins()
 
 		// Verificar se a origem está permitida
 		isAllowed := false
@@ -134,13 +129,7 @@ func CORSWithConfig(config CORSConfig) gin.HandlerFunc {
 // DefaultCORSConfig retorna uma configuração padrão para CORS
 func DefaultCORSConfig() CORSConfig {
 	return CORSConfig{
-		AllowedOrigins: []string{
-			"http://localhost:3000",
-			"http://localhost:3001",
-			"http://localhost:5173",
-			"https://app.equinoid.org",
-			"https://equinoid.org",
-		},
+		AllowedOrigins: getAllowedOrigins(),
 		AllowedMethods: []string{
 			"GET",
 			"POST",
@@ -164,5 +153,30 @@ func DefaultCORSConfig() CORSConfig {
 		},
 		AllowCredentials: true,
 		MaxAge:           86400, // 24 horas
+	}
+}
+
+// getAllowedOrigins retorna a lista de origens permitidas
+// Pode ser configurada via variável de ambiente CORS_ALLOWED_ORIGINS (separada por vírgula)
+// ou usa a lista padrão
+func getAllowedOrigins() []string {
+	envOrigins := os.Getenv("CORS_ALLOWED_ORIGINS")
+	if envOrigins != "" {
+		origins := strings.Split(envOrigins, ",")
+		for i := range origins {
+			origins[i] = strings.TrimSpace(origins[i])
+		}
+		return origins
+	}
+
+	return []string{
+		"http://localhost:3000",
+		"http://localhost:3001",
+		"http://localhost:5173",
+		"https://equinoid.com",
+		"https://www.equinoid.com",
+		"https://app.equinoid.com",
+		"https://app.equinoid.org",
+		"https://equinoid.org",
 	}
 }
